@@ -1,6 +1,22 @@
-const CACHE_NAME = "bmsgfes26-v13";
+const CACHE_NAME = "bmsgfes26-v14";
+
+/*
+  =========================================================
+  APP SHELL
+
+  ★ index.html を最初から保存する
+
+  これにより、
+  Cloudflare Pages版を一度オンラインで読み込んで
+  Service Workerのインストールが完了すれば、
+
+  機内モードでもサイト本体を起動できる。
+  =========================================================
+*/
 
 const APP_SHELL = [
+  "./",
+  "./index.html",
   "./Map.JPG",
   "./manifest.webmanifest",
 ];
@@ -125,9 +141,15 @@ self.addEventListener(
           );
 
 
-        /*
-          Map.JPG / manifest を保存
-        */
+        /* =================================================
+           APP SHELL
+
+           index.html
+           Map.JPG
+           manifest
+
+           をオフライン用に保存
+        ================================================= */
 
         for (
           const url of APP_SHELL
@@ -164,22 +186,33 @@ self.addEventListener(
           catch (e) {
 
             /*
-              失敗しても
-              SW全体は止めない
+              1ファイル取得失敗しても
+              Service Worker全体は止めない
             */
+
+            console.warn(
+              "APP SHELL CACHE FAILED:",
+              url
+            );
 
           }
 
         }
 
 
-        /*
-          会場周辺の地図タイルを
-          圏外用に保存
-        */
+        /* =================================================
+           VENUE MAP TILES
+
+           会場周辺のOpenStreetMapタイルを
+           圏外用に保存
+        ================================================= */
+
+        const tileUrls =
+          venueTileUrls();
+
 
         for (
-          const url of venueTileUrls()
+          const url of tileUrls
         ) {
 
           try {
@@ -197,17 +230,21 @@ self.addEventListener(
               await fetch(req);
 
 
-            await cache.put(
-              req,
-              res
-            );
+            if (res) {
+
+              await cache.put(
+                req,
+                res
+              );
+
+            }
 
           }
 
           catch (e) {
 
             /*
-              一部取得失敗は無視
+              一部タイル取得失敗は無視
             */
 
           }
@@ -218,6 +255,11 @@ self.addEventListener(
 
     );
 
+
+    /*
+      新しいSWを待機状態にせず
+      すぐ使用可能にする
+    */
 
     self.skipWaiting();
 
@@ -242,11 +284,20 @@ self.addEventListener(
 
 
         /*
-          v12以前の古いキャッシュを削除
+          v13以前など
+          古いService Workerキャッシュを削除
 
-          localStorageは触らないので
-          MY / 持ち物 / 取引 /
-          キーワード接続情報は消えない
+          ★ localStorageは削除しない
+
+          そのため
+
+          MY
+          持ち物
+          取引
+          キーワード接続情報
+
+          などのブラウザ保存データには
+          触れない。
         */
 
         await Promise.all(
@@ -265,6 +316,11 @@ self.addEventListener(
 
         );
 
+
+        /*
+          開いているページを
+          新しいSWの管理下へ
+        */
 
         await self.clients.claim();
 
@@ -288,6 +344,10 @@ self.addEventListener(
       event.request;
 
 
+    /*
+      GET以外は触らない
+    */
+
     if (
       req.method !== "GET"
     ) {
@@ -304,7 +364,7 @@ self.addEventListener(
 
 
     /* =====================================================
-       LEAFLET
+       LEAFLET CDN
 
        ★重要★
 
@@ -319,7 +379,7 @@ self.addEventListener(
        のフォールバックを行う。
 
        ここをSWでキャッシュすると
-       マップ全体が死ぬ原因になるため除外。
+       マップ全体が死ぬ原因になる可能性があるため除外。
     ===================================================== */
 
     if (
@@ -336,6 +396,12 @@ self.addEventListener(
        PRIVATE API / WEATHER
 
        SWではキャッシュしない
+
+       ・個人保存データAPI
+       ・天気API
+
+       オフライン時に古いレスポンスを
+       APIの最新値として返さない。
     ===================================================== */
 
     if (
@@ -356,17 +422,385 @@ self.addEventListener(
 
 
     /* =====================================================
-       INDEX.HTML
+       PAGE NAVIGATION
+       
+       index.html / 各ページ表示
 
-       オンライン
-       → サーバーの最新版
+       ONLINE
+       ↓
+       Cloudflare Pagesから最新版取得
+       ↓
+       成功したらキャッシュ更新
 
-       オフライン
-       → 最後に正常表示したindex.html
+       OFFLINE
+       ↓
+       最後に正常取得したindex.htmlを表示
     ===================================================== */
 
     if (
       req.mode === "navigate"
+    ) {
+
+      event.respondWith(
+
+        (async () => {
+
+          const cache =
+            await caches.open(
+              CACHE_NAME
+            );
+
+
+          /* ===============================================
+             ONLINE
+          =============================================== */
+
+          try {
+
+            const fresh =
+              await fetch(
+                req,
+                {
+                  cache: "no-store"
+                }
+              );
+
+
+            if (
+              fresh &&
+              fresh.ok
+            ) {
+
+              /*
+                最新ページを保存
+              */
+
+              await cache.put(
+                "./index.html",
+                fresh.clone()
+              );
+
+
+              /*
+                "/" と index.html の両方で
+                オフライン起動できるようにする
+              */
+
+              try {
+
+                await cache.put(
+                  "./",
+                  fresh.clone()
+                );
+
+              }
+
+              catch (e) {
+
+                /*
+                  保存できなくても
+                  index.htmlがあれば問題なし
+                */
+
+              }
+
+
+              return fresh;
+
+            }
+
+          }
+
+          catch (e) {
+
+            /*
+              ネットワークエラー
+              ↓
+              OFFLINE処理へ
+            */
+
+          }
+
+
+          /* ===============================================
+             OFFLINE
+
+             まず index.html
+          =============================================== */
+
+          let cached =
+            await cache.match(
+              "./index.html"
+            );
+
+
+          if (cached) {
+
+            return cached;
+
+          }
+
+
+          /* ===============================================
+             次に "/"
+          =============================================== */
+
+          cached =
+            await cache.match(
+              "./"
+            );
+
+
+          if (cached) {
+
+            return cached;
+
+          }
+
+
+          /* ===============================================
+             念のため現在URLも確認
+          =============================================== */
+
+          cached =
+            await cache.match(
+              req
+            );
+
+
+          if (cached) {
+
+            return cached;
+
+          }
+
+
+          /*
+            どこにも保存版が無い場合
+          */
+
+          return new Response(
+            `
+            <!DOCTYPE html>
+            <html lang="ja">
+            <head>
+              <meta charset="UTF-8">
+              <meta
+                name="viewport"
+                content="width=device-width,initial-scale=1"
+              >
+              <title>BMSG FES 2026</title>
+              <style>
+                body {
+                  margin: 0;
+                  background: #080808;
+                  color: #fff;
+                  font-family:
+                    -apple-system,
+                    BlinkMacSystemFont,
+                    "Helvetica Neue",
+                    Arial,
+                    sans-serif;
+                  min-height: 100vh;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  text-align: center;
+                }
+
+                .offline {
+                  padding: 30px;
+                }
+
+                h1 {
+                  font-size: 22px;
+                  letter-spacing: .08em;
+                }
+
+                p {
+                  color: #aaa;
+                  line-height: 1.8;
+                  font-size: 14px;
+                }
+              </style>
+            </head>
+
+            <body>
+
+              <div class="offline">
+
+                <h1>
+                  BMSG FES 2026
+                </h1>
+
+                <p>
+                  オフラインデータを準備できませんでした。<br>
+                  一度オンラインでサイトを開いてから<br>
+                  もう一度お試しください。
+                </p>
+
+              </div>
+
+            </body>
+            </html>
+            `,
+            {
+              status: 503,
+              headers: {
+                "Content-Type":
+                  "text/html; charset=utf-8"
+              }
+            }
+          );
+
+        })()
+
+      );
+
+
+      return;
+
+    }
+
+
+    /* =====================================================
+       OPENSTREETMAP
+
+       CACHE FIRST
+
+       保存済みタイル
+       ↓
+       あれば即表示
+
+       なければ
+       ↓
+       ネット取得
+       ↓
+       成功したら保存
+
+       これにより
+       会場周辺は圏外でも表示可能。
+    ===================================================== */
+
+    if (
+      url.hostname.endsWith(
+        ".tile.openstreetmap.org"
+      )
+    ) {
+
+      event.respondWith(
+
+        (async () => {
+
+          const cache =
+            await caches.open(
+              CACHE_NAME
+            );
+
+
+          /*
+            保存済み確認
+          */
+
+          const hit =
+            await cache.match(
+              req
+            );
+
+
+          if (hit) {
+
+            return hit;
+
+          }
+
+
+          /*
+            保存されていなければ
+            ネット取得
+          */
+
+          try {
+
+            const res =
+              await fetch(req);
+
+
+            if (res) {
+
+              try {
+
+                await cache.put(
+                  req,
+                  res.clone()
+                );
+
+              }
+
+              catch (e) {
+
+                /*
+                  キャッシュ失敗しても
+                  地図表示自体は続行
+                */
+
+              }
+
+            }
+
+
+            return res;
+
+          }
+
+          catch (e) {
+
+            /*
+              タイルが無い＋圏外
+            */
+
+            return new Response(
+              "",
+              {
+                status: 504
+              }
+            );
+
+          }
+
+        })()
+
+      );
+
+
+      return;
+
+    }
+
+
+    /* =====================================================
+       SAME ORIGIN STATIC FILES
+
+       Cloudflare Pages上の
+
+       ・画像
+       ・CSS
+       ・JS
+       ・manifest
+       など
+
+       ONLINE
+       ↓
+       最新版取得＋保存
+
+       OFFLINE
+       ↓
+       保存版
+    ===================================================== */
+
+    if (
+      url.origin ===
+      self.location.origin
     ) {
 
       event.respondWith(
@@ -399,15 +833,22 @@ self.addEventListener(
               fresh.ok
             ) {
 
-              /*
-                最新indexを
-                オフライン用に保存
-              */
+              try {
 
-              await cache.put(
-                "./index.html",
-                fresh.clone()
-              );
+                await cache.put(
+                  req,
+                  fresh.clone()
+                );
+
+              }
+
+              catch (e) {
+
+                /*
+                  保存失敗は無視
+                */
+
+              }
 
 
               return fresh;
@@ -419,9 +860,7 @@ self.addEventListener(
           catch (e) {
 
             /*
-              ネットワーク失敗
-              ↓
-              保存版へ
+              OFFLINEへ
             */
 
           }
@@ -433,7 +872,7 @@ self.addEventListener(
 
           const cached =
             await cache.match(
-              "./index.html"
+              req
             );
 
 
@@ -445,9 +884,9 @@ self.addEventListener(
 
 
           return new Response(
-            "Offline",
+            "",
             {
-              status: 503
+              status: 504
             }
           );
 
@@ -462,92 +901,17 @@ self.addEventListener(
 
 
     /* =====================================================
-       OPENSTREETMAP
+       OTHER EXTERNAL FILES
 
-       保存済みタイルを優先。
+       その他の外部リソース。
 
-       圏外でも会場周辺の地図を
-       表示できるようにする。
-    ===================================================== */
+       ONLINE
+       ↓
+       そのまま取得
 
-    if (
-      url.hostname.endsWith(
-        ".tile.openstreetmap.org"
-      )
-    ) {
-
-      event.respondWith(
-
-        (async () => {
-
-          const cache =
-            await caches.open(
-              CACHE_NAME
-            );
-
-
-          const hit =
-            await cache.match(
-              req
-            );
-
-
-          if (hit) {
-
-            return hit;
-
-          }
-
-
-          try {
-
-            const res =
-              await fetch(req);
-
-
-            if (res) {
-
-              await cache.put(
-                req,
-                res.clone()
-              );
-
-            }
-
-
-            return res;
-
-          }
-
-          catch (e) {
-
-            return new Response(
-              "",
-              {
-                status: 504
-              }
-            );
-
-          }
-
-        })()
-
-      );
-
-
-      return;
-
-    }
-
-
-    /* =====================================================
-       OTHER FILES
-
-       オンライン
-       → 最新版を取得して保存
-
-       オフライン
-       → 保存済みを使用
+       OFFLINE
+       ↓
+       過去に保存されていれば使用
     ===================================================== */
 
     event.respondWith(
@@ -560,14 +924,25 @@ self.addEventListener(
           );
 
 
+        /*
+          保存済みがあるか確認
+        */
+
+        const cached =
+          await cache.match(
+            req
+          );
+
+
         try {
+
+          /*
+            ONLINEでは最新版優先
+          */
 
           const fresh =
             await fetch(
-              req,
-              {
-                cache: "no-store"
-              }
+              req
             );
 
 
@@ -579,10 +954,23 @@ self.addEventListener(
             )
           ) {
 
-            await cache.put(
-              req,
-              fresh.clone()
-            );
+            try {
+
+              await cache.put(
+                req,
+                fresh.clone()
+              );
+
+            }
+
+            catch (e) {
+
+              /*
+                CORS等で保存不可でも
+                表示自体は続行
+              */
+
+            }
 
           }
 
@@ -593,11 +981,9 @@ self.addEventListener(
 
         catch (e) {
 
-          const cached =
-            await cache.match(
-              req
-            );
-
+          /*
+            OFFLINE
+          */
 
           if (cached) {
 
