@@ -1127,6 +1127,28 @@ button:active{transform:scale(.98);}
 }
 </style>
 
+
+<style id="page-position-fix">
+/* Each bottom-nav page must begin directly below the sticky header. */
+.page{
+  display:none !important;
+  min-height:0 !important;
+  margin-top:0 !important;
+  padding-top:0 !important;
+}
+.page.active{
+  display:block !important;
+}
+#page-info,
+#page-goods,
+#page-checklist,
+#page-trade,
+#page-my{
+  margin-top:0 !important;
+  padding-top:0 !important;
+}
+</style>
+
 </head>
 
 <body>
@@ -3515,29 +3537,26 @@ document.getElementById("weatherClose")
 
 function weatherEmoji(code){
 
-  if(code===0)return "☀️";
+  const c=Number(code);
 
-  if(code===1||code===2)return "🌤️";
+  /* Open-Meteo / WMO weather interpretation codes */
+  if(c===0) return "☀️";                 // Clear sky
+  if(c===1) return "🌤️";                // Mainly clear
+  if(c===2) return "⛅";                 // Partly cloudy
+  if(c===3) return "☁️";                 // Overcast
+  if(c===45 || c===48) return "🌫️";     // Fog
+  if([51,53,55,56,57].includes(c)) return "🌦️"; // Drizzle
+  if([61,63,65,66,67,80,81,82].includes(c)) return "🌧️"; // Rain/showers
+  if([71,73,75,77,85,86].includes(c)) return "🌨️"; // Snow
+  if([95,96,99].includes(c)) return "⛈️"; // Thunderstorm
 
-  if(code===3)return "☁️";
-
-  if(code===45||code===48)return "🌫️";
-
-  if(code>=51&&code<=67)return "🌧️";
-
-  if(code>=71&&code<=77)return "🌨️";
-
-  if(code>=80&&code<=82)return "🌦️";
-
-  if(code>=95)return "⛈️";
-
-  return "☁️";
+  return "−";
 }
 
 
 async function loadWeather(){
 
-  const WEATHER_CACHE_KEY="bmsgfes_weather_cache_v4";
+  const WEATHER_CACHE_KEY="bmsgfes_weather_cache_v5";
 
   /*
     会場付近（青海R地区）。
@@ -3914,6 +3933,16 @@ function initOutsideToiletMap(){
 /* LeafletとDOMの準備後に独立マップだけ初期化 */
 window.addEventListener("load",()=>{
   setTimeout(initOutsideToiletMap,150);
+});
+
+
+/* Bottom navigation: every page opens from its top. */
+document.querySelectorAll(".bottom-nav button,[data-page]").forEach(btn=>{
+  btn.addEventListener("click",()=>{
+    requestAnimationFrame(()=>{
+      window.scrollTo({top:0,left:0,behavior:"instant"});
+    });
+  });
 });
 
 </script>
