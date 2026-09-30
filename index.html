@@ -1180,6 +1180,7 @@ button:active{transform:scale(.98);}
 
       <div id="map"></div>
       <button class="pin-edit-launch" id="pinEditLaunch" type="button">📍 ピン位置を確認・編集</button>
+      <button class="pin-edit-launch" id="pinCopyAlways" type="button" style="bottom:98px;">📋 座標コピー</button>
 
       <div class="official-map" id="officialMap">
         <img src="./Map.JPG" alt="BMSG FES 2026 OFFICIAL MAP">
@@ -1723,6 +1724,24 @@ document.querySelectorAll("button,a").forEach(el=>{
 
 </script>
 
+
+<div class="pin-edit-panel" id="pinEditPanel">
+  <div class="pin-edit-title">📍 ピン位置編集</div>
+  <div class="pin-edit-help">
+    MAIN STAGE / SUB STAGEは固定です。<br>
+    編集したいピンをタップ → 地図上の正しい位置をタップしてください。
+    位置はこの端末に保存されます。
+  </div>
+  <div class="pin-edit-selected" id="pinEditSelected">ピンを選択してください</div>
+  <div class="pin-edit-actions">
+    <button class="pin-edit-save" id="pinEditDone" type="button">編集を終了</button>
+    <button class="pin-edit-close" id="pinEditCancel" type="button">閉じる</button>
+    <button class="pin-edit-save" id="pinEditCopy" type="button" style="grid-column:1/-1;">📋 修正済み座標をコピー</button>
+    <button class="pin-edit-reset" id="pinEditReset" type="button">編集した位置をすべて初期値に戻す</button>
+  </div>
+</div>
+
+
 <script>
 
 /* =========================================================
@@ -2145,24 +2164,39 @@ document.getElementById("pinEditDone")
 document.getElementById("pinEditCancel")
   ?.addEventListener("click",stopPinEditMode);
 
+async function copyCurrentPinPositions(){
+
+  const current=loadSavedPinPositions();
+
+  const rows=venueMarkers.map(item=>{
+    const saved=current[item.venue.id];
+    const pos=saved
+      ? {lat:Number(saved.lat),lng:Number(saved.lng)}
+      : item.marker.getLatLng();
+
+    return {
+      id:item.venue.id,
+      name:item.venue.name,
+      lat:Number(pos.lat.toFixed(7)),
+      lng:Number(pos.lng.toFixed(7))
+    };
+  });
+
+  const text=JSON.stringify(rows,null,2);
+
+  try{
+    await navigator.clipboard.writeText(text);
+    showToast("現在のピン座標をコピーしました");
+  }catch(e){
+    window.prompt("この座標をコピーしてください",text);
+  }
+}
+
 document.getElementById("pinEditCopy")
-  ?.addEventListener("click",async()=>{
+  ?.addEventListener("click",copyCurrentPinPositions);
 
-    const current=loadSavedPinPositions();
-
-    const rows=venueMarkers.map(item=>{
-      const saved=current[item.venue.id];
-      const pos=saved
-        ? {lat:Number(saved.lat),lng:Number(saved.lng)}
-        : item.marker.getLatLng();
-
-      return {
-        id:item.venue.id,
-        name:item.venue.name,
-        lat:Number(pos.lat.toFixed(7)),
-        lng:Number(pos.lng.toFixed(7))
-      };
-    });
+document.getElementById("pinCopyAlways")
+  ?.addEventListener("click",copyCurrentPinPositions);
 
     const text=JSON.stringify(rows,null,2);
 
@@ -2472,33 +2506,28 @@ localStorage.removeItem("bmsgfes_main_stage_position_v3");
 
 function stationRoute(type){
 
-  const destinations={
-    daiba:{
-      lat:35.62575,
-      lng:139.77197
-    },
-    teleport:{
-      lat:35.62702,
-      lng:139.77875
-    }
+  const origins={
+    daiba:"台場駅",
+    teleport:"東京テレポート駅"
   };
 
-  const start=destinations[type];
-  if(!start) return;
+  const origin=origins[type];
+  if(!origin) return;
 
-  const goal={
-    lat:35.6232112,
-    lng:139.7770309
-  };
+  /* BMSG FES会場（青海R地区） */
+  const destination="BMSG FES 2026 青海R地区";
 
   const url=
-    `https://www.google.com/maps/dir/?api=1`+
-    `&origin=${start.lat},${start.lng}`+
-    `&destination=${goal.lat},${goal.lng}`+
-    `&travelmode=walking`;
+    "https://www.google.com/maps/dir/?api=1"+
+    "&origin="+encodeURIComponent(origin)+
+    "&destination="+encodeURIComponent(destination)+
+    "&travelmode=walking";
 
-  window.open(url,"_blank","noopener");
-
+  /*
+    iPhone/Safari/PWAでもユーザー操作直後に開く。
+    window.openのブロックを避けるためlocation.hrefを使用。
+  */
+  window.location.href=url;
 }
 
 /* RESALE */
@@ -3759,17 +3788,30 @@ function weatherEmoji(code){
 
 async function loadWeather(){
 
-  const WEATHER_CACHE_KEY="bmsgfes_weather_cache_v3";
+  const WEATHER_CACHE_KEY="bmsgfes_weather_cache_v4";
 
+  /*
+    会場付近（青海R地区）。
+    イベント3日だけを明示指定して取得。
+    Open-Meteo generic APIは地域に適したモデルを自動選択。
+  */
   const url=
-    `https://api.open-meteo.com/v1/forecast?latitude=${VENUE_WEATHER_LAT}&longitude=${VENUE_WEATHER_LNG}`+
+    `https://api.open-meteo.com/v1/forecast`+
+    `?latitude=${VENUE_WEATHER_LAT}`+
+    `&longitude=${VENUE_WEATHER_LNG}`+
     `&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max`+
-    `&timezone=Asia%2FTokyo&forecast_days=16`;
+    `&timezone=Asia%2FTokyo`+
+    `&start_date=2026-10-10`+
+    `&end_date=2026-10-12`+
+    `&_=${Date.now()}`;
 
   try{
 
-    /* オンライン時はブラウザの古いHTTPキャッシュを使わず最新値を取得 */
-    const response=await fetch(url,{cache:"no-store"});
+    const response=await fetch(url,{
+      method:"GET",
+      cache:"no-store",
+      headers:{"Accept":"application/json"}
+    });
 
     if(!response.ok){
       throw new Error("weather_http_"+response.status);
@@ -3777,8 +3819,12 @@ async function loadWeather(){
 
     const data=await response.json();
 
-    if(!data?.daily || !Array.isArray(data.daily.time)){
-      throw new Error("weather_invalid");
+    if(
+      !data?.daily ||
+      !Array.isArray(data.daily.time) ||
+      !EVENT_DAYS.every(day=>data.daily.time.includes(day))
+    ){
+      throw new Error("weather_days_missing");
     }
 
     const savedAt=Date.now();
@@ -3792,38 +3838,25 @@ async function loadWeather(){
 
   }catch(error){
 
-    /* 圏外では最後に正常取得した予報を表示 */
     try{
-
       const cached=JSON.parse(
-        localStorage.getItem(WEATHER_CACHE_KEY) || "null"
+        localStorage.getItem(WEATHER_CACHE_KEY)||"null"
       );
 
       if(cached?.data){
-        renderWeather(
-          cached.data,
-          cached.savedAt || null,
-          true
-        );
+        renderWeather(cached.data,cached.savedAt||null,true);
         return;
       }
-
     }catch(e){}
 
     renderWeather(null,null,true);
-
   }
-
 }
 
 
 function renderWeather(data,savedAt=null,isOffline=false){
 
-  const grid=
-    document.getElementById(
-      "weatherDetailGrid"
-    );
-
+  const grid=document.getElementById("weatherDetailGrid");
   if(!grid) return;
 
   grid.innerHTML="";
@@ -3832,21 +3865,10 @@ function renderWeather(data,savedAt=null,isOffline=false){
 
   EVENT_DAYS.forEach((date,index)=>{
 
-    /*
-      10/10〜12を日付で完全一致検索。
-      予報範囲外なら別日の予報を代用しない。
-    */
-    let dailyIndex=-1;
+    const i=
+      data?.daily?.time?.indexOf(date) ?? -1;
 
-    if(
-      data &&
-      data.daily &&
-      Array.isArray(data.daily.time)
-    ){
-      dailyIndex=data.daily.time.indexOf(date);
-    }
-
-    const available=dailyIndex!==-1;
+    const available=i>=0;
 
     let icon="−";
     let max="−";
@@ -3854,77 +3876,40 @@ function renderWeather(data,savedAt=null,isOffline=false){
     let rain="−";
 
     if(available){
-
       availableCount++;
+      icon=weatherEmoji(data.daily.weather_code?.[i]);
 
-      icon=weatherEmoji(
-        data.daily.weather_code?.[dailyIndex]
-      );
+      const maxRaw=Number(data.daily.temperature_2m_max?.[i]);
+      const minRaw=Number(data.daily.temperature_2m_min?.[i]);
+      const rainRaw=Number(data.daily.precipitation_probability_max?.[i]);
 
-      const maxRaw=data.daily.temperature_2m_max?.[dailyIndex];
-      const minRaw=data.daily.temperature_2m_min?.[dailyIndex];
-      const rainRaw=data.daily.precipitation_probability_max?.[dailyIndex];
-
-      max=Number.isFinite(maxRaw) ? Math.round(maxRaw) : "−";
-      min=Number.isFinite(minRaw) ? Math.round(minRaw) : "−";
-      rain=Number.isFinite(rainRaw) ? Math.round(rainRaw) : "−";
+      max=Number.isFinite(maxRaw)?Math.round(maxRaw):"−";
+      min=Number.isFinite(minRaw)?Math.round(minRaw):"−";
+      rain=Number.isFinite(rainRaw)?Math.round(rainRaw):"−";
     }
 
-    const mini=
-      document.getElementById(
-        `weatherIcon${index}`
-      );
-
+    const mini=document.getElementById(`weatherIcon${index}`);
     if(mini){
       mini.textContent=icon;
       mini.classList.remove("weather-loading");
     }
 
-    const dateLabel=
-      date.slice(5).replace("-","/");
-
-    const card=
-      document.createElement("div");
-
+    const card=document.createElement("div");
     card.className="weather-card";
 
     card.innerHTML=available ? `
-      <div class="weather-card-date">
-        ${dateLabel}
-      </div>
-
-      <div class="weather-card-icon">
-        ${icon}
-      </div>
-
-      <div class="weather-card-temp">
-        HIGH ${max}℃<br>
-        LOW ${min}℃
-      </div>
-
-      <div class="weather-card-rain">
-        ☂ ${rain}%
-      </div>
+      <div class="weather-card-date">${date.slice(5).replace("-","/")}</div>
+      <div class="weather-card-icon">${icon}</div>
+      <div class="weather-card-temp">HIGH ${max}℃<br>LOW ${min}℃</div>
+      <div class="weather-card-rain">☂ ${rain}%</div>
     ` : `
-      <div class="weather-card-date">
-        ${dateLabel}
-      </div>
-
-      <div class="weather-card-icon">
-        −
-      </div>
-
-      <div class="weather-card-temp">
-        予報待ち
-      </div>
-
-      <div class="weather-card-rain">
-        −
-      </div>
+      <div class="weather-card-date">${date.slice(5).replace("-","/")}</div>
+      <div class="weather-card-icon">−</div>
+      <div class="weather-card-temp">取得できません</div>
+      <div class="weather-card-rain">−</div>
     `;
 
     grid.appendChild(card);
-
   });
 
   const note=document.createElement("div");
@@ -3932,35 +3917,22 @@ function renderWeather(data,savedAt=null,isOffline=false){
     "grid-column:1/-1;margin-top:4px;font-size:9px;line-height:1.5;color:#888;text-align:center;";
 
   let timeText="";
-
   if(savedAt){
     try{
-      timeText=new Intl.DateTimeFormat(
-        "ja-JP",
-        {
-          month:"numeric",
-          day:"numeric",
-          hour:"2-digit",
-          minute:"2-digit",
-          hour12:false,
-          timeZone:"Asia/Tokyo"
-        }
-      ).format(new Date(savedAt));
+      timeText=new Intl.DateTimeFormat("ja-JP",{
+        month:"numeric",day:"numeric",
+        hour:"2-digit",minute:"2-digit",
+        hour12:false,timeZone:"Asia/Tokyo"
+      }).format(new Date(savedAt));
     }catch(e){}
   }
 
-  if(availableCount===0){
-    note.textContent=
-      "10/10〜10/12は現在の予報範囲外です。予報範囲に入り次第、自動表示します。";
-  }else{
-    note.textContent=
-      `Open-Meteo 会場付近の参考予報`+
-      (timeText ? ` / ${timeText}取得` : "")+
-      (isOffline ? " / オフライン：最後に取得した予報" : "");
-  }
+  note.textContent=
+    availableCount
+      ? `Open-Meteo 会場付近の参考予報${timeText?` / ${timeText}取得`:""}${isOffline?" / オフライン保存値":""}`
+      : "天気予報を取得できませんでした。オンラインで再読み込みしてください。";
 
   grid.appendChild(note);
-
 }
 
 
@@ -4072,30 +4044,13 @@ loadWeather();
 /* PWA / OFFLINE */
 if("serviceWorker" in navigator){
   window.addEventListener("load",()=>{
-    navigator.serviceWorker.register("./sw.js?v=9-pin-export")
+    navigator.serviceWorker.register("./sw.js?v=11-fix-map-weather")
       .catch(()=>{});
   });
 }
 
 </script>
 
-
-
-<div class="pin-edit-panel" id="pinEditPanel">
-  <div class="pin-edit-title">📍 ピン位置編集</div>
-  <div class="pin-edit-help">
-    MAIN STAGE / SUB STAGEは固定です。<br>
-    編集したいピンをタップ → 地図上の正しい位置をタップしてください。
-    位置はこの端末に保存されます。
-  </div>
-  <div class="pin-edit-selected" id="pinEditSelected">ピンを選択してください</div>
-  <div class="pin-edit-actions">
-    <button class="pin-edit-save" id="pinEditDone" type="button">編集を終了</button>
-    <button class="pin-edit-close" id="pinEditCancel" type="button">閉じる</button>
-    <button class="pin-edit-save" id="pinEditCopy" type="button" style="grid-column:1/-1;">📋 修正済み座標をコピー</button>
-    <button class="pin-edit-reset" id="pinEditReset" type="button">編集した位置をすべて初期値に戻す</button>
-  </div>
-</div>
 
 </body>
 </html>
