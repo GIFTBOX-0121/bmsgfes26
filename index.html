@@ -1097,6 +1097,36 @@ button:active{transform:scale(.98);}
 }
 </style>
 
+
+<style id="outside-toilet-map-style">
+.outside-toilet-wrap{
+  margin-top:14px;padding-top:12px;
+  border-top:1px solid rgba(255,255,255,.14);
+}
+.outside-toilet-title{
+  margin-bottom:6px;font-size:11px;font-weight:950;letter-spacing:.06em;
+}
+.outside-toilet-note{margin-bottom:8px}
+#outsideToiletMap{
+  width:100%;height:245px;border-radius:14px;overflow:hidden;
+  border:1px solid rgba(255,255,255,.22);background:#171717;
+}
+.outside-toilet-foot{margin-top:7px;line-height:1.6}
+.outside-toilet-foot a{color:#fff;font-weight:800}
+.outside-toilet-pin{
+  width:32px;height:32px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  background:#fff;color:#050505;border:2px solid #111;
+  box-shadow:0 3px 12px rgba(0,0,0,.45);font-size:17px;
+}
+.outside-toilet-popup{font-size:12px;line-height:1.5;min-width:160px}
+.outside-toilet-popup strong{font-size:13px}
+.outside-toilet-popup a{
+  display:block;margin-top:7px;padding:7px 8px;border-radius:8px;
+  background:#111;color:#fff!important;text-decoration:none;text-align:center;font-weight:800;
+}
+</style>
+
 </head>
 
 <body>
@@ -1204,47 +1234,19 @@ button:active{transform:scale(.98);}
       <a class="action" href="https://www.google.com/maps/dir/?api=1&origin=%E6%9D%B1%E4%BA%AC%E3%83%86%E3%83%AC%E3%83%9D%E3%83%BC%E3%83%88%E9%A7%85&destination=35.62345%2C139.77505&travelmode=walking" style="display:block;text-decoration:none;text-align:center;">
         東京テレポート駅からマップを開く ↗
       </a>
-      <div style="margin-top:14px;padding-top:12px;border-top:1px solid rgba(255,255,255,.14);">
-        <div style="font-size:11px;font-weight:950;letter-spacing:.06em;margin-bottom:6px;">
-          🚻 会場外トイレ MAP
+      <div class="outside-toilet-wrap">
+        <div class="outside-toilet-title">🚻 会場外トイレ MAP</div>
+        <div class="card-small outside-toilet-note">
+          会場マップとは完全に別のマップです。🚻をタップすると詳細が開きます。
         </div>
-
-        <div class="card-small" style="margin-bottom:8px;">
-          入場前に使える駅・公園のトイレを確認できます。
-        </div>
-
-        <a
-          class="action"
-          href="https://www.yurikamome.co.jp/route_guidance/u-07/"
-          target="_blank"
-          rel="noopener"
-          style="display:block;text-decoration:none;text-align:center;"
-        >
-          🚻 台場駅のトイレ・構内図 ↗
-        </a>
-
-        <a
-          class="action"
-          href="https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E3%83%86%E3%83%AC%E3%83%9D%E3%83%BC%E3%83%88%E9%A7%85%20%E3%83%88%E3%82%A4%E3%83%AC"
-          style="display:block;text-decoration:none;text-align:center;"
-        >
-          🚻 東京テレポート駅周辺のトイレ MAP ↗
-        </a>
-
-        <a
-          class="action"
-          href="https://www.tptc.co.jp/cms/park/img/map/shinbol_Eng_2025.7.pdf"
-          target="_blank"
-          rel="noopener"
-          style="display:block;text-decoration:none;text-align:center;"
-        >
-          🚻 シンボルプロムナード公園 トイレMAP ↗
-        </a>
-
-        <div class="card-small" style="margin-top:7px;">
-          ※ 台場駅は駅構内にトイレ・バリアフリートイレあり。公園MAPはトイレ位置を確認できる公式マップです。
+        <div id="outsideToiletMap" aria-label="会場外トイレマップ"></div>
+        <div class="card-small outside-toilet-foot">
+          駅構内・商業施設・公園のトイレを掲載。施設トイレは営業時間に注意してください。
+          <a href="https://www.tptc.co.jp/park/01_04" target="_blank" rel="noopener">シンボルプロムナード公園 公式MAP ↗</a>
         </div>
       </div>
+
+</div>
 
     </div>
 
@@ -3795,6 +3797,124 @@ if("serviceWorker" in navigator){
       .catch(()=>{});
   });
 }
+
+
+/* =========================================================
+   OUTSIDE TOILET MAP
+   完全独立：上の会場map / venueMarkers / stages は使用しない。
+========================================================= */
+function initOutsideToiletMap(){
+
+  const el=document.getElementById("outsideToiletMap");
+  if(!el || typeof L==="undefined") return;
+
+  const toiletMap=L.map("outsideToiletMap",{
+    zoomControl:true,
+    attributionControl:true,
+    scrollWheelZoom:false
+  });
+
+  L.tileLayer(
+    "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+    {
+      maxZoom:19,
+      attribution:"&copy; OpenStreetMap"
+    }
+  ).addTo(toiletMap);
+
+  const toiletIcon=L.divIcon({
+    className:"",
+    html:'<div class="outside-toilet-pin">🚻</div>',
+    iconSize:[32,32],
+    iconAnchor:[16,16],
+    popupAnchor:[0,-16]
+  });
+
+  /*
+    駅構内トイレなので、ピンは駅位置を示す。
+    Google Mapsリンクも施設名検索で開き、細かな入口位置を推測しない。
+  */
+  const outsideToilets=[
+    {
+      name:"台場駅 駅構内トイレ",
+      note:"ゆりかもめ 台場駅構内",
+      lat:35.62584,
+      lng:139.77164,
+      maps:"https://www.google.com/maps/search/?api=1&query="+encodeURIComponent("台場駅")
+    },
+    {
+      name:"東京テレポート駅 駅構内トイレ",
+      note:"りんかい線 東京テレポート駅構内",
+      lat:35.62751,
+      lng:139.77874,
+      maps:"https://www.google.com/maps/search/?api=1&query="+encodeURIComponent("東京テレポート駅")
+    },
+    {
+      name:"ダイバーシティ東京 プラザ",
+      note:"施設内トイレ｜営業時間内に利用",
+      lat:35.62519,
+      lng:139.77563,
+      maps:"https://www.google.com/maps/search/?api=1&query="+encodeURIComponent("ダイバーシティ東京 プラザ")
+    },
+    {
+      name:"シンボルプロムナード公園 公衆トイレ",
+      note:"公園内トイレ｜会場へ向かう途中の候補",
+      lat:35.62495,
+      lng:139.77683,
+      maps:"https://www.google.com/maps/search/?api=1&query="+encodeURIComponent("シンボルプロムナード公園 トイレ 青海")
+    }
+  ];
+
+  outsideToilets.forEach(t=>{
+
+    const marker=L.marker(
+      [t.lat,t.lng],
+      {icon:toiletIcon}
+    ).addTo(toiletMap);
+
+    marker.bindPopup(`
+      <div class="outside-toilet-popup">
+        <strong>${t.name}</strong><br>
+        ${t.note}
+        <a href="${t.maps}">Google Mapsで開く ↗</a>
+      </div>
+    `);
+  });
+
+  /* 会場位置は目印のみ。トイレピンとは別。 */
+  const venueReference=L.circleMarker(
+    [35.62345,139.77505],
+    {
+      radius:5,
+      color:"#111",
+      weight:2,
+      fillColor:"#fff",
+      fillOpacity:1
+    }
+  ).addTo(toiletMap);
+
+  venueReference.bindTooltip("BMSG FES 会場",{
+    permanent:false,
+    direction:"top"
+  });
+
+  const bounds=L.latLngBounds(
+    outsideToilets.map(t=>[t.lat,t.lng])
+  );
+  bounds.extend([35.62345,139.77505]);
+
+  toiletMap.fitBounds(bounds,{
+    padding:[24,24],
+    maxZoom:16
+  });
+
+  setTimeout(()=>toiletMap.invalidateSize(),100);
+}
+
+/* LeafletとDOMの準備後に独立マップだけ初期化 */
+window.addEventListener("load",()=>{
+  setTimeout(initOutsideToiletMap,150);
+});
 
 </script>
 
