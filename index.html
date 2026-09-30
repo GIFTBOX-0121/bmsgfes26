@@ -2,7 +2,10 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+>
 
 <title>BMSG FES 2026 | VENUE NAVIGATOR</title>
 <meta name="theme-color" content="#090909">
@@ -30,7 +33,7 @@ body {
   margin: 0;
   overflow: hidden;
   background: #050505;
-  color: #f5f5f5;
+  color: #fff;
 
   font-family:
     -apple-system,
@@ -45,22 +48,26 @@ input {
   font: inherit;
 }
 
+button {
+  cursor: pointer;
+}
+
 #app {
   position: fixed;
   inset: 0;
-  background: #050505;
+  overflow: hidden;
 }
 
 
 /* =========================================================
-   REAL MAP
+   MAP
 ========================================================= */
 
 #map {
   position: absolute;
   inset: 0;
   z-index: 1;
-  background: #d9d9d9;
+  background: #ddd;
 }
 
 .leaflet-control-zoom {
@@ -68,9 +75,9 @@ input {
 }
 
 .leaflet-control-attribution {
-  background: rgba(8,8,8,.75) !important;
+  background: rgba(5,5,5,.72) !important;
   color: #ccc !important;
-  font-size: 9px !important;
+  font-size: 8px !important;
 }
 
 .leaflet-control-attribution a {
@@ -79,17 +86,15 @@ input {
 
 
 /*
-  完全モノクロを廃止。
-
-  元の地図の色を残しつつ、
-  少し落ち着かせる。
+  色を残す。
+  完全モノクロにはしない。
 */
 
 .leaflet-tile-pane {
   filter:
-    saturate(.78)
-    brightness(.93)
-    contrast(.96);
+    saturate(.82)
+    brightness(.96)
+    contrast(.95);
 }
 
 
@@ -100,44 +105,42 @@ input {
 .header {
   position: absolute;
 
-  top: calc(12px + env(safe-area-inset-top));
-  left: 14px;
-  right: 14px;
+  top: calc(10px + env(safe-area-inset-top));
+  left: 12px;
+  right: 12px;
 
   z-index: 1000;
 
-  border: 1px solid rgba(255,255,255,.55);
-  border-radius: 19px;
+  overflow: hidden;
+
+  border: 1px solid rgba(255,255,255,.58);
+  border-radius: 20px;
 
   background:
     linear-gradient(
       125deg,
-      rgba(215,215,215,.38) 0%,
-      rgba(105,105,105,.42) 20%,
-      rgba(30,30,30,.94) 48%,
-      rgba(80,80,80,.72) 75%,
-      rgba(190,190,190,.32) 100%
+      rgba(230,230,230,.40),
+      rgba(115,115,115,.48) 20%,
+      rgba(25,25,25,.95) 48%,
+      rgba(88,88,88,.78) 74%,
+      rgba(205,205,205,.32)
     );
 
   backdrop-filter: blur(22px);
   -webkit-backdrop-filter: blur(22px);
 
   box-shadow:
-    0 14px 45px rgba(0,0,0,.48),
-    inset 0 1px 0 rgba(255,255,255,.8),
-    inset 0 -1px 0 rgba(255,255,255,.12);
-
-  overflow: hidden;
+    0 14px 42px rgba(0,0,0,.48),
+    inset 0 1px 0 rgba(255,255,255,.82);
 }
 
 .header::before {
   content: "";
 
   position: absolute;
-
-  top: 0;
   left: 6%;
   right: 6%;
+  top: 0;
 
   height: 1px;
 
@@ -146,34 +149,10 @@ input {
       90deg,
       transparent,
       #fff,
-      #aaa,
+      #999,
       #fff,
       transparent
     );
-}
-
-.header::after {
-  content: "";
-
-  position: absolute;
-
-  width: 180px;
-  height: 220px;
-
-  top: -120px;
-  right: -50px;
-
-  transform: rotate(25deg);
-
-  background:
-    linear-gradient(
-      90deg,
-      transparent,
-      rgba(255,255,255,.11),
-      transparent
-    );
-
-  pointer-events: none;
 }
 
 
@@ -182,75 +161,60 @@ input {
 ========================================================= */
 
 .brand {
-  position: relative;
-  z-index: 2;
-
-  padding: 15px 16px 10px;
+  padding: 14px 15px 9px;
 }
 
 .brand-main {
   font-size: 18px;
-  font-weight: 850;
-  letter-spacing: .15em;
+  font-weight: 900;
 
-  color: #fff;
-
-  text-shadow:
-    0 1px 0 #000,
-    0 0 15px rgba(255,255,255,.12);
+  letter-spacing: .13em;
 }
 
 .brand-sub {
-  margin-top: 4px;
+  margin-top: 3px;
 
   color: #ddd;
 
-  font-size: 9px;
-  font-weight: 600;
-  letter-spacing: .34em;
+  font-size: 8px;
+  font-weight: 700;
+
+  letter-spacing: .30em;
 }
 
 
 /* =========================================================
-   MODE SWITCH
+   MODE
 ========================================================= */
 
 .mode-switch {
-  position: relative;
-  z-index: 2;
-
   display: flex;
 
-  margin: 0 10px 10px;
+  margin: 0 9px 9px;
   padding: 3px;
 
-  border: 1px solid rgba(255,255,255,.28);
+  border: 1px solid rgba(255,255,255,.25);
   border-radius: 11px;
 
-  background:
-    linear-gradient(
-      180deg,
-      rgba(0,0,0,.36),
-      rgba(255,255,255,.08)
-    );
+  background: rgba(0,0,0,.25);
 }
 
 .mode-button {
   flex: 1;
 
+  padding: 9px 5px;
+
   border: 0;
   border-radius: 8px;
 
-  padding: 9px;
-
   background: transparent;
+
   color: #aaa;
 
-  font-size: 10px;
-  font-weight: 800;
-  letter-spacing: .15em;
+  font-size: 9px;
+  font-weight: 900;
 
-  cursor: pointer;
+  letter-spacing: .12em;
 }
 
 .mode-button.active {
@@ -259,29 +223,26 @@ input {
   background:
     linear-gradient(
       135deg,
-      #fff 0%,
-      #d8d8d8 22%,
-      #8d8d8d 52%,
-      #ededed 78%,
-      #9d9d9d 100%
+      #fff,
+      #c7c7c7 32%,
+      #888 55%,
+      #eee
     );
 
   box-shadow:
     inset 0 1px 0 #fff,
-    inset 0 -1px 0 rgba(0,0,0,.25),
-    0 3px 12px rgba(0,0,0,.32);
+    0 3px 12px rgba(0,0,0,.35);
 }
 
 
 /* =========================================================
-   FILTER BAR
+   FILTERS
 ========================================================= */
 
 .filters-wrap {
   position: absolute;
 
-  top: calc(134px + env(safe-area-inset-top));
-
+  top: calc(130px + env(safe-area-inset-top));
   left: 0;
   right: 0;
 
@@ -296,7 +257,7 @@ input {
 
   overflow-x: auto;
 
-  padding: 6px 14px 10px;
+  padding: 6px 12px 12px;
 
   scrollbar-width: none;
 }
@@ -308,55 +269,51 @@ input {
 .filter {
   flex: 0 0 auto;
 
+  padding: 8px 13px;
+
   border: 1px solid rgba(255,255,255,.48);
   border-radius: 999px;
-
-  padding: 8px 14px;
 
   background:
     linear-gradient(
       145deg,
       rgba(95,95,95,.94),
-      rgba(18,18,18,.94)
+      rgba(12,12,12,.95)
     );
 
   color: #ddd;
 
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-
   box-shadow:
-    inset 0 1px 0 rgba(255,255,255,.25),
-    0 5px 15px rgba(0,0,0,.28);
+    inset 0 1px 0 rgba(255,255,255,.28),
+    0 5px 14px rgba(0,0,0,.30);
+
+  backdrop-filter: blur(12px);
 
   font-size: 9px;
-  font-weight: 800;
-  letter-spacing: .08em;
+  font-weight: 900;
 
-  cursor: pointer;
+  white-space: nowrap;
 }
 
 .filter.active {
   color: #080808;
 
-  border-color: #fff;
-
   background:
     linear-gradient(
       135deg,
-      #fafafa,
-      #bdbdbd 35%,
-      #858585 57%,
-      #e8e8e8
+      #fff,
+      #bdbdbd 38%,
+      #858585 60%,
+      #eee
     );
 }
 
 
 /* =========================================================
-   MARKERS
+   MARKER
 ========================================================= */
 
-.map-marker {
+.venue-marker {
   position: relative;
 
   display: flex;
@@ -371,66 +328,29 @@ input {
 .marker-pin {
   position: relative;
 
-  width: 44px;
-  height: 44px;
+  width: 40px;
+  height: 40px;
 
   display: flex;
   align-items: center;
   justify-content: center;
 
+  border: 2px solid #fff;
   border-radius: 50%;
-
-  border: 2px solid rgba(255,255,255,.95);
 
   background:
     linear-gradient(
       145deg,
-      #fafafa,
-      #969696 23%,
-      #3c3c3c 50%,
-      #d8d8d8 77%,
-      #707070
+      #fff,
+      #999 25%,
+      #333 52%,
+      #ddd 78%,
+      #666
     );
 
   box-shadow:
-    0 7px 20px rgba(0,0,0,.7),
-    0 0 0 2px rgba(0,0,0,.45),
-    inset 0 1px 1px #fff;
-
-  z-index: 2;
-}
-
-.marker-inner {
-  width: 34px;
-  height: 34px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  border-radius: 50%;
-
-  background: var(--marker-color);
-
-  border: 1px solid rgba(255,255,255,.65);
-
-  box-shadow:
-    inset 0 1px 2px rgba(255,255,255,.35),
-    inset 0 -4px 10px rgba(0,0,0,.25),
-    0 0 10px var(--marker-glow);
-}
-
-.marker-inner svg {
-  width: 19px;
-  height: 19px;
-
-  stroke: #fff;
-
-  stroke-width: 2;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-
-  fill: none;
+    0 6px 17px rgba(0,0,0,.65),
+    0 0 0 2px rgba(0,0,0,.35);
 }
 
 .marker-pin::after {
@@ -438,10 +358,10 @@ input {
 
   position: absolute;
 
+  bottom: -5px;
+
   width: 9px;
   height: 9px;
-
-  bottom: -5px;
 
   transform: rotate(45deg);
 
@@ -453,117 +373,199 @@ input {
   z-index: -1;
 }
 
+.marker-inner {
+  width: 31px;
+  height: 31px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background: var(--marker-color);
+
+  border: 1px solid rgba(255,255,255,.7);
+
+  box-shadow:
+    inset 0 1px 2px rgba(255,255,255,.4),
+    inset 0 -4px 8px rgba(0,0,0,.22),
+    0 0 9px var(--marker-glow);
+}
+
+.marker-inner svg {
+  width: 18px;
+  height: 18px;
+
+  fill: none;
+  stroke: #fff;
+
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
 .marker-label {
-  margin-top: 8px;
+  margin-top: 7px;
+
+  max-width: 145px;
 
   padding: 4px 7px;
-
-  max-width: 135px;
 
   border: 1px solid rgba(255,255,255,.48);
   border-radius: 6px;
 
-  background: rgba(5,5,5,.88);
+  background: rgba(3,3,3,.88);
 
   color: #fff;
 
   box-shadow:
-    0 3px 10px rgba(0,0,0,.6);
+    0 3px 9px rgba(0,0,0,.6);
 
-  backdrop-filter: blur(7px);
-
-  font-size: 9px;
-  font-weight: 800;
+  font-size: 8px;
+  font-weight: 900;
 
   line-height: 1.1;
 
   white-space: nowrap;
-
-  text-align: center;
 }
 
 
 /* =========================================================
-   MARKER COLORS
+   CATEGORY COLORS
 ========================================================= */
 
 .marker-stage {
-  --marker-color: #684cff;
-  --marker-glow: rgba(104,76,255,.8);
+  --marker-color: #704cff;
+  --marker-glow: rgba(112,76,255,.8);
+}
+
+.marker-gate {
+  --marker-color: #00a875;
+  --marker-glow: rgba(0,168,117,.8);
 }
 
 .marker-food {
-  --marker-color: #ff7418;
-  --marker-glow: rgba(255,116,24,.75);
+  --marker-color: #ff781e;
+  --marker-glow: rgba(255,120,30,.8);
 }
 
 .marker-goods {
   --marker-color: #00aeea;
-  --marker-glow: rgba(0,174,234,.75);
+  --marker-glow: rgba(0,174,234,.8);
 }
 
 .marker-wc {
   --marker-color: #1769ff;
-  --marker-glow: rgba(23,105,255,.75);
+  --marker-glow: rgba(23,105,255,.8);
 }
 
 .marker-photo {
-  --marker-color: #e94bb7;
-  --marker-glow: rgba(233,75,183,.75);
-}
-
-.marker-gate {
-  --marker-color: #00a76f;
-  --marker-glow: rgba(0,167,111,.75);
+  --marker-color: #e64eb5;
+  --marker-glow: rgba(230,78,181,.8);
 }
 
 .marker-info {
-  --marker-color: #d8a900;
-  --marker-glow: rgba(216,169,0,.75);
+  --marker-color: #d5a600;
+  --marker-glow: rgba(213,166,0,.8);
 }
 
 .marker-bar {
-  --marker-color: #e13b42;
-  --marker-glow: rgba(225,59,66,.75);
+  --marker-color: #e33e46;
+  --marker-glow: rgba(227,62,70,.8);
 }
 
-.marker-station {
-  --marker-color: #58616b;
-  --marker-glow: rgba(220,230,240,.6);
+.marker-booth {
+  --marker-color: #00a99d;
+  --marker-glow: rgba(0,169,157,.8);
+}
+
+.marker-rest {
+  --marker-color: #76808b;
+  --marker-glow: rgba(180,190,200,.65);
 }
 
 
-/* STAGE = BIG */
+/* STAGE BIG */
 
-.map-marker.stage-marker .marker-pin {
-  width: 54px;
-  height: 54px;
+.stage-marker .marker-pin {
+  width: 52px;
+  height: 52px;
 }
 
-.map-marker.stage-marker .marker-inner {
-  width: 42px;
-  height: 42px;
+.stage-marker .marker-inner {
+  width: 41px;
+  height: 41px;
 }
 
-.map-marker.stage-marker .marker-inner svg {
-  width: 24px;
-  height: 24px;
+.stage-marker .marker-inner svg {
+  width: 23px;
+  height: 23px;
 }
 
-.map-marker.stage-marker .marker-label {
+.stage-marker .marker-label {
   padding: 5px 9px;
+
   font-size: 10px;
 }
 
 
 /* =========================================================
-   MAP TOOL BUTTON
+   USER LOCATION
+========================================================= */
+
+.user-location {
+  position: relative;
+
+  width: 22px;
+  height: 22px;
+
+  border: 3px solid #fff;
+  border-radius: 50%;
+
+  background: #1976ff;
+
+  box-shadow:
+    0 0 0 5px rgba(25,118,255,.18),
+    0 0 14px rgba(25,118,255,.95),
+    0 0 30px rgba(25,118,255,.55);
+}
+
+.user-location::after {
+  content: "";
+
+  position: absolute;
+  inset: -12px;
+
+  border: 1px solid rgba(25,118,255,.65);
+  border-radius: 50%;
+
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+
+  0% {
+    transform: scale(.55);
+    opacity: 1;
+  }
+
+  100% {
+    transform: scale(1.5);
+    opacity: 0;
+  }
+
+}
+
+
+/* =========================================================
+   RIGHT BUTTONS
 ========================================================= */
 
 .map-tools {
   position: absolute;
 
-  right: 16px;
+  right: 15px;
 
   bottom:
     calc(
@@ -572,76 +574,42 @@ input {
     );
 
   z-index: 1000;
-
-  display: flex;
-  flex-direction: column;
-  gap: 9px;
 }
 
-.tool-button {
-  width: 58px;
-  height: 58px;
+.round-button,
+.location-button {
+  width: 56px;
+  height: 56px;
 
-  border: 1px solid rgba(255,255,255,.88);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 1px solid rgba(255,255,255,.9);
   border-radius: 50%;
 
   background:
     radial-gradient(
       circle at 30% 22%,
-      #fff 0%,
-      #d5d5d5 15%,
+      #fff,
+      #d3d3d3 16%,
       #858585 38%,
-      #3c3c3c 60%,
-      #101010 82%
+      #363636 62%,
+      #0b0b0b 84%
     );
 
   color: #fff;
 
   box-shadow:
-    0 12px 30px rgba(0,0,0,.55),
-    0 0 0 3px rgba(255,255,255,.09),
+    0 10px 28px rgba(0,0,0,.55),
+    0 0 0 3px rgba(255,255,255,.08),
     inset 0 2px 2px rgba(255,255,255,.8);
-
-  cursor: pointer;
 }
-
-.tool-button:active {
-  transform: scale(.94);
-}
-
-.layers-icon {
-  display: flex;
-  flex-direction: column;
-
-  align-items: center;
-  justify-content: center;
-
-  gap: 2px;
-}
-
-.layers-icon span {
-  display: block;
-
-  width: 22px;
-  height: 6px;
-
-  border: 1.5px solid #fff;
-
-  transform: skewX(-28deg);
-
-  box-shadow:
-    0 1px 2px #000;
-}
-
-
-/* =========================================================
-   LOCATION BUTTON
-========================================================= */
 
 .location-button {
   position: absolute;
 
-  right: 16px;
+  right: 15px;
 
   bottom:
     calc(
@@ -650,34 +618,49 @@ input {
     );
 
   z-index: 1000;
-
-  width: 58px;
-  height: 58px;
-
-  border: 1px solid rgba(255,255,255,.88);
-  border-radius: 50%;
-
-  background:
-    radial-gradient(
-      circle at 30% 22%,
-      #fff 0%,
-      #d5d5d5 15%,
-      #858585 38%,
-      #3c3c3c 60%,
-      #101010 82%
-    );
-
-  box-shadow:
-    0 12px 30px rgba(0,0,0,.6),
-    0 0 0 3px rgba(255,255,255,.09),
-    inset 0 2px 2px rgba(255,255,255,.8);
-
-  cursor: pointer;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
+
+.round-button:active,
+.location-button:active {
+  transform: scale(.94);
+}
+
+
+/* LAYERS ICON */
+
+.layers-symbol {
+  position: relative;
+
+  width: 25px;
+  height: 22px;
+}
+
+.layers-symbol::before,
+.layers-symbol::after {
+  content: "";
+
+  position: absolute;
+
+  left: 2px;
+
+  width: 21px;
+  height: 10px;
+
+  border: 2px solid #fff;
+
+  transform: rotate(30deg) skewX(-28deg);
+}
+
+.layers-symbol::before {
+  top: 1px;
+}
+
+.layers-symbol::after {
+  top: 8px;
+}
+
+
+/* LOCATION ICON */
 
 .location-symbol {
   position: relative;
@@ -694,95 +677,15 @@ input {
 
   position: absolute;
 
-  width: 7px;
-  height: 7px;
-
   top: 5px;
   left: 5px;
+
+  width: 7px;
+  height: 7px;
 
   border-radius: 50%;
 
   background: #fff;
-
-  box-shadow:
-    0 0 7px #fff,
-    0 0 13px rgba(255,255,255,.75);
-}
-
-.location-symbol::after {
-  content: "";
-
-  position: absolute;
-
-  width: 2px;
-  height: 29px;
-
-  top: -6px;
-  left: 7.5px;
-
-  background:
-    linear-gradient(
-      transparent 0 11%,
-      #fff 11% 28%,
-      transparent 28% 72%,
-      #fff 72% 89%,
-      transparent 89%
-    );
-}
-
-
-/* =========================================================
-   USER LOCATION
-========================================================= */
-
-.user-location {
-  position: relative;
-
-  width: 22px;
-  height: 22px;
-
-  border-radius: 50%;
-
-  background:
-    radial-gradient(
-      circle at 35% 30%,
-      #fff,
-      #d6d6d6 38%,
-      #727272
-    );
-
-  border: 3px solid #fff;
-
-  box-shadow:
-    0 0 0 5px rgba(255,255,255,.18),
-    0 0 12px #fff,
-    0 0 28px rgba(255,255,255,.65);
-}
-
-.user-location::after {
-  content: "";
-
-  position: absolute;
-  inset: -12px;
-
-  border: 1px solid rgba(255,255,255,.58);
-  border-radius: 50%;
-
-  animation: locationPulse 2s infinite;
-}
-
-@keyframes locationPulse {
-
-  0% {
-    transform: scale(.55);
-    opacity: 1;
-  }
-
-  100% {
-    transform: scale(1.55);
-    opacity: 0;
-  }
-
 }
 
 
@@ -793,11 +696,11 @@ input {
 .layer-panel {
   position: absolute;
 
-  right: 14px;
+  right: 13px;
 
   bottom:
     calc(
-      172px +
+      171px +
       env(safe-area-inset-bottom)
     );
 
@@ -813,40 +716,39 @@ input {
   background:
     linear-gradient(
       135deg,
-      rgba(125,125,125,.96),
-      rgba(30,30,30,.97) 35%,
-      rgba(7,7,7,.98) 75%
+      rgba(125,125,125,.97),
+      rgba(28,28,28,.98) 37%,
+      rgba(5,5,5,.98)
     );
 
-  backdrop-filter: blur(22px);
-  -webkit-backdrop-filter: blur(22px);
+  backdrop-filter: blur(20px);
 
   box-shadow:
-    0 16px 45px rgba(0,0,0,.55),
-    inset 0 1px 0 rgba(255,255,255,.6);
+    0 15px 42px rgba(0,0,0,.55),
+    inset 0 1px 0 rgba(255,255,255,.65);
+
+  opacity: 0;
 
   transform:
     translateY(10px)
     scale(.96);
 
-  opacity: 0;
   pointer-events: none;
 
-  transition: .2s ease;
+  transition: .2s;
 }
 
 .layer-panel.show {
+  opacity: 1;
+
   transform:
     translateY(0)
     scale(1);
 
-  opacity: 1;
   pointer-events: auto;
 }
 
 .layer-title {
-  color: #fff;
-
   font-size: 10px;
   font-weight: 900;
 
@@ -855,7 +757,6 @@ input {
 
 .layer-row {
   display: flex;
-
   align-items: center;
   justify-content: space-between;
 
@@ -863,32 +764,22 @@ input {
 }
 
 .layer-name {
-  font-size: 12px;
-  font-weight: 700;
-
-  color: #eee;
+  font-size: 11px;
+  font-weight: 800;
 }
-
-
-/* SWITCH */
 
 .switch {
   position: relative;
 
-  width: 44px;
+  width: 45px;
   height: 25px;
 
-  border: 0;
+  padding: 0;
 
+  border: 1px solid rgba(255,255,255,.2);
   border-radius: 99px;
 
-  background: #303030;
-
-  box-shadow:
-    inset 0 2px 5px rgba(0,0,0,.6),
-    0 0 0 1px rgba(255,255,255,.22);
-
-  cursor: pointer;
+  background: #292929;
 }
 
 .switch::after {
@@ -896,11 +787,11 @@ input {
 
   position: absolute;
 
-  width: 19px;
-  height: 19px;
-
   top: 3px;
   left: 3px;
+
+  width: 17px;
+  height: 17px;
 
   border-radius: 50%;
 
@@ -911,59 +802,39 @@ input {
       #aaa
     );
 
-  box-shadow:
-    0 2px 5px rgba(0,0,0,.5);
-
-  transition: .2s ease;
+  transition: .2s;
 }
 
 .switch.active {
-  background:
-    linear-gradient(
-      90deg,
-      #777,
-      #d7d7d7
-    );
+  background: #a0a0a0;
 }
 
 .switch.active::after {
-  left: 22px;
+  left: 23px;
 }
 
-
-/* OPACITY */
-
 .opacity-area {
-  margin-top: 15px;
+  margin-top: 14px;
+  padding-top: 12px;
 
-  padding-top: 13px;
-
-  border-top: 1px solid rgba(255,255,255,.15);
+  border-top: 1px solid rgba(255,255,255,.14);
 }
 
 .opacity-head {
   display: flex;
-
-  align-items: center;
   justify-content: space-between;
 
-  margin-bottom: 8px;
+  margin-bottom: 7px;
+}
+
+.opacity-label,
+.opacity-value {
+  font-size: 9px;
+  font-weight: 800;
 }
 
 .opacity-label {
   color: #aaa;
-
-  font-size: 9px;
-  font-weight: 700;
-
-  letter-spacing: .12em;
-}
-
-.opacity-value {
-  color: #fff;
-
-  font-size: 10px;
-  font-weight: 800;
 }
 
 .opacity-slider {
@@ -974,7 +845,65 @@ input {
 
 
 /* =========================================================
-   BOTTOM SHEET
+   OFFICIAL MAP
+========================================================= */
+
+#officialMap {
+  position: absolute;
+  inset: 0;
+
+  z-index: 500;
+
+  display: none;
+
+  padding:
+    calc(138px + env(safe-area-inset-top))
+    6px
+    calc(8px + env(safe-area-inset-bottom));
+
+  background:
+    radial-gradient(
+      circle at 50% 40%,
+      #333,
+      #050505 70%
+    );
+}
+
+#officialMap.show {
+  display: block;
+}
+
+.official-scroll {
+  width: 100%;
+  height: 100%;
+
+  overflow: auto;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  -webkit-overflow-scrolling: touch;
+}
+
+.official-scroll img {
+  display: block;
+
+  width: 100%;
+  height: auto;
+
+  max-width: 1100px;
+
+  border: 1px solid rgba(255,255,255,.55);
+  border-radius: 14px;
+
+  box-shadow:
+    0 16px 50px rgba(0,0,0,.7);
+}
+
+
+/* =========================================================
+   DETAIL SHEET
 ========================================================= */
 
 .sheet-backdrop {
@@ -983,12 +912,13 @@ input {
 
   z-index: 1998;
 
-  background: rgba(0,0,0,.28);
+  background: rgba(0,0,0,.25);
 
   opacity: 0;
+
   pointer-events: none;
 
-  transition: opacity .25s ease;
+  transition: .2s;
 }
 
 .sheet-backdrop.show {
@@ -1010,18 +940,18 @@ input {
 
   z-index: 2000;
 
-  border: 1px solid rgba(255,255,255,.55);
-  border-radius: 25px;
+  padding: 11px 18px 19px;
 
-  padding: 11px 18px 20px;
+  border: 1px solid rgba(255,255,255,.58);
+  border-radius: 24px;
 
   background:
     linear-gradient(
       135deg,
-      rgba(110,110,110,.96),
-      rgba(35,35,35,.98) 30%,
-      rgba(8,8,8,.98) 65%,
-      rgba(68,68,68,.97)
+      rgba(120,120,120,.97),
+      rgba(32,32,32,.98) 32%,
+      rgba(6,6,6,.99) 67%,
+      rgba(70,70,70,.98)
     );
 
   backdrop-filter: blur(24px);
@@ -1032,12 +962,12 @@ input {
 
   transform:
     translateY(
-      calc(100% + 50px)
+      calc(100% + 60px)
     );
 
   transition:
     transform
-    .35s
+    .34s
     cubic-bezier(.22,.75,.25,1);
 }
 
@@ -1046,10 +976,10 @@ input {
 }
 
 .sheet-handle {
-  width: 45px;
+  width: 43px;
   height: 4px;
 
-  margin: 0 auto 18px;
+  margin: 0 auto 17px;
 
   border-radius: 99px;
 
@@ -1062,127 +992,61 @@ input {
     );
 }
 
-.sheet-number {
-  margin-bottom: 6px;
+.sheet-category {
+  margin-bottom: 5px;
 
-  color: #c5c5c5;
+  color: #bbb;
 
   font-size: 9px;
-  font-weight: 800;
+  font-weight: 900;
 
-  letter-spacing: .25em;
+  letter-spacing: .18em;
 }
 
 .sheet-title {
-  color: #fff;
-
-  font-size: 25px;
-  font-weight: 850;
+  font-size: 23px;
+  font-weight: 900;
 }
 
 .sheet-line {
   height: 1px;
 
-  margin: 15px 0;
+  margin: 14px 0;
 
   background:
     linear-gradient(
       90deg,
       #fff,
-      #aaa 35%,
+      #999 35%,
       transparent
     );
 }
 
 .sheet-description {
-  color: #d0d0d0;
+  color: #ddd;
 
   font-size: 13px;
-  line-height: 1.7;
+
+  line-height: 1.65;
 }
 
 .sheet-close {
   width: 100%;
 
-  margin-top: 18px;
-
-  border: 1px solid rgba(255,255,255,.48);
-  border-radius: 11px;
-
+  margin-top: 16px;
   padding: 11px;
 
-  background:
-    linear-gradient(
-      135deg,
-      rgba(210,210,210,.24),
-      rgba(55,55,55,.35)
-    );
+  border: 1px solid rgba(255,255,255,.45);
+  border-radius: 10px;
 
-  color: #f0f0f0;
+  background: rgba(255,255,255,.10);
+
+  color: #fff;
 
   font-size: 10px;
-  font-weight: 800;
-  letter-spacing: .18em;
-}
+  font-weight: 900;
 
-
-/* =========================================================
-   OFFICIAL MAP
-========================================================= */
-
-#officialMap {
-  position: absolute;
-  inset: 0;
-
-  z-index: 500;
-
-  display: none;
-
-  background:
-    radial-gradient(
-      circle at 50% 40%,
-      #303030,
-      #080808 65%
-    );
-
-  padding:
-    calc(145px + env(safe-area-inset-top))
-    8px
-    calc(10px + env(safe-area-inset-bottom));
-}
-
-#officialMap.show {
-  display: flex;
-}
-
-.official-map-container {
-  width: 100%;
-  height: 100%;
-
-  display: flex;
-
-  align-items: center;
-  justify-content: center;
-
-  overflow: auto;
-
-  -webkit-overflow-scrolling: touch;
-}
-
-.official-map-image {
-  display: block;
-
-  width: 100%;
-  height: auto;
-
-  max-width: 1100px;
-
-  border: 1px solid rgba(255,255,255,.55);
-  border-radius: 15px;
-
-  box-shadow:
-    0 18px 50px rgba(0,0,0,.65),
-    0 0 0 1px rgba(255,255,255,.08);
+  letter-spacing: .15em;
 }
 
 
@@ -1203,9 +1067,7 @@ input {
 
   z-index: 3000;
 
-  max-width: calc(100% - 40px);
-
-  padding: 10px 16px;
+  padding: 10px 15px;
 
   border: 1px solid rgba(255,255,255,.48);
   border-radius: 999px;
@@ -1213,32 +1075,31 @@ input {
   background:
     linear-gradient(
       135deg,
-      rgba(105,105,105,.96),
-      rgba(15,15,15,.96)
+      #777,
+      #111
     );
 
   color: #fff;
 
-  font-size: 11px;
+  font-size: 10px;
 
   white-space: nowrap;
 
-  transform:
-    translateX(-50%)
-    translateY(15px);
-
   opacity: 0;
+
+  transform:
+    translate(-50%,15px);
+
   pointer-events: none;
 
-  transition: .25s ease;
+  transition: .2s;
 }
 
 .toast.show {
   opacity: 1;
 
   transform:
-    translateX(-50%)
-    translateY(0);
+    translate(-50%,0);
 }
 
 
@@ -1246,7 +1107,7 @@ input {
    DESKTOP
 ========================================================= */
 
-@media (min-width: 800px) {
+@media (min-width:800px) {
 
   .header {
     width: 390px;
@@ -1254,7 +1115,7 @@ input {
   }
 
   .filters-wrap {
-    width: 750px;
+    width: 850px;
   }
 
   .bottom-sheet {
@@ -1271,24 +1132,22 @@ input {
 </style>
 </head>
 
-
 <body>
 
 <div id="app">
 
-  <!-- REAL MAP -->
   <div id="map"></div>
 
 
   <!-- OFFICIAL MAP -->
+
   <div id="officialMap">
 
-    <div class="official-map-container">
+    <div class="official-scroll">
 
       <img
         src="./Map.JPG"
-        alt="BMSG FES 2026 OFFICIAL VENUE MAP"
-        class="official-map-image"
+        alt="BMSG FES 2026 会場マップ"
       >
 
     </div>
@@ -1297,6 +1156,7 @@ input {
 
 
   <!-- HEADER -->
+
   <header class="header">
 
     <div class="brand">
@@ -1333,7 +1193,8 @@ input {
   </header>
 
 
-  <!-- FILTERS -->
+  <!-- FILTER -->
+
   <div class="filters-wrap">
 
     <div class="filters">
@@ -1344,6 +1205,10 @@ input {
 
       <button class="filter" data-filter="stage">
         STAGE
+      </button>
+
+      <button class="filter" data-filter="gate">
+        GATE
       </button>
 
       <button class="filter" data-filter="food">
@@ -1362,12 +1227,12 @@ input {
         PHOTO
       </button>
 
-      <button class="filter" data-filter="gate">
-        GATE
-      </button>
-
       <button class="filter" data-filter="info">
         INFO
+      </button>
+
+      <button class="filter" data-filter="booth">
+        BOOTH
       </button>
 
     </div>
@@ -1375,40 +1240,37 @@ input {
   </div>
 
 
-  <!-- MAP TOOLS -->
+  <!-- LAYERS -->
+
   <div
     class="map-tools"
     id="mapTools"
   >
 
     <button
-      class="tool-button"
+      class="round-button"
       id="layersButton"
-      aria-label="レイヤー"
+      aria-label="マップレイヤー"
     >
-
-      <span class="layers-icon">
-        <span></span>
-        <span></span>
-        <span></span>
-      </span>
-
+      <span class="layers-symbol"></span>
     </button>
 
   </div>
 
 
   <!-- LOCATION -->
+
   <button
     class="location-button"
     id="locationButton"
-    aria-label="現在地を表示"
+    aria-label="現在地"
   >
     <span class="location-symbol"></span>
   </button>
 
 
-  <!-- LAYER PANEL -->
+  <!-- PANEL -->
+
   <div
     class="layer-panel"
     id="layerPanel"
@@ -1428,7 +1290,6 @@ input {
       <button
         class="switch"
         id="overlaySwitch"
-        aria-label="会場マップを重ねる"
       ></button>
 
     </div>
@@ -1446,11 +1307,10 @@ input {
           class="opacity-value"
           id="opacityValue"
         >
-          55%
+          50%
         </span>
 
       </div>
-
 
       <input
         class="opacity-slider"
@@ -1458,7 +1318,7 @@ input {
         type="range"
         min="10"
         max="90"
-        value="55"
+        value="50"
       >
 
     </div>
@@ -1468,14 +1328,14 @@ input {
 </div>
 
 
-<!-- BACKDROP -->
+<!-- DETAIL -->
+
 <div
   class="sheet-backdrop"
   id="sheetBackdrop"
 ></div>
 
 
-<!-- BOTTOM SHEET -->
 <div
   class="bottom-sheet"
   id="bottomSheet"
@@ -1484,8 +1344,8 @@ input {
   <div class="sheet-handle"></div>
 
   <div
-    class="sheet-number"
-    id="sheetNumber"
+    class="sheet-category"
+    id="sheetCategory"
   ></div>
 
   <div
@@ -1516,45 +1376,62 @@ input {
 ></div>
 
 
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-
+<script
+  src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+></script>
 
 <script>
 
 /* =========================================================
-   ★★★ PCで後から調整する場所 ★★★
+   MAP CALIBRATION
 ========================================================= */
 
 /*
-  REAL MAP上に重ねる
-  Map.JPG の四隅。
+  -----------------------------------------------------------
+  IMPORTANT
+  -----------------------------------------------------------
 
-  今は仮位置。
+  施設の緯度経度を1個ずつ書く方式ではありません。
 
-  PCで送ってくれた重ね合わせ画像を参考に
-  ピッタリ合わせる。
+  Map.JPG 内の位置を
+      x = 左から何%
+      y = 上から何%
 
-  SOUTH = 南
-  WEST  = 西
-  NORTH = 北
-  EAST  = 東
+  として保存。
+
+  ↓
+
+  その位置をREAL MAP上へ自動変換します。
+
+  つまり、後で公式MAP全体の位置を微調整しても
+  全施設が一緒についてきます。
+
+
+  ※公式MAPは模式図なので、
+    測量図レベルのGPS精度ではありません。
 */
 
-const OVERLAY_BOUNDS = [
 
-  /* SOUTH WEST */
-  [
-    35.6215,
-    139.7720
-  ],
+/*
+  Map.JPGをREAL MAPに置く範囲。
 
-  /* NORTH EAST */
-  [
-    35.6282,
-    139.7800
-  ]
+  ★ 最終微調整ポイントはここだけ ★
 
-];
+  [南西]
+  [北東]
+*/
+
+const VENUE_BOUNDS = {
+
+  south: 35.62235,
+
+  west: 139.77275,
+
+  north: 35.62770,
+
+  east: 139.77920
+
+};
 
 
 /* =========================================================
@@ -1565,311 +1442,1079 @@ const map = L.map(
   "map",
   {
     zoomControl: false,
-    attributionControl: true
+    attributionControl: true,
+
+    preferCanvas: true
   }
-).setView(
-  [35.6252, 139.7756],
-  16
 );
 
 
+/*
+  会場中心
+*/
+
+map.setView(
+  [
+    35.6251,
+    139.7758
+  ],
+  17
+);
+
+
+/*
+  BASE MAP
+*/
+
 L.tileLayer(
+
   "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+
   {
-    maxZoom: 19,
+
+    maxZoom: 20,
 
     attribution:
       '&copy; OpenStreetMap contributors'
+
   }
+
 ).addTo(map);
 
 
 /* =========================================================
-   VENUE OVERLAY
+   MAP PANES
 ========================================================= */
+
+/*
+  表示順：
+
+  REAL MAP
+      ↓
+  Map.JPG
+      ↓
+  施設ピン
+      ↓
+  GPS現在地
+*/
+
+map.createPane(
+  "venueOverlayPane"
+);
+
+map.getPane(
+  "venueOverlayPane"
+).style.zIndex = 350;
+
+
+map.createPane(
+  "venueMarkerPane"
+);
+
+map.getPane(
+  "venueMarkerPane"
+).style.zIndex = 650;
+
+
+map.createPane(
+  "userLocationPane"
+);
+
+map.getPane(
+  "userLocationPane"
+).style.zIndex = 900;
+
+
+/* =========================================================
+   OVERLAY
+========================================================= */
+
+const overlayBounds = [
+
+  [
+    VENUE_BOUNDS.south,
+    VENUE_BOUNDS.west
+  ],
+
+  [
+    VENUE_BOUNDS.north,
+    VENUE_BOUNDS.east
+  ]
+
+];
+
 
 const venueOverlay =
   L.imageOverlay(
 
     "./Map.JPG",
 
-    OVERLAY_BOUNDS,
+    overlayBounds,
 
     {
-      opacity: .55,
+
+      opacity: .50,
 
       interactive: false,
 
-      zIndex: 300
+      pane:
+        "venueOverlayPane"
+
     }
 
   );
+
 
 let overlayVisible = false;
 
 
 /* =========================================================
-   SVG ICONS
+   IMAGE POSITION → GPS
+========================================================= */
+
+function imagePositionToLatLng(
+  x,
+  y
+) {
+
+  /*
+    x:
+    0 = 左
+    100 = 右
+
+    y:
+    0 = 上
+    100 = 下
+  */
+
+  const lng =
+    VENUE_BOUNDS.west
+    +
+    (
+      VENUE_BOUNDS.east
+      -
+      VENUE_BOUNDS.west
+    )
+    *
+    (
+      x / 100
+    );
+
+
+  const lat =
+    VENUE_BOUNDS.north
+    -
+    (
+      VENUE_BOUNDS.north
+      -
+      VENUE_BOUNDS.south
+    )
+    *
+    (
+      y / 100
+    );
+
+
+  return [
+    lat,
+    lng
+  ];
+
+}
+
+
+/* =========================================================
+   SVG
 ========================================================= */
 
 const icons = {
 
+
 stage: `
+
 <svg viewBox="0 0 24 24">
-  <rect x="9" y="3" width="6" height="11" rx="3"></rect>
-  <path d="M6 11a6 6 0 0 0 12 0"></path>
-  <path d="M12 17v4"></path>
-  <path d="M9 21h6"></path>
+
+  <rect
+    x="9"
+    y="3"
+    width="6"
+    height="11"
+    rx="3"
+  ></rect>
+
+  <path
+    d="M6 11a6 6 0 0 0 12 0"
+  ></path>
+
+  <path
+    d="M12 17v4"
+  ></path>
+
+  <path
+    d="M9 21h6"
+  ></path>
+
 </svg>
+
 `,
 
-food: `
-<svg viewBox="0 0 24 24">
-  <path d="M7 3v8"></path>
-  <path d="M4 3v5a3 3 0 0 0 6 0V3"></path>
-  <path d="M7 11v10"></path>
-  <path d="M16 3v18"></path>
-  <path d="M16 3c4 2 4 7 0 9"></path>
-</svg>
-`,
-
-goods: `
-<svg viewBox="0 0 24 24">
-  <path d="M5 8h14l-1 13H6L5 8z"></path>
-  <path d="M9 8V6a3 3 0 0 1 6 0v2"></path>
-</svg>
-`,
-
-wc: `
-<svg viewBox="0 0 24 24">
-  <circle cx="7" cy="5" r="2"></circle>
-  <path d="M7 8v6"></path>
-  <path d="M4 11h6"></path>
-  <path d="M5 21l2-7 2 7"></path>
-  <circle cx="17" cy="5" r="2"></circle>
-  <path d="M17 8l-4 8h8l-4-8z"></path>
-  <path d="M17 16v5"></path>
-</svg>
-`,
-
-photo: `
-<svg viewBox="0 0 24 24">
-  <path d="M4 7h4l2-3h4l2 3h4v13H4V7z"></path>
-  <circle cx="12" cy="13" r="4"></circle>
-</svg>
-`,
 
 gate: `
+
 <svg viewBox="0 0 24 24">
-  <path d="M4 21V5h16v16"></path>
-  <path d="M8 21V9h8v12"></path>
-  <path d="M3 5h18"></path>
+
+  <path
+    d="M4 21V5h16v16"
+  ></path>
+
+  <path
+    d="M8 21V9h8v12"
+  ></path>
+
+  <path
+    d="M3 5h18"
+  ></path>
+
 </svg>
+
 `,
+
+
+food: `
+
+<svg viewBox="0 0 24 24">
+
+  <path d="M7 3v8"></path>
+
+  <path
+    d="M4 3v5a3 3 0 0 0 6 0V3"
+  ></path>
+
+  <path d="M7 11v10"></path>
+
+  <path d="M16 3v18"></path>
+
+  <path
+    d="M16 3c4 2 4 7 0 9"
+  ></path>
+
+</svg>
+
+`,
+
+
+goods: `
+
+<svg viewBox="0 0 24 24">
+
+  <path
+    d="M5 8h14l-1 13H6L5 8z"
+  ></path>
+
+  <path
+    d="M9 8V6a3 3 0 0 1 6 0v2"
+  ></path>
+
+</svg>
+
+`,
+
+
+wc: `
+
+<svg viewBox="0 0 24 24">
+
+  <circle
+    cx="7"
+    cy="5"
+    r="2"
+  ></circle>
+
+  <path d="M7 8v6"></path>
+
+  <path d="M4 11h6"></path>
+
+  <path d="M5 21l2-7 2 7"></path>
+
+
+  <circle
+    cx="17"
+    cy="5"
+    r="2"
+  ></circle>
+
+  <path
+    d="M17 8l-4 8h8l-4-8z"
+  ></path>
+
+  <path d="M17 16v5"></path>
+
+</svg>
+
+`,
+
+
+photo: `
+
+<svg viewBox="0 0 24 24">
+
+  <path
+    d="M4 7h4l2-3h4l2 3h4v13H4V7z"
+  ></path>
+
+  <circle
+    cx="12"
+    cy="13"
+    r="4"
+  ></circle>
+
+</svg>
+
+`,
+
 
 info: `
+
 <svg viewBox="0 0 24 24">
-  <circle cx="12" cy="12" r="9"></circle>
+
+  <circle
+    cx="12"
+    cy="12"
+    r="9"
+  ></circle>
+
   <path d="M12 11v6"></path>
+
   <path d="M12 7h.01"></path>
+
 </svg>
+
 `,
+
 
 bar: `
+
 <svg viewBox="0 0 24 24">
-  <path d="M5 4h14l-7 8-7-8z"></path>
+
+  <path
+    d="M5 4h14l-7 8-7-8z"
+  ></path>
+
   <path d="M12 12v7"></path>
+
   <path d="M8 20h8"></path>
+
 </svg>
+
 `,
 
-station: `
+
+booth: `
+
 <svg viewBox="0 0 24 24">
-  <rect x="5" y="3" width="14" height="15" rx="2"></rect>
-  <path d="M8 7h8"></path>
-  <circle cx="9" cy="14" r="1"></circle>
-  <circle cx="15" cy="14" r="1"></circle>
-  <path d="M8 18l-2 3"></path>
-  <path d="M16 18l2 3"></path>
+
+  <path d="M4 10h16"></path>
+
+  <path
+    d="M5 10l1-6h12l1 6"
+  ></path>
+
+  <path d="M6 10v10"></path>
+
+  <path d="M18 10v10"></path>
+
+  <path d="M4 20h16"></path>
+
 </svg>
+
+`,
+
+
+rest: `
+
+<svg viewBox="0 0 24 24">
+
+  <path
+    d="M4 12h16"
+  ></path>
+
+  <path
+    d="M6 12v7"
+  ></path>
+
+  <path
+    d="M18 12v7"
+  ></path>
+
+  <path
+    d="M7 8h10"
+  ></path>
+
+</svg>
+
 `
 
 };
 
 
 /* =========================================================
-   VENUES
+   OFFICIAL MAP FACILITIES
 ========================================================= */
 
 /*
-  ★ 今は仮座標 ★
+  ★★★★★★★★★★★★★★★★★★★★★★★★
 
-  PCで本番位置に変更。
+  ここが今回の重要部分。
+
+  送ってくれた公式MAPから
+  位置関係を拾っています。
+
+  x / y は Map.JPG 内の位置。
+
+  ★★★★★★★★★★★★★★★★★★★★★★★★
 */
 
 const venues = [
 
-  {
-    id: 1,
-    name: "MAIN STAGE",
-    label: "MAIN STAGE",
-    category: "stage",
 
-    lat: 35.6260,
-    lng: 139.7748,
+/* =========================
+   STAGES
+========================= */
 
-    description:
-      "MAIN STAGE。正確な位置・詳細情報は後から設定します。"
-  },
+{
+  id: "main",
 
-  {
-    id: 2,
-    name: "SUB STAGE",
-    label: "SUB STAGE",
-    category: "stage",
+  name: "MAIN STAGE",
 
-    lat: 35.6252,
-    lng: 139.7760,
+  label: "MAIN STAGE",
 
-    description:
-      "SUB STAGE。正確な位置・詳細情報は後から設定します。"
-  },
+  category: "stage",
 
-  {
-    id: 3,
-    name: "フードエリア",
-    label: "フード",
-    category: "food",
+  x: 73.0,
+  y: 75.0,
 
-    lat: 35.6248,
-    lng: 139.7749,
+  description:
+    "BMSG FES'26 MAIN STAGE。"
+},
 
-    description:
-      "キッチンカー・フードエリア。"
-  },
 
-  {
-    id: 4,
-    name: "グッズ",
-    label: "グッズ",
-    category: "goods",
+{
+  id: "sub",
 
-    lat: 35.6256,
-    lng: 139.7767,
+  name: "SUB STAGE",
 
-    description:
-      "グッズ販売エリア。"
-  },
+  label: "SUB STAGE",
 
-  {
-    id: 5,
-    name: "トイレ",
-    label: "トイレ",
-    category: "wc",
+  category: "stage",
 
-    lat: 35.6244,
-    lng: 139.7758,
+  x: 13.2,
+  y: 74.5,
 
-    description:
-      "トイレ。"
-  },
+  description:
+    "BMSG FES'26 SUB STAGE。"
+},
 
-  {
-    id: 6,
-    name: "フォトスポット",
-    label: "フォト",
-    category: "photo",
 
-    lat: 35.6257,
-    lng: 139.7739,
+/* =========================
+   GATES
+========================= */
 
-    description:
-      "フォトスポット。"
-  },
+{
+  id: "west",
 
-  {
-    id: 7,
-    name: "GATE",
-    label: "ゲート",
-    category: "gate",
+  name: "WEST GATE",
 
-    lat: 35.6239,
-    lng: 139.7748,
+  label: "WEST GATE",
 
-    description:
-      "入退場ゲート。"
-  },
+  category: "gate",
 
-  {
-    id: 8,
-    name: "インフォメーション",
-    label: "案内",
-    category: "info",
+  x: 37.3,
+  y: 30.2,
 
-    lat: 35.6249,
-    lng: 139.7739,
+  description:
+    "一般指定席・注釈付き指定席側のWEST GATE。"
+},
 
-    description:
-      "インフォメーション。"
-  }
+
+{
+  id: "east",
+
+  name: "EAST GATE",
+
+  label: "EAST GATE",
+
+  category: "gate",
+
+  x: 57.6,
+  y: 46.1,
+
+  description:
+    "SS・S指定席側のEAST GATE。"
+},
+
+
+{
+  id: "a",
+
+  name: "A-GATE",
+
+  label: "A-GATE",
+
+  category: "gate",
+
+  x: 75.5,
+  y: 59.5,
+
+  description:
+    "MAIN STAGE側 A-GATE。"
+},
+
+
+{
+  id: "b",
+
+  name: "B-GATE",
+
+  label: "B-GATE",
+
+  category: "gate",
+
+  x: 47.4,
+  y: 92.4,
+
+  description:
+    "MAIN STAGE側 B-GATE。"
+},
+
+
+{
+  id: "c",
+
+  name: "C-GATE",
+
+  label: "C-GATE",
+
+  category: "gate",
+
+  x: 27.5,
+  y: 80.7,
+
+  description:
+    "SUB STAGE側 C-GATE。"
+},
+
+
+/* =========================
+   INFO
+========================= */
+
+{
+  id: "info",
+
+  name: "インフォメーション",
+
+  label: "インフォメーション",
+
+  category: "info",
+
+  x: 60.8,
+  y: 32.5,
+
+  description:
+    "会場インフォメーション。"
+},
+
+
+/* =========================
+   SALES
+========================= */
+
+{
+  id: "fc",
+
+  name:
+    "ファンクラブブース＆CD販売ブース",
+
+  label:
+    "FC・CD",
+
+  category: "goods",
+
+  x: 7.6,
+  y: 15.3,
+
+  description:
+    "ファンクラブブース＆CD販売ブース。"
+},
+
+
+{
+  id: "capsule",
+
+  name:
+    "MEGA CAPSULE",
+
+  label:
+    "MEGA CAPSULE",
+
+  category: "goods",
+
+  x: 16.1,
+  y: 13.5,
+
+  description:
+    "MEGA CAPSULEブース。"
+},
+
+
+{
+  id: "goods",
+
+  name: "グッズ",
+
+  label: "グッズ",
+
+  category: "goods",
+
+  x: 24.0,
+  y: 13.3,
+
+  description:
+    "オフィシャルグッズ販売。"
+},
+
+
+{
+  id: "penlight",
+
+  name:
+    "ペンライトブース",
+
+  label:
+    "ペンライト",
+
+  category: "goods",
+
+  x: 28.2,
+  y: 18.3,
+
+  description:
+    "ペンライトブース。"
+},
+
+
+/* =========================
+   FOOD
+========================= */
+
+{
+  id: "food",
+
+  name:
+    "キッチンカー",
+
+  label:
+    "キッチンカー",
+
+  category: "food",
+
+  x: 5.4,
+  y: 28.3,
+
+  description:
+    "キッチンカーエリア。"
+},
+
+
+{
+  id: "bar-west",
+
+  name:
+    "オフィシャルバー",
+
+  label:
+    "BAR",
+
+  category: "bar",
+
+  x: 3.5,
+  y: 38.7,
+
+  description:
+    "オフィシャルバー。"
+},
+
+
+{
+  id: "bar-main",
+
+  name:
+    "オフィシャルバー",
+
+  label:
+    "BAR",
+
+  category: "bar",
+
+  x: 95.7,
+  y: 65.0,
+
+  description:
+    "MAIN STAGE側オフィシャルバー。"
+},
+
+
+/* =========================
+   REST
+========================= */
+
+{
+  id: "rest",
+
+  name:
+    "休憩テント",
+
+  label:
+    "休憩テント",
+
+  category: "rest",
+
+  x: 20.0,
+  y: 23.3,
+
+  description:
+    "休憩用テント。"
+},
+
+
+{
+  id: "eco",
+
+  name:
+    "エコステーション",
+
+  label:
+    "エコステーション",
+
+  category: "rest",
+
+  x: 28.0,
+  y: 26.5,
+
+  description:
+    "エコステーション。"
+},
+
+
+/* =========================
+   SPONSOR BOOTHS
+========================= */
+
+{
+  id: "suntory",
+
+  name:
+    "サントリー生ビールブース",
+
+  label:
+    "サントリー",
+
+  category: "booth",
+
+  x: 27.0,
+  y: 47.1,
+
+  description:
+    "サントリー生ビールブース。"
+},
+
+
+{
+  id: "toyota",
+
+  name:
+    "TOYOTA 給電ラッピングカー",
+
+  label:
+    "TOYOTA",
+
+  category: "booth",
+
+  x: 35.0,
+  y: 41.0,
+
+  description:
+    "TOYOTA 給電ラッピングカー。"
+},
+
+
+{
+  id: "umajo",
+
+  name:
+    "UMAJOブース",
+
+  label:
+    "UMAJO",
+
+  category: "booth",
+
+  x: 30.8,
+  y: 54.7,
+
+  description:
+    "UMAJOブース。"
+},
+
+
+/* =========================
+   PHOTO
+========================= */
+
+{
+  id: "photo-center",
+
+  name:
+    "フォトスポット",
+
+  label:
+    "フォトスポット",
+
+  category: "photo",
+
+  x: 37.5,
+  y: 47.0,
+
+  description:
+    "B-SIDE AREA中央のフォトスポット。"
+},
+
+
+{
+  id: "photo-south",
+
+  name:
+    "フォトスポット",
+
+  label:
+    "フォトスポット",
+
+  category: "photo",
+
+  x: 28.8,
+  y: 69.7,
+
+  description:
+    "SUB STAGE付近のフォトスポット。"
+},
+
+
+{
+  id: "flower",
+
+  name:
+    "フラワーディスプレイ",
+
+  label:
+    "フラワー",
+
+  category: "photo",
+
+  x: 28.8,
+  y: 74.7,
+
+  description:
+    "フラワーディスプレイ。"
+},
+
+
+/* =========================
+   WC
+========================= */
+
+{
+  id: "wc-west-1",
+
+  name:
+    "トイレ",
+
+  label:
+    "トイレ",
+
+  category: "wc",
+
+  x: 6.5,
+  y: 51.3,
+
+  description:
+    "B-SIDE AREA西側トイレ。"
+},
+
+
+{
+  id: "wc-west-2",
+
+  name:
+    "トイレ",
+
+  label:
+    "トイレ",
+
+  category: "wc",
+
+  x: 6.5,
+  y: 55.6,
+
+  description:
+    "B-SIDE AREA西側トイレ。"
+},
+
+
+{
+  id: "wc-west-3",
+
+  name:
+    "トイレ",
+
+  label:
+    "トイレ",
+
+  category: "wc",
+
+  x: 6.5,
+  y: 59.5,
+
+  description:
+    "B-SIDE AREA西側トイレ。"
+},
+
+
+{
+  id: "wc-center",
+
+  name:
+    "トイレ",
+
+  label:
+    "トイレ",
+
+  category: "wc",
+
+  x: 47.4,
+  y: 43.4,
+
+  description:
+    "B-SIDE AREA中央付近トイレ。"
+},
+
+
+{
+  id: "wc-east",
+
+  name:
+    "トイレ",
+
+  label:
+    "トイレ",
+
+  category: "wc",
+
+  x: 74.2,
+  y: 45.1,
+
+  description:
+    "EAST GATE付近トイレ。"
+},
+
+
+{
+  id: "wc-premium",
+
+  name:
+    "SS/S席専用トイレ",
+
+  label:
+    "SS/S専用WC",
+
+  category: "wc",
+
+  x: 28.7,
+  y: 86.4,
+
+  description:
+    "SS指定席・S指定席専用トイレ。"
+}
 
 ];
 
 
 /* =========================================================
-   CREATE MARKER
+   MARKER ICON
 ========================================================= */
 
-function createVenueIcon(venue) {
+function createVenueIcon(
+  venue
+) {
 
   const isStage =
-    venue.category === "stage";
+    venue.category ===
+    "stage";
 
-  const markerWidth =
-    isStage ? 150 : 120;
+
+  const html = `
+
+    <div
+      class="
+        venue-marker
+        marker-${venue.category}
+        ${isStage ? "stage-marker" : ""}
+      "
+    >
+
+      <div class="marker-pin">
+
+        <div class="marker-inner">
+
+          ${icons[venue.category]}
+
+        </div>
+
+      </div>
+
+      <div class="marker-label">
+
+        ${venue.label}
+
+      </div>
+
+    </div>
+
+  `;
+
 
   return L.divIcon({
 
     className: "",
 
-    html: `
-
-      <div
-        class="
-          map-marker
-          marker-${venue.category}
-          ${isStage ? "stage-marker" : ""}
-        "
-      >
-
-        <div class="marker-pin">
-
-          <div class="marker-inner">
-
-            ${icons[venue.category]}
-
-          </div>
-
-        </div>
-
-        <div class="marker-label">
-          ${venue.label}
-        </div>
-
-      </div>
-
-    `,
+    html: html,
 
     iconSize:
       [
-        markerWidth,
-        85
+        isStage
+          ? 155
+          : 125,
+
+        isStage
+          ? 85
+          : 72
       ],
 
     iconAnchor:
       [
         0,
-        isStage ? 55 : 45
+        isStage
+          ? 55
+          : 43
       ]
 
   });
@@ -1878,7 +2523,7 @@ function createVenueIcon(venue) {
 
 
 /* =========================================================
-   ADD MARKERS
+   ADD ALL VENUES
 ========================================================= */
 
 const venueMarkers = [];
@@ -1887,25 +2532,41 @@ const venueMarkers = [];
 venues.forEach(
   venue => {
 
+    const position =
+      imagePositionToLatLng(
+
+        venue.x,
+        venue.y
+
+      );
+
+
     const marker =
       L.marker(
 
-        [
-          venue.lat,
-          venue.lng
-        ],
+        position,
 
         {
+
           icon:
             createVenueIcon(
               venue
             ),
 
-          zIndexOffset:
-            1000
+          pane:
+            "venueMarkerPane",
+
+          keyboard:
+            true
+
         }
 
-      ).addTo(map);
+      );
+
+
+    marker.addTo(
+      map
+    );
 
 
     marker.on(
@@ -1921,8 +2582,10 @@ venues.forEach(
 
 
     venueMarkers.push({
+
       venue,
       marker
+
     });
 
   }
@@ -1930,7 +2593,184 @@ venues.forEach(
 
 
 /* =========================================================
-   LAYERS
+   DETAIL SHEET
+========================================================= */
+
+const bottomSheet =
+  document.getElementById(
+    "bottomSheet"
+  );
+
+const sheetBackdrop =
+  document.getElementById(
+    "sheetBackdrop"
+  );
+
+const sheetCategory =
+  document.getElementById(
+    "sheetCategory"
+  );
+
+const sheetTitle =
+  document.getElementById(
+    "sheetTitle"
+  );
+
+const sheetDescription =
+  document.getElementById(
+    "sheetDescription"
+  );
+
+
+function openVenue(
+  venue
+) {
+
+  sheetCategory.textContent =
+    venue.category.toUpperCase();
+
+
+  sheetTitle.textContent =
+    venue.name;
+
+
+  sheetDescription.textContent =
+    venue.description;
+
+
+  bottomSheet.classList.add(
+    "show"
+  );
+
+
+  sheetBackdrop.classList.add(
+    "show"
+  );
+
+}
+
+
+function closeVenue() {
+
+  bottomSheet.classList.remove(
+    "show"
+  );
+
+
+  sheetBackdrop.classList.remove(
+    "show"
+  );
+
+}
+
+
+document
+  .getElementById(
+    "sheetClose"
+  )
+  .addEventListener(
+    "click",
+    closeVenue
+  );
+
+
+sheetBackdrop.addEventListener(
+  "click",
+  closeVenue
+);
+
+
+/* =========================================================
+   FILTER
+========================================================= */
+
+const filterButtons =
+  document.querySelectorAll(
+    ".filter"
+  );
+
+
+filterButtons.forEach(
+  button => {
+
+    button.addEventListener(
+      "click",
+      () => {
+
+        filterButtons.forEach(
+          item => {
+
+            item.classList.remove(
+              "active"
+            );
+
+          }
+        );
+
+
+        button.classList.add(
+          "active"
+        );
+
+
+        const filter =
+          button.dataset.filter;
+
+
+        venueMarkers.forEach(
+          item => {
+
+            const show =
+              filter === "all"
+              ||
+              item.venue.category
+              === filter;
+
+
+            if (show) {
+
+              if (
+                !map.hasLayer(
+                  item.marker
+                )
+              ) {
+
+                item.marker.addTo(
+                  map
+                );
+
+              }
+
+            }
+
+            else {
+
+              if (
+                map.hasLayer(
+                  item.marker
+                )
+              ) {
+
+                map.removeLayer(
+                  item.marker
+                );
+
+              }
+
+            }
+
+          }
+        );
+
+      }
+    );
+
+  }
+);
+
+
+/* =========================================================
+   OVERLAY PANEL
 ========================================================= */
 
 const layersButton =
@@ -1983,14 +2823,18 @@ overlaySwitch.addEventListener(
       overlayVisible
     ) {
 
-      venueOverlay.addTo(map);
+      venueOverlay.addTo(
+        map
+      );
+
 
       overlaySwitch.classList.add(
         "active"
       );
 
+
       showToast(
-        "会場MAPを重ねました"
+        "公式会場MAPを重ねました"
       );
 
     }
@@ -2043,186 +2887,7 @@ opacitySlider.addEventListener(
 
 
 /* =========================================================
-   BOTTOM SHEET
-========================================================= */
-
-const bottomSheet =
-  document.getElementById(
-    "bottomSheet"
-  );
-
-const sheetBackdrop =
-  document.getElementById(
-    "sheetBackdrop"
-  );
-
-const sheetNumber =
-  document.getElementById(
-    "sheetNumber"
-  );
-
-const sheetTitle =
-  document.getElementById(
-    "sheetTitle"
-  );
-
-const sheetDescription =
-  document.getElementById(
-    "sheetDescription"
-  );
-
-
-function openVenue(venue) {
-
-  sheetNumber.textContent =
-    String(
-      venue.id
-    ).padStart(
-      2,
-      "0"
-    )
-    +
-    " / "
-    +
-    venue.category.toUpperCase();
-
-
-  sheetTitle.textContent =
-    venue.name;
-
-
-  sheetDescription.textContent =
-    venue.description;
-
-
-  bottomSheet.classList.add(
-    "show"
-  );
-
-  sheetBackdrop.classList.add(
-    "show"
-  );
-
-}
-
-
-function closeVenue() {
-
-  bottomSheet.classList.remove(
-    "show"
-  );
-
-  sheetBackdrop.classList.remove(
-    "show"
-  );
-
-}
-
-
-document
-  .getElementById(
-    "sheetClose"
-  )
-  .addEventListener(
-    "click",
-    closeVenue
-  );
-
-
-sheetBackdrop.addEventListener(
-  "click",
-  closeVenue
-);
-
-
-/* =========================================================
-   FILTER
-========================================================= */
-
-const filterButtons =
-  document.querySelectorAll(
-    ".filter"
-  );
-
-
-filterButtons.forEach(
-  button => {
-
-    button.addEventListener(
-      "click",
-      () => {
-
-        filterButtons.forEach(
-          btn =>
-            btn.classList.remove(
-              "active"
-            )
-        );
-
-
-        button.classList.add(
-          "active"
-        );
-
-
-        const category =
-          button.dataset.filter;
-
-
-        venueMarkers.forEach(
-          ({
-            venue,
-            marker
-          }) => {
-
-            const show =
-              category === "all"
-              ||
-              venue.category === category;
-
-
-            if (show) {
-
-              if (
-                !map.hasLayer(
-                  marker
-                )
-              ) {
-
-                marker.addTo(map);
-
-              }
-
-            }
-
-            else {
-
-              if (
-                map.hasLayer(
-                  marker
-                )
-              ) {
-
-                map.removeLayer(
-                  marker
-                );
-
-              }
-
-            }
-
-          }
-        );
-
-      }
-    );
-
-  }
-);
-
-
-/* =========================================================
-   REAL / OFFICIAL MODE
+   REAL / OFFICIAL
 ========================================================= */
 
 const modeButtons =
@@ -2259,10 +2924,13 @@ modeButtons.forEach(
       () => {
 
         modeButtons.forEach(
-          btn =>
-            btn.classList.remove(
+          item => {
+
+            item.classList.remove(
               "active"
-            )
+            );
+
+          }
         );
 
 
@@ -2287,11 +2955,14 @@ modeButtons.forEach(
           filtersWrap.style.display =
             "none";
 
+
           mapTools.style.display =
             "none";
 
+
           locationButton.style.display =
             "none";
+
 
           layerPanel.classList.remove(
             "show"
@@ -2309,8 +2980,10 @@ modeButtons.forEach(
           filtersWrap.style.display =
             "";
 
+
           mapTools.style.display =
             "";
+
 
           locationButton.style.display =
             "";
@@ -2339,14 +3012,20 @@ modeButtons.forEach(
 ========================================================= */
 
 /*
-  現在地：
+  -----------------------------------------------------------
+  PRIVACY
+  -----------------------------------------------------------
 
-  ・ブラウザ内のみ
-  ・サーバー送信なし
-  ・DB保存なし
-  ・KV保存なし
-  ・localStorage保存なし
-  ・ページ終了時にwatch終了
+  現在地は：
+
+  ・この端末のブラウザで取得
+  ・サーバーへ送信しない
+  ・Cloudflareへ保存しない
+  ・DBへ保存しない
+  ・KVへ保存しない
+  ・localStorageにも保存しない
+
+  ページを閉じれば監視終了。
 */
 
 let locationMarker = null;
@@ -2355,7 +3034,7 @@ let accuracyCircle = null;
 
 let watchId = null;
 
-let hasCenteredLocation = false;
+let firstLocation = true;
 
 
 const userIcon =
@@ -2364,7 +3043,7 @@ const userIcon =
     className: "",
 
     html:
-      `<div class="user-location"></div>`,
+      '<div class="user-location"></div>',
 
     iconSize:
       [22,22],
@@ -2378,6 +3057,10 @@ const userIcon =
 locationButton.addEventListener(
   "click",
   () => {
+
+    /*
+      すでに現在地取得済み
+    */
 
     if (
       locationMarker
@@ -2405,7 +3088,7 @@ locationButton.addEventListener(
     ) {
 
       showToast(
-        "この端末では現在地を利用できません"
+        "この端末では位置情報を利用できません"
       );
 
       return;
@@ -2431,7 +3114,7 @@ locationButton.addEventListener(
             true,
 
           maximumAge:
-            3000,
+            2000,
 
           timeout:
             15000
@@ -2465,30 +3148,42 @@ function locationSuccess(
     locationMarker =
       L.marker(
 
-        [lat,lng],
+        [
+          lat,
+          lng
+        ],
 
         {
 
           icon:
             userIcon,
 
-          zIndexOffset:
-            10000
+          pane:
+            "userLocationPane"
 
         }
 
-      ).addTo(map);
+      ).addTo(
+        map
+      );
 
   }
 
   else {
 
     locationMarker.setLatLng(
-      [lat,lng]
+      [
+        lat,
+        lng
+      ]
     );
 
   }
 
+
+  /*
+    GPS精度円
+  */
 
   if (
     !accuracyCircle
@@ -2497,7 +3192,10 @@ function locationSuccess(
     accuracyCircle =
       L.circle(
 
-        [lat,lng],
+        [
+          lat,
+          lng
+        ],
 
         {
 
@@ -2505,31 +3203,40 @@ function locationSuccess(
             accuracy,
 
           color:
-            "#ffffff",
+            "#1976ff",
 
           weight:
             1,
 
           opacity:
-            .55,
+            .5,
 
           fillColor:
-            "#ffffff",
+            "#1976ff",
 
           fillOpacity:
-            .10
+            .08,
+
+          pane:
+            "userLocationPane"
 
         }
 
-      ).addTo(map);
+      ).addTo(
+        map
+      );
 
   }
 
   else {
 
     accuracyCircle.setLatLng(
-      [lat,lng]
+      [
+        lat,
+        lng
+      ]
     );
+
 
     accuracyCircle.setRadius(
       accuracy
@@ -2539,31 +3246,23 @@ function locationSuccess(
 
 
   /*
-    現在地を一番上へ
+    最初だけ自動移動
   */
 
   if (
-    locationMarker
+    firstLocation
   ) {
 
-    locationMarker.setZIndexOffset(
-      10000
-    );
-
-  }
-
-
-  if (
-    !hasCenteredLocation
-  ) {
-
-    hasCenteredLocation =
-      true;
+    firstLocation =
+      false;
 
 
     map.flyTo(
 
-      [lat,lng],
+      [
+        lat,
+        lng
+      ],
 
       18,
 
@@ -2604,7 +3303,8 @@ function locationError(
 
   }
 
-  else if (
+
+  if (
     error.code === 2
   ) {
 
@@ -2613,7 +3313,8 @@ function locationError(
 
   }
 
-  else if (
+
+  if (
     error.code === 3
   ) {
 
@@ -2669,14 +3370,15 @@ function showToast(
         );
 
       },
-      2500
+
+      2300
     );
 
 }
 
 
 /* =========================================================
-   CLEANUP
+   CLEAN UP
 ========================================================= */
 
 window.addEventListener(
