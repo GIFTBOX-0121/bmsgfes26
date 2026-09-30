@@ -5,16 +5,15 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 
 <title>BMSG FES 2026 | VENUE NAVIGATOR</title>
+<meta name="theme-color" content="#090909">
 
-<meta name="theme-color" content="#070707">
-
-<!-- Leaflet -->
 <link
   rel="stylesheet"
   href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
 />
 
 <style>
+
 /* =========================================================
    BASE
 ========================================================= */
@@ -31,7 +30,7 @@ body {
   margin: 0;
   overflow: hidden;
   background: #050505;
-  color: #f4f4f4;
+  color: #f5f5f5;
   font-family:
     -apple-system,
     BlinkMacSystemFont,
@@ -44,15 +43,12 @@ button {
   font: inherit;
 }
 
-/* =========================================================
-   APP
-========================================================= */
-
 #app {
   position: fixed;
   inset: 0;
   background: #050505;
 }
+
 
 /* =========================================================
    MAP
@@ -62,7 +58,7 @@ button {
   position: absolute;
   inset: 0;
   z-index: 1;
-  background: #0b0b0b;
+  background: #0a0a0a;
 }
 
 .leaflet-control-zoom {
@@ -70,107 +66,180 @@ button {
 }
 
 .leaflet-control-attribution {
-  background: rgba(0,0,0,.68) !important;
-  color: #aaa !important;
+  background: rgba(8,8,8,.76) !important;
+  color: #a8a8a8 !important;
   font-size: 9px !important;
+  border-radius: 8px 0 0 0;
 }
 
 .leaflet-control-attribution a {
-  color: #ddd !important;
+  color: #e1e1e1 !important;
 }
 
+
 /* =========================================================
-   DARK MAP FILTER
+   DARK SILVER MAP
 ========================================================= */
 
 .leaflet-tile-pane {
   filter:
     grayscale(1)
-    invert(.93)
-    contrast(.9)
-    brightness(.58);
+    invert(.91)
+    contrast(.82)
+    brightness(.68);
 }
 
+
 /* =========================================================
-   TOP HEADER
+   HEADER
 ========================================================= */
 
 .header {
   position: absolute;
+
   top: calc(12px + env(safe-area-inset-top));
   left: 14px;
   right: 14px;
 
   z-index: 1000;
 
-  border: 1px solid rgba(255,255,255,.24);
-  border-radius: 18px;
+  border: 1px solid rgba(255,255,255,.48);
+  border-radius: 19px;
 
   background:
     linear-gradient(
-      135deg,
-      rgba(35,35,35,.91),
-      rgba(4,4,4,.91)
+      125deg,
+      rgba(215,215,215,.32) 0%,
+      rgba(105,105,105,.32) 20%,
+      rgba(30,30,30,.94) 48%,
+      rgba(80,80,80,.62) 75%,
+      rgba(190,190,190,.24) 100%
     );
 
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
+  backdrop-filter: blur(22px);
+  -webkit-backdrop-filter: blur(22px);
 
   box-shadow:
-    0 12px 40px rgba(0,0,0,.38),
-    inset 0 1px 0 rgba(255,255,255,.12);
+    0 14px 45px rgba(0,0,0,.48),
+    inset 0 1px 0 rgba(255,255,255,.75),
+    inset 0 -1px 0 rgba(255,255,255,.12);
 
   overflow: hidden;
 }
 
+/* metallic shine */
+
 .header::before {
   content: "";
+
   position: absolute;
+
   top: 0;
-  left: 10%;
-  right: 10%;
+  left: 6%;
+  right: 6%;
+
   height: 1px;
 
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(255,255,255,.75),
-    transparent
-  );
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      #ffffff,
+      #a8a8a8,
+      #ffffff,
+      transparent
+    );
+
+  opacity: .95;
 }
 
+.header::after {
+  content: "";
+
+  position: absolute;
+
+  width: 180px;
+  height: 220px;
+
+  top: -120px;
+  right: -50px;
+
+  transform: rotate(25deg);
+
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      rgba(255,255,255,.11),
+      transparent
+    );
+
+  pointer-events: none;
+}
+
+
+/* =========================================================
+   BRAND
+========================================================= */
+
 .brand {
-  padding: 14px 16px 10px;
+  position: relative;
+  z-index: 2;
+
+  padding: 15px 16px 10px;
 }
 
 .brand-main {
   font-size: 18px;
-  font-weight: 800;
-  letter-spacing: .14em;
+  font-weight: 850;
+
+  letter-spacing: .15em;
+
+  color: #fff;
+
+  text-shadow:
+    0 1px 0 #000,
+    0 0 15px rgba(255,255,255,.12);
 }
 
 .brand-sub {
-  margin-top: 3px;
-
-  color: #aaa;
+  margin-top: 4px;
 
   font-size: 9px;
-  letter-spacing: .32em;
+  font-weight: 600;
+
+  letter-spacing: .34em;
+
+  color: #d0d0d0;
 }
 
+
 /* =========================================================
-   MAP MODE SWITCH
+   MODE SWITCH
 ========================================================= */
 
 .mode-switch {
+  position: relative;
+  z-index: 2;
+
   display: flex;
+
   margin: 0 10px 10px;
   padding: 3px;
 
-  border: 1px solid rgba(255,255,255,.13);
+  border: 1px solid rgba(255,255,255,.28);
   border-radius: 11px;
 
-  background: rgba(255,255,255,.035);
+  background:
+    linear-gradient(
+      180deg,
+      rgba(0,0,0,.36),
+      rgba(255,255,255,.08)
+    );
+
+  box-shadow:
+    inset 0 1px 3px rgba(0,0,0,.6),
+    0 1px 0 rgba(255,255,255,.08);
 }
 
 .mode-button {
@@ -179,16 +248,18 @@ button {
   border: 0;
   border-radius: 8px;
 
-  padding: 8px;
+  padding: 9px;
 
   background: transparent;
-  color: #777;
+  color: #aaa;
 
   font-size: 10px;
-  font-weight: 700;
-  letter-spacing: .14em;
+  font-weight: 800;
+  letter-spacing: .15em;
 
   cursor: pointer;
+
+  transition: .2s ease;
 }
 
 .mode-button.active {
@@ -197,14 +268,22 @@ button {
   background:
     linear-gradient(
       135deg,
-      #f8f8f8,
-      #8f8f8f
+      #ffffff 0%,
+      #d8d8d8 22%,
+      #8d8d8d 52%,
+      #ededed 78%,
+      #9d9d9d 100%
     );
 
   box-shadow:
-    inset 0 1px 0 rgba(255,255,255,.9),
-    0 2px 12px rgba(255,255,255,.08);
+    inset 0 1px 0 #fff,
+    inset 0 -1px 0 rgba(0,0,0,.25),
+    0 3px 12px rgba(0,0,0,.32);
+
+  text-shadow:
+    0 1px 0 rgba(255,255,255,.7);
 }
+
 
 /* =========================================================
    FILTER BAR
@@ -213,7 +292,8 @@ button {
 .filters-wrap {
   position: absolute;
 
-  top: calc(132px + env(safe-area-inset-top));
+  top: calc(134px + env(safe-area-inset-top));
+
   left: 0;
   right: 0;
 
@@ -228,10 +308,7 @@ button {
 
   overflow-x: auto;
 
-  padding:
-    6px
-    14px
-    10px;
+  padding: 6px 14px 10px;
 
   scrollbar-width: none;
 }
@@ -243,30 +320,56 @@ button {
 .filter {
   flex: 0 0 auto;
 
-  border: 1px solid rgba(255,255,255,.22);
+  border: 1px solid rgba(255,255,255,.38);
   border-radius: 999px;
 
-  padding: 8px 13px;
+  padding: 8px 14px;
 
-  background: rgba(8,8,8,.82);
-  color: #aaa;
+  background:
+    linear-gradient(
+      145deg,
+      rgba(95,95,95,.88),
+      rgba(18,18,18,.92)
+    );
 
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  color: #d0d0d0;
+
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.23),
+    0 5px 15px rgba(0,0,0,.28);
 
   font-size: 9px;
   font-weight: 800;
+
   letter-spacing: .1em;
 
   cursor: pointer;
+
+  transition: .2s ease;
 }
 
 .filter.active {
-  background: #e9e9e9;
   color: #080808;
 
-  border-color: #fff;
+  border-color: rgba(255,255,255,.9);
+
+  background:
+    linear-gradient(
+      135deg,
+      #fafafa 0%,
+      #bdbdbd 35%,
+      #858585 57%,
+      #e8e8e8 100%
+    );
+
+  box-shadow:
+    inset 0 1px 0 #fff,
+    0 5px 20px rgba(255,255,255,.13);
 }
+
 
 /* =========================================================
    LOCATION BUTTON
@@ -276,28 +379,36 @@ button {
   position: absolute;
 
   right: 16px;
-  bottom: calc(30px + env(safe-area-inset-bottom));
+
+  bottom:
+    calc(
+      30px +
+      env(safe-area-inset-bottom)
+    );
 
   z-index: 1000;
 
-  width: 54px;
-  height: 54px;
+  width: 58px;
+  height: 58px;
 
-  border: 1px solid rgba(255,255,255,.34);
+  border: 1px solid rgba(255,255,255,.88);
   border-radius: 50%;
 
   background:
     radial-gradient(
-      circle at 35% 25%,
-      #393939,
-      #0b0b0b 62%
+      circle at 30% 22%,
+      #ffffff 0%,
+      #d5d5d5 15%,
+      #858585 38%,
+      #3c3c3c 60%,
+      #101010 82%
     );
 
-  color: white;
-
   box-shadow:
-    0 12px 30px rgba(0,0,0,.5),
-    inset 0 1px 1px rgba(255,255,255,.22);
+    0 12px 30px rgba(0,0,0,.6),
+    0 0 0 3px rgba(255,255,255,.09),
+    inset 0 2px 2px rgba(255,255,255,.8),
+    inset 0 -2px 5px rgba(0,0,0,.7);
 
   cursor: pointer;
 
@@ -306,14 +417,24 @@ button {
   justify-content: center;
 }
 
+.location-button:active {
+  transform: scale(.94);
+}
+
+
+/* LOCATION SYMBOL */
+
 .location-symbol {
   position: relative;
 
-  width: 20px;
-  height: 20px;
+  width: 21px;
+  height: 21px;
 
-  border: 2px solid #eee;
+  border: 2px solid #fff;
   border-radius: 50%;
+
+  filter:
+    drop-shadow(0 1px 2px #000);
 }
 
 .location-symbol::before {
@@ -321,8 +442,8 @@ button {
 
   position: absolute;
 
-  width: 6px;
-  height: 6px;
+  width: 7px;
+  height: 7px;
 
   top: 5px;
   left: 5px;
@@ -331,7 +452,9 @@ button {
 
   background: #fff;
 
-  box-shadow: 0 0 10px #fff;
+  box-shadow:
+    0 0 7px #fff,
+    0 0 13px rgba(255,255,255,.75);
 }
 
 .location-symbol::after {
@@ -340,38 +463,48 @@ button {
   position: absolute;
 
   width: 2px;
-  height: 28px;
+  height: 29px;
 
   top: -6px;
-  left: 7px;
+  left: 7.5px;
 
   background:
     linear-gradient(
-      transparent 0 12%,
-      #ddd 12% 27%,
-      transparent 27% 73%,
-      #ddd 73% 88%,
-      transparent 88%
+      transparent 0 11%,
+      #fff 11% 28%,
+      transparent 28% 72%,
+      #fff 72% 89%,
+      transparent 89%
     );
 }
 
+
 /* =========================================================
-   LOCATION MARKER
+   USER LOCATION
 ========================================================= */
 
 .user-location {
+  position: relative;
+
   width: 22px;
   height: 22px;
 
   border-radius: 50%;
 
-  background: white;
+  background:
+    radial-gradient(
+      circle at 35% 30%,
+      #ffffff,
+      #d6d6d6 38%,
+      #727272 100%
+    );
 
-  border: 4px solid #333;
+  border: 3px solid #fff;
 
   box-shadow:
     0 0 0 5px rgba(255,255,255,.18),
-    0 0 22px rgba(255,255,255,.9);
+    0 0 12px rgba(255,255,255,.9),
+    0 0 28px rgba(255,255,255,.65);
 }
 
 .user-location::after {
@@ -381,10 +514,13 @@ button {
 
   inset: -12px;
 
-  border: 1px solid rgba(255,255,255,.4);
+  border: 1px solid rgba(255,255,255,.58);
   border-radius: 50%;
 
-  animation: locationPulse 2s infinite;
+  animation:
+    locationPulse
+    2s
+    infinite;
 }
 
 @keyframes locationPulse {
@@ -395,47 +531,102 @@ button {
   }
 
   100% {
-    transform: scale(1.5);
+    transform: scale(1.55);
     opacity: 0;
   }
+
 }
+
 
 /* =========================================================
    VENUE MARKERS
 ========================================================= */
 
-.venue-marker {
-  width: 38px;
-  height: 38px;
+.venue-marker-shell {
+  position: relative;
+
+  width: 44px;
+  height: 44px;
 
   display: flex;
   align-items: center;
   justify-content: center;
 
-  border: 1px solid rgba(255,255,255,.65);
+  border-radius: 50%;
+
+  background:
+    linear-gradient(
+      135deg,
+      #f7f7f7 0%,
+      #949494 27%,
+      #3b3b3b 50%,
+      #cfcfcf 75%,
+      #727272 100%
+    );
+
+  box-shadow:
+    0 8px 22px rgba(0,0,0,.6),
+    0 0 0 1px rgba(255,255,255,.65),
+    inset 0 1px 1px rgba(255,255,255,.95);
+}
+
+.venue-marker {
+  width: 34px;
+  height: 34px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 1px solid rgba(255,255,255,.45);
   border-radius: 50%;
 
   background:
     radial-gradient(
       circle at 35% 25%,
-      #454545,
-      #090909 65%
+      #626262,
+      #171717 62%,
+      #050505
     );
 
-  color: white;
+  color: #fff;
 
   box-shadow:
-    0 6px 20px rgba(0,0,0,.55),
-    inset 0 1px 1px rgba(255,255,255,.3);
+    inset 0 1px 1px rgba(255,255,255,.3),
+    0 1px 2px rgba(0,0,0,.8);
 
-  font-size: 10px;
+  font-size: 9px;
   font-weight: 900;
 
-  letter-spacing: -.03em;
+  letter-spacing: -.02em;
 }
 
+
+/* little pointer */
+
+.venue-marker-shell::after {
+  content: "";
+
+  position: absolute;
+
+  bottom: -5px;
+
+  width: 8px;
+  height: 8px;
+
+  transform: rotate(45deg);
+
+  background: #8f8f8f;
+
+  border-right: 1px solid #d8d8d8;
+  border-bottom: 1px solid #d8d8d8;
+
+  z-index: -1;
+}
+
+
 /* =========================================================
-   BOTTOM SHEET
+   SHEET BACKDROP
 ========================================================= */
 
 .sheet-backdrop {
@@ -444,9 +635,10 @@ button {
 
   z-index: 1998;
 
-  background: rgba(0,0,0,.26);
+  background: rgba(0,0,0,.28);
 
   opacity: 0;
+
   pointer-events: none;
 
   transition: opacity .25s ease;
@@ -456,6 +648,11 @@ button {
   opacity: 1;
   pointer-events: auto;
 }
+
+
+/* =========================================================
+   BOTTOM SHEET
+========================================================= */
 
 .bottom-sheet {
   position: fixed;
@@ -471,30 +668,88 @@ button {
 
   z-index: 2000;
 
-  border: 1px solid rgba(255,255,255,.24);
-  border-radius: 24px;
+  border: 1px solid rgba(255,255,255,.55);
+  border-radius: 25px;
 
   padding: 11px 18px 20px;
 
   background:
     linear-gradient(
-      145deg,
-      rgba(35,35,35,.97),
-      rgba(4,4,4,.97)
+      135deg,
+      rgba(110,110,110,.94) 0%,
+      rgba(35,35,35,.98) 30%,
+      rgba(8,8,8,.98) 65%,
+      rgba(68,68,68,.97) 100%
     );
 
-  backdrop-filter: blur(22px);
-  -webkit-backdrop-filter: blur(22px);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
 
   box-shadow:
-    0 -10px 50px rgba(0,0,0,.5),
-    inset 0 1px 0 rgba(255,255,255,.12);
+    0 -12px 55px rgba(0,0,0,.6),
+    inset 0 1px 0 rgba(255,255,255,.7),
+    inset 0 -1px 0 rgba(255,255,255,.1);
 
-  transform: translateY(calc(100% + 50px));
+  transform:
+    translateY(
+      calc(100% + 50px)
+    );
 
   transition:
-    transform .35s
+    transform
+    .35s
     cubic-bezier(.22,.75,.25,1);
+
+  overflow: hidden;
+}
+
+
+/* metallic top shine */
+
+.bottom-sheet::before {
+  content: "";
+
+  position: absolute;
+
+  top: 0;
+  left: 5%;
+  right: 5%;
+
+  height: 2px;
+
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      #a6a6a6,
+      #ffffff,
+      #a6a6a6,
+      transparent
+    );
+}
+
+.bottom-sheet::after {
+  content: "";
+
+  position: absolute;
+
+  width: 200px;
+  height: 300px;
+
+  top: -190px;
+  right: -70px;
+
+  transform: rotate(35deg);
+
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      rgba(255,255,255,.10),
+      transparent
+    );
+
+  pointer-events: none;
 }
 
 .bottom-sheet.show {
@@ -502,20 +757,35 @@ button {
 }
 
 .sheet-handle {
-  width: 42px;
+  position: relative;
+  z-index: 2;
+
+  width: 45px;
   height: 4px;
 
   margin: 0 auto 18px;
 
   border-radius: 99px;
 
-  background: #666;
+  background:
+    linear-gradient(
+      90deg,
+      #777,
+      #fff,
+      #777
+    );
+
+  box-shadow:
+    0 0 7px rgba(255,255,255,.28);
 }
 
 .sheet-number {
+  position: relative;
+  z-index: 2;
+
   margin-bottom: 6px;
 
-  color: #888;
+  color: #c5c5c5;
 
   font-size: 9px;
   font-weight: 800;
@@ -524,13 +794,24 @@ button {
 }
 
 .sheet-title {
+  position: relative;
+  z-index: 2;
+
+  color: #fff;
+
   font-size: 25px;
-  font-weight: 800;
+  font-weight: 850;
 
   letter-spacing: .04em;
+
+  text-shadow:
+    0 2px 8px rgba(0,0,0,.5);
 }
 
 .sheet-line {
+  position: relative;
+  z-index: 2;
+
   height: 1px;
 
   margin: 15px 0;
@@ -538,38 +819,55 @@ button {
   background:
     linear-gradient(
       90deg,
-      #aaa,
+      #ffffff,
+      #a3a3a3 35%,
       rgba(255,255,255,.05)
     );
 }
 
 .sheet-description {
-  color: #bbb;
+  position: relative;
+  z-index: 2;
+
+  color: #d0d0d0;
 
   font-size: 13px;
   line-height: 1.7;
 }
 
 .sheet-close {
+  position: relative;
+  z-index: 2;
+
   width: 100%;
 
   margin-top: 18px;
 
-  border: 1px solid rgba(255,255,255,.22);
+  border: 1px solid rgba(255,255,255,.48);
   border-radius: 11px;
 
   padding: 11px;
 
-  background: rgba(255,255,255,.05);
-  color: #ddd;
+  background:
+    linear-gradient(
+      135deg,
+      rgba(210,210,210,.24),
+      rgba(55,55,55,.35)
+    );
+
+  color: #f0f0f0;
+
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.28);
 
   font-size: 10px;
-  font-weight: 700;
+  font-weight: 800;
 
   letter-spacing: .18em;
 
   cursor: pointer;
 }
+
 
 /* =========================================================
    OFFICIAL MAP
@@ -577,14 +875,18 @@ button {
 
 #officialMap {
   position: absolute;
-
   inset: 0;
 
   z-index: 500;
 
   display: none;
 
-  background: #050505;
+  background:
+    radial-gradient(
+      circle at 50% 40%,
+      #2b2b2b,
+      #080808 60%
+    );
 
   padding:
     calc(150px + env(safe-area-inset-top))
@@ -594,48 +896,79 @@ button {
 
 #officialMap.show {
   display: flex;
-
   align-items: center;
   justify-content: center;
 }
 
 .official-placeholder {
+  position: relative;
+
   width: 100%;
   max-width: 700px;
 
-  padding: 38px 20px;
+  padding: 40px 20px;
 
-  border: 1px solid rgba(255,255,255,.18);
-  border-radius: 20px;
+  border: 1px solid rgba(255,255,255,.48);
+  border-radius: 21px;
 
   background:
     linear-gradient(
-      145deg,
-      #181818,
-      #080808
+      135deg,
+      #787878,
+      #242424 35%,
+      #080808 70%,
+      #555
     );
 
   text-align: center;
 
   box-shadow:
-    inset 0 1px 0 rgba(255,255,255,.1);
+    0 20px 50px rgba(0,0,0,.5),
+    inset 0 1px 0 rgba(255,255,255,.65);
+
+  overflow: hidden;
+}
+
+.official-placeholder::before {
+  content: "";
+
+  position: absolute;
+
+  top: 0;
+  left: 8%;
+  right: 8%;
+
+  height: 1px;
+
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      #fff,
+      transparent
+    );
 }
 
 .official-placeholder strong {
   display: block;
 
-  margin-bottom: 8px;
+  margin-bottom: 9px;
+
+  color: #fff;
 
   font-size: 15px;
-  letter-spacing: .14em;
+
+  letter-spacing: .15em;
 }
 
 .official-placeholder span {
-  color: #777;
+  color: #bbb;
 
   font-size: 11px;
+
   line-height: 1.7;
 }
+
 
 /* =========================================================
    TOAST
@@ -645,6 +978,7 @@ button {
   position: fixed;
 
   left: 50%;
+
   bottom:
     calc(
       100px +
@@ -653,15 +987,28 @@ button {
 
   z-index: 3000;
 
-  max-width: calc(100% - 40px);
+  max-width:
+    calc(
+      100% - 40px
+    );
 
-  padding: 10px 15px;
+  padding: 10px 16px;
 
-  border: 1px solid rgba(255,255,255,.2);
+  border: 1px solid rgba(255,255,255,.48);
   border-radius: 999px;
 
-  background: rgba(10,10,10,.92);
-  color: #ddd;
+  background:
+    linear-gradient(
+      135deg,
+      rgba(105,105,105,.96),
+      rgba(15,15,15,.96)
+    );
+
+  color: #fff;
+
+  box-shadow:
+    0 8px 30px rgba(0,0,0,.45),
+    inset 0 1px 0 rgba(255,255,255,.28);
 
   backdrop-filter: blur(15px);
 
@@ -672,6 +1019,7 @@ button {
     translateY(15px);
 
   opacity: 0;
+
   pointer-events: none;
 
   transition: .25s ease;
@@ -686,6 +1034,7 @@ button {
     translateX(-50%)
     translateY(0);
 }
+
 
 /* =========================================================
    DESKTOP
@@ -704,14 +1053,13 @@ button {
 
   .bottom-sheet {
     width: 390px;
-
     left: 20px;
     right: auto;
-
     bottom: 20px;
   }
 
 }
+
 </style>
 </head>
 
@@ -722,12 +1070,15 @@ button {
   <!-- REAL MAP -->
   <div id="map"></div>
 
+
   <!-- OFFICIAL MAP -->
   <div id="officialMap">
 
     <div class="official-placeholder">
 
-      <strong>OFFICIAL VENUE MAP</strong>
+      <strong>
+        OFFICIAL VENUE MAP
+      </strong>
 
       <span>
         ここには後から公式会場MAP画像を入れます。<br>
@@ -737,6 +1088,7 @@ button {
     </div>
 
   </div>
+
 
   <!-- HEADER -->
   <header class="header">
@@ -752,6 +1104,7 @@ button {
       </div>
 
     </div>
+
 
     <div class="mode-switch">
 
@@ -773,46 +1126,72 @@ button {
 
   </header>
 
+
   <!-- FILTER -->
   <div class="filters-wrap">
 
     <div class="filters">
 
-      <button class="filter active" data-filter="all">
+      <button
+        class="filter active"
+        data-filter="all"
+      >
         ALL
       </button>
 
-      <button class="filter" data-filter="stage">
+      <button
+        class="filter"
+        data-filter="stage"
+      >
         STAGE
       </button>
 
-      <button class="filter" data-filter="food">
+      <button
+        class="filter"
+        data-filter="food"
+      >
         FOOD
       </button>
 
-      <button class="filter" data-filter="goods">
+      <button
+        class="filter"
+        data-filter="goods"
+      >
         GOODS
       </button>
 
-      <button class="filter" data-filter="wc">
+      <button
+        class="filter"
+        data-filter="wc"
+      >
         WC
       </button>
 
-      <button class="filter" data-filter="photo">
+      <button
+        class="filter"
+        data-filter="photo"
+      >
         PHOTO
       </button>
 
-      <button class="filter" data-filter="gate">
+      <button
+        class="filter"
+        data-filter="gate"
+      >
         GATE
       </button>
 
-      <button class="filter" data-filter="info">
+      <button
+        class="filter"
+        data-filter="info"
+      >
         INFO
       </button>
 
     </div>
 
   </div>
+
 
   <!-- LOCATION -->
   <button
@@ -825,11 +1204,13 @@ button {
 
 </div>
 
+
 <!-- SHEET BACKDROP -->
 <div
   class="sheet-backdrop"
   id="sheetBackdrop"
 ></div>
+
 
 <!-- BOTTOM SHEET -->
 <div
@@ -865,12 +1246,14 @@ button {
 
 </div>
 
+
+<!-- TOAST -->
 <div
   class="toast"
   id="toast"
 ></div>
 
-<!-- Leaflet -->
+
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 <script>
@@ -880,10 +1263,8 @@ button {
 ========================================================= */
 
 /*
-  仮の中心地点です。
-
-  PCで公式MAPとリアル地図を照合するときに
-  正確な中心座標へ変更します。
+  仮の中心位置。
+  PCで会場MAPと照合後に調整します。
 */
 
 const map = L.map(
@@ -918,18 +1299,14 @@ L.tileLayer(
 ========================================================= */
 
 /*
-  ★★★★★★★★★★★★★★★★★★★★★★★
+  ★ 現在はUI確認用の仮座標です ★
 
-  PCで作業するときは基本的に
-  ここを編集すればOK。
+  PCで公式MAPとリアル地図を照合後、
 
   lat = 緯度
   lng = 経度
 
-  現在入っている座標は
-  UI確認用の仮位置です。
-
-  ★★★★★★★★★★★★★★★★★★★★★★★
+  を本番位置へ変更します。
 */
 
 const venues = [
@@ -1079,56 +1456,67 @@ function createVenueIcon(text) {
     className: "",
 
     html:
-      `<div class="venue-marker">${text}</div>`,
+      `
+      <div class="venue-marker-shell">
+        <div class="venue-marker">
+          ${text}
+        </div>
+      </div>
+      `,
 
-    iconSize: [38, 38],
+    iconSize:
+      [44, 49],
 
-    iconAnchor: [19, 19]
+    iconAnchor:
+      [22, 46]
 
   });
 
 }
 
 
-venues.forEach((venue) => {
+venues.forEach(
+  (venue) => {
 
-  const marker = L.marker(
+    const marker =
+      L.marker(
 
-    [
-      venue.lat,
-      venue.lng
-    ],
+        [
+          venue.lat,
+          venue.lng
+        ],
 
-    {
-      icon:
-        createVenueIcon(
-          venue.icon
-        )
-    }
+        {
+          icon:
+            createVenueIcon(
+              venue.icon
+            )
+        }
 
-  ).addTo(map);
-
-
-  marker.on(
-    "click",
-    () => {
-
-      openVenue(
-        venue
-      );
-
-    }
-  );
+      ).addTo(map);
 
 
-  venueMarkers.push({
+    marker.on(
+      "click",
+      () => {
 
-    venue,
-    marker
+        openVenue(
+          venue
+        );
 
-  });
+      }
+    );
 
-});
+
+    venueMarkers.push({
+
+      venue,
+      marker
+
+    });
+
+  }
+);
 
 
 /* =========================================================
@@ -1175,11 +1563,14 @@ function openVenue(venue) {
     +
     venue.category.toUpperCase();
 
+
   sheetTitle.textContent =
     venue.name;
 
+
   sheetDescription.textContent =
     venue.description;
+
 
   bottomSheet.classList.add(
     "show"
@@ -1244,6 +1635,7 @@ filterButtons.forEach(
               "active"
             )
         );
+
 
         button.classList.add(
           "active"
@@ -1347,6 +1739,7 @@ modeButtons.forEach(
             )
         );
 
+
         button.classList.add(
           "active"
         );
@@ -1384,6 +1777,7 @@ modeButtons.forEach(
           locationButton.style.display =
             "";
 
+
           setTimeout(
             () => {
 
@@ -1407,16 +1801,16 @@ modeButtons.forEach(
 ========================================================= */
 
 /*
-  ★重要★
+  現在地はブラウザ上で表示するためだけに使用。
 
-  現在地はブラウザ内で
-  地図表示のためだけに使用します。
+  ・サーバーへ送信しない
+  ・Cloudflareへ送信しない
+  ・D1へ保存しない
+  ・KVへ保存しない
+  ・GitHubへ保存しない
+  ・localStorageへ保存しない
 
-  fetch / API / D1 / KV 等へ
-  位置情報を送信する処理はありません。
-
-  緯度経度をlocalStorage等へ
-  保存する処理もありません。
+  ページを閉じたら追跡終了。
 */
 
 let locationMarker = null;
@@ -1434,7 +1828,9 @@ const userIcon =
     className: "",
 
     html:
-      `<div class="user-location"></div>`,
+      `
+      <div class="user-location"></div>
+      `,
 
     iconSize:
       [22,22],
@@ -1450,7 +1846,7 @@ locationButton.addEventListener(
   () => {
 
     /*
-      すでに現在地取得中なら
+      取得済みなら
       現在地へ戻る
     */
 
@@ -1502,11 +1898,14 @@ locationButton.addEventListener(
 
         {
 
-          enableHighAccuracy: true,
+          enableHighAccuracy:
+            true,
 
-          maximumAge: 3000,
+          maximumAge:
+            3000,
 
-          timeout: 15000
+          timeout:
+            15000
 
         }
 
@@ -1531,7 +1930,7 @@ function locationSuccess(
 
 
   /*
-    現在地マーカー
+    CURRENT LOCATION MARKER
   */
 
   if (
@@ -1544,16 +1943,16 @@ function locationSuccess(
         [lat,lng],
 
         {
+
           icon:
             userIcon,
 
           zIndexOffset:
             10000
+
         }
 
-      ).addTo(
-        map
-      );
+      ).addTo(map);
 
   }
 
@@ -1567,7 +1966,7 @@ function locationSuccess(
 
 
   /*
-    GPS精度範囲
+    GPS ACCURACY
   */
 
   if (
@@ -1591,19 +1990,17 @@ function locationSuccess(
             1,
 
           opacity:
-            .25,
+            .35,
 
           fillColor:
             "#ffffff",
 
           fillOpacity:
-            .05
+            .07
 
         }
 
-      ).addTo(
-        map
-      );
+      ).addTo(map);
 
   }
 
@@ -1621,8 +2018,7 @@ function locationSuccess(
 
 
   /*
-    最初の取得時だけ
-    自動で現在地へ移動
+    FIRST POSITION
   */
 
   if (
@@ -1632,6 +2028,7 @@ function locationSuccess(
     hasCenteredLocation =
       true;
 
+
     map.flyTo(
 
       [lat,lng],
@@ -1639,7 +2036,8 @@ function locationSuccess(
       18,
 
       {
-        duration: 1
+        duration:
+          1
       }
 
     );
@@ -1653,6 +2051,10 @@ function locationSuccess(
 
 }
 
+
+/* =========================================================
+   LOCATION ERROR
+========================================================= */
 
 function locationError(
   error
@@ -1721,6 +2123,7 @@ function showToast(
   toast.textContent =
     message;
 
+
   toast.classList.add(
     "show"
   );
@@ -1742,7 +2145,7 @@ function showToast(
 
 
 /* =========================================================
-   SAFETY CLEANUP
+   CLEANUP
 ========================================================= */
 
 window.addEventListener(
