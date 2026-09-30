@@ -7,7 +7,10 @@
 <title>BMSG FES 2026 | VENUE NAVIGATOR</title>
 <meta name="theme-color" content="#090909">
 
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<link
+  rel="stylesheet"
+  href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+/>
 
 <style>
 *{
@@ -25,14 +28,19 @@ html,body{
   font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;
 }
 
-button{font:inherit;cursor:pointer}
+button{
+  font:inherit;
+  cursor:pointer;
+}
 
 #app{
   position:fixed;
   inset:0;
 }
 
-/* MAP */
+/* =========================================================
+   MAP
+========================================================= */
 
 #map{
   position:absolute;
@@ -55,16 +63,17 @@ button{font:inherit;cursor:pointer}
   color:#fff!important;
 }
 
-/* 色を残す */
-
 .leaflet-tile-pane{
   filter:
-    saturate(.82)
-    brightness(.96)
-    contrast(.95);
+    saturate(.88)
+    brightness(.98)
+    contrast(.96);
 }
 
-/* HEADER */
+
+/* =========================================================
+   HEADER
+========================================================= */
 
 .header{
   position:absolute;
@@ -124,24 +133,32 @@ button{font:inherit;cursor:pointer}
   letter-spacing:.30em;
 }
 
-/* MODE SWITCH */
+
+/* =========================================================
+   MODE
+========================================================= */
 
 .mode-switch{
   display:flex;
   margin:0 9px 9px;
   padding:3px;
+
   border:1px solid rgba(255,255,255,.25);
   border-radius:11px;
+
   background:rgba(0,0,0,.25);
 }
 
 .mode-button{
   flex:1;
   padding:9px 5px;
+
   border:0;
   border-radius:8px;
+
   background:transparent;
   color:#aaa;
+
   font-size:9px;
   font-weight:900;
   letter-spacing:.12em;
@@ -149,70 +166,156 @@ button{font:inherit;cursor:pointer}
 
 .mode-button.active{
   color:#080808;
-  background:linear-gradient(135deg,#fff,#c7c7c7 32%,#888 55%,#eee);
-  box-shadow:inset 0 1px 0 #fff,0 3px 12px rgba(0,0,0,.35);
+
+  background:
+    linear-gradient(
+      135deg,
+      #fff,
+      #c7c7c7 32%,
+      #888 55%,
+      #eee
+    );
+
+  box-shadow:
+    inset 0 1px 0 #fff,
+    0 3px 12px rgba(0,0,0,.35);
 }
 
-/* FILTER */
+
+/* =========================================================
+   FILTER
+========================================================= */
 
 .filters-wrap{
   position:absolute;
   top:calc(130px + env(safe-area-inset-top));
   left:0;
   right:0;
+
   z-index:900;
+
   overflow:hidden;
 }
 
 .filters{
   display:flex;
   gap:7px;
+
   overflow-x:auto;
+
   padding:6px 12px 12px;
+
   scrollbar-width:none;
 }
 
-.filters::-webkit-scrollbar{display:none}
+.filters::-webkit-scrollbar{
+  display:none;
+}
 
 .filter{
   flex:0 0 auto;
+
   padding:8px 13px;
+
   border:1px solid rgba(255,255,255,.48);
   border-radius:999px;
-  background:linear-gradient(145deg,rgba(95,95,95,.94),rgba(12,12,12,.95));
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(95,95,95,.94),
+      rgba(12,12,12,.95)
+    );
+
   color:#ddd;
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.28),0 5px 14px rgba(0,0,0,.30);
+
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.28),
+    0 5px 14px rgba(0,0,0,.30);
+
   font-size:9px;
   font-weight:900;
+
   white-space:nowrap;
 }
 
 .filter.active{
   color:#080808;
-  background:linear-gradient(135deg,#fff,#bdbdbd 38%,#858585 60%,#eee);
+
+  background:
+    linear-gradient(
+      135deg,
+      #fff,
+      #bdbdbd 38%,
+      #858585 60%,
+      #eee
+    );
 }
 
-/* MARKERS */
+
+/* =========================================================
+   MARKERS
+
+   ★ 前回から重要変更
+   Leafletのアイコン領域と見た目を一致させる
+========================================================= */
 
 .venue-marker{
-  position:relative;
+  position:absolute;
+
+  left:0;
+  top:0;
+
+  width:140px;
+  height:70px;
+
   display:flex;
   flex-direction:column;
   align-items:center;
-  width:max-content;
-  transform:translateX(-50%);
+
+  pointer-events:auto;
+
+  cursor:pointer;
+}
+
+.marker-hit{
+  position:relative;
+
+  width:46px;
+  height:46px;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  pointer-events:auto;
+
+  touch-action:none;
 }
 
 .marker-pin{
   position:relative;
+
   width:40px;
   height:40px;
+
   display:flex;
   align-items:center;
   justify-content:center;
+
   border:2px solid #fff;
   border-radius:50%;
-  background:linear-gradient(145deg,#fff,#999 25%,#333 52%,#ddd 78%,#666);
+
+  background:
+    linear-gradient(
+      145deg,
+      #fff,
+      #999 25%,
+      #333 52%,
+      #ddd 78%,
+      #666
+    );
+
   box-shadow:
     0 6px 17px rgba(0,0,0,.65),
     0 0 0 2px rgba(0,0,0,.35);
@@ -220,26 +323,41 @@ button{font:inherit;cursor:pointer}
 
 .marker-pin::after{
   content:"";
+
   position:absolute;
+
+  left:50%;
   bottom:-5px;
+
   width:9px;
   height:9px;
-  transform:rotate(45deg);
+
+  transform:
+    translateX(-50%)
+    rotate(45deg);
+
   background:#aaa;
+
   border-right:1px solid #fff;
   border-bottom:1px solid #fff;
+
   z-index:-1;
 }
 
 .marker-inner{
   width:31px;
   height:31px;
+
   display:flex;
   align-items:center;
   justify-content:center;
+
   border-radius:50%;
+
   background:var(--marker-color);
+
   border:1px solid rgba(255,255,255,.7);
+
   box-shadow:
     inset 0 1px 2px rgba(255,255,255,.4),
     inset 0 -4px 8px rgba(0,0,0,.22),
@@ -249,29 +367,49 @@ button{font:inherit;cursor:pointer}
 .marker-inner svg{
   width:18px;
   height:18px;
+
   fill:none;
   stroke:#fff;
+
   stroke-width:2;
   stroke-linecap:round;
   stroke-linejoin:round;
 }
 
 .marker-label{
-  margin-top:7px;
-  max-width:145px;
+  margin-top:4px;
+
+  max-width:138px;
+
   padding:4px 7px;
+
+  overflow:hidden;
+
   border:1px solid rgba(255,255,255,.48);
   border-radius:6px;
+
   background:rgba(3,3,3,.88);
+
   color:#fff;
-  box-shadow:0 3px 9px rgba(0,0,0,.6);
+
+  box-shadow:
+    0 3px 9px rgba(0,0,0,.6);
+
   font-size:8px;
   font-weight:900;
+
   line-height:1.1;
+
+  text-overflow:ellipsis;
   white-space:nowrap;
+
+  pointer-events:auto;
 }
 
-/* COLORS */
+
+/* =========================================================
+   COLORS
+========================================================= */
 
 .marker-stage{
   --marker-color:#704cff;
@@ -323,7 +461,13 @@ button{font:inherit;cursor:pointer}
   --marker-glow:rgba(180,190,200,.65);
 }
 
-/* STAGES */
+
+/* STAGE */
+
+.stage-marker .marker-hit{
+  width:58px;
+  height:58px;
+}
 
 .stage-marker .marker-pin{
   width:52px;
@@ -341,19 +485,57 @@ button{font:inherit;cursor:pointer}
 }
 
 .stage-marker .marker-label{
-  padding:5px 9px;
   font-size:10px;
 }
 
-/* USER LOCATION */
+
+/* =========================================================
+   EDIT SELECTED
+========================================================= */
+
+body.editing .marker-hit{
+  cursor:grab;
+}
+
+body.editing .marker-hit:active{
+  cursor:grabbing;
+}
+
+body.editing .marker-pin{
+  box-shadow:
+    0 0 0 3px rgba(255,255,255,.65),
+    0 0 20px rgba(255,255,255,.85),
+    0 6px 17px rgba(0,0,0,.65);
+}
+
+.venue-marker.selected .marker-pin{
+  box-shadow:
+    0 0 0 4px #fff,
+    0 0 0 8px rgba(255,255,255,.22),
+    0 0 28px rgba(255,255,255,1);
+}
+
+.venue-marker.selected .marker-label{
+  background:#fff;
+  color:#050505;
+}
+
+
+/* =========================================================
+   CURRENT LOCATION
+========================================================= */
 
 .user-location{
   position:relative;
+
   width:22px;
   height:22px;
+
   border:3px solid #fff;
   border-radius:50%;
+
   background:#1976ff;
+
   box-shadow:
     0 0 0 5px rgba(25,118,255,.18),
     0 0 14px rgba(25,118,255,.95),
@@ -362,24 +544,44 @@ button{font:inherit;cursor:pointer}
 
 .user-location::after{
   content:"";
+
   position:absolute;
   inset:-12px;
+
   border:1px solid rgba(25,118,255,.65);
   border-radius:50%;
+
   animation:pulse 2s infinite;
 }
 
 @keyframes pulse{
-  0%{transform:scale(.55);opacity:1}
-  100%{transform:scale(1.5);opacity:0}
+  0%{
+    transform:scale(.55);
+    opacity:1;
+  }
+
+  100%{
+    transform:scale(1.5);
+    opacity:0;
+  }
 }
 
-/* LOCATION */
+
+/* =========================================================
+   LOCATION BUTTON
+========================================================= */
 
 .location-button{
   position:absolute;
+
   right:15px;
-  bottom:calc(30px + env(safe-area-inset-bottom));
+
+  bottom:
+    calc(
+      30px +
+      env(safe-area-inset-bottom)
+    );
+
   z-index:1000;
 
   width:56px;
@@ -410,29 +612,41 @@ button{font:inherit;cursor:pointer}
 
 .location-symbol{
   position:relative;
+
   width:21px;
   height:21px;
+
   border:2px solid #fff;
   border-radius:50%;
 }
 
 .location-symbol::before{
   content:"";
+
   position:absolute;
+
   top:5px;
   left:5px;
+
   width:7px;
   height:7px;
+
   border-radius:50%;
+
   background:#fff;
 }
 
-/* OFFICIAL MAP */
+
+/* =========================================================
+   OFFICIAL MAP
+========================================================= */
 
 #officialMap{
   position:absolute;
   inset:0;
+
   z-index:500;
+
   display:none;
 
   padding:
@@ -440,7 +654,12 @@ button{font:inherit;cursor:pointer}
     6px
     calc(8px + env(safe-area-inset-bottom));
 
-  background:radial-gradient(circle at 50% 40%,#333,#050505 70%);
+  background:
+    radial-gradient(
+      circle at 50% 40%,
+      #333,
+      #050505 70%
+    );
 }
 
 #officialMap.show{
@@ -450,129 +669,47 @@ button{font:inherit;cursor:pointer}
 .official-scroll{
   width:100%;
   height:100%;
+
   overflow:auto;
+
   display:flex;
   align-items:center;
   justify-content:center;
+
   -webkit-overflow-scrolling:touch;
 }
 
 .official-scroll img{
   display:block;
+
   width:100%;
   height:auto;
+
   max-width:1100px;
+
   border:1px solid rgba(255,255,255,.55);
   border-radius:14px;
-  box-shadow:0 16px 50px rgba(0,0,0,.7);
-}
-
-/* DETAIL */
-
-.sheet-backdrop{
-  position:fixed;
-  inset:0;
-  z-index:1998;
-  background:rgba(0,0,0,.25);
-  opacity:0;
-  pointer-events:none;
-  transition:.2s;
-}
-
-.sheet-backdrop.show{
-  opacity:1;
-  pointer-events:auto;
-}
-
-.bottom-sheet{
-  position:fixed;
-  left:10px;
-  right:10px;
-  bottom:calc(10px + env(safe-area-inset-bottom));
-  z-index:2000;
-
-  padding:11px 18px 19px;
-
-  border:1px solid rgba(255,255,255,.58);
-  border-radius:24px;
-
-  background:
-    linear-gradient(
-      135deg,
-      rgba(120,120,120,.97),
-      rgba(32,32,32,.98) 32%,
-      rgba(6,6,6,.99) 67%,
-      rgba(70,70,70,.98)
-    );
-
-  backdrop-filter:blur(24px);
 
   box-shadow:
-    0 -12px 55px rgba(0,0,0,.6),
-    inset 0 1px 0 rgba(255,255,255,.7);
-
-  transform:translateY(calc(100% + 60px));
-  transition:transform .34s cubic-bezier(.22,.75,.25,1);
+    0 16px 50px rgba(0,0,0,.7);
 }
 
-.bottom-sheet.show{
-  transform:translateY(0);
-}
-
-.sheet-handle{
-  width:43px;
-  height:4px;
-  margin:0 auto 17px;
-  border-radius:99px;
-  background:linear-gradient(90deg,#777,#fff,#777);
-}
-
-.sheet-category{
-  margin-bottom:5px;
-  color:#bbb;
-  font-size:9px;
-  font-weight:900;
-  letter-spacing:.18em;
-}
-
-.sheet-title{
-  font-size:23px;
-  font-weight:900;
-}
-
-.sheet-line{
-  height:1px;
-  margin:14px 0;
-  background:linear-gradient(90deg,#fff,#999 35%,transparent);
-}
-
-.sheet-description{
-  color:#ddd;
-  font-size:13px;
-  line-height:1.65;
-}
-
-.sheet-close{
-  width:100%;
-  margin-top:16px;
-  padding:11px;
-  border:1px solid rgba(255,255,255,.45);
-  border-radius:10px;
-  background:rgba(255,255,255,.10);
-  color:#fff;
-  font-size:10px;
-  font-weight:900;
-  letter-spacing:.15em;
-}
 
 /* =========================================================
-   EDIT MODE
+   EDIT MODE BUTTON
 ========================================================= */
 
 .edit-button{
   position:absolute;
+
   left:14px;
-  bottom:calc(28px + env(safe-area-inset-bottom));
+
+  bottom:
+    calc(
+      28px +
+      env(safe-area-inset-bottom)
+    );
+
   z-index:1200;
 
   padding:11px 15px;
@@ -580,11 +717,18 @@ button{font:inherit;cursor:pointer}
   border:1px solid rgba(255,255,255,.7);
   border-radius:999px;
 
-  background:linear-gradient(135deg,#777,#111);
+  background:
+    linear-gradient(
+      135deg,
+      #777,
+      #111
+    );
+
   color:#fff;
 
   font-size:10px;
   font-weight:900;
+
   letter-spacing:.12em;
 
   box-shadow:
@@ -594,8 +738,19 @@ button{font:inherit;cursor:pointer}
 
 .edit-button.active{
   color:#050505;
-  background:linear-gradient(135deg,#fff,#aaa);
+
+  background:
+    linear-gradient(
+      135deg,
+      #fff,
+      #aaa
+    );
 }
+
+
+/* =========================================================
+   EDIT PANEL
+========================================================= */
 
 .edit-panel{
   position:absolute;
@@ -603,7 +758,11 @@ button{font:inherit;cursor:pointer}
   left:12px;
   right:12px;
 
-  bottom:calc(82px + env(safe-area-inset-bottom));
+  bottom:
+    calc(
+      82px +
+      env(safe-area-inset-bottom)
+    );
 
   z-index:1300;
 
@@ -641,52 +800,222 @@ button{font:inherit;cursor:pointer}
 
 .edit-text{
   margin-top:7px;
+
   color:#ccc;
+
   font-size:10px;
   line-height:1.5;
 }
 
 .edit-selected{
   margin-top:10px;
+
   padding:9px 10px;
+
   border:1px solid rgba(255,255,255,.2);
   border-radius:10px;
+
   background:rgba(0,0,0,.3);
+
   font-size:10px;
+  line-height:1.5;
+}
+
+.edit-help{
+  margin-top:8px;
+
+  color:#aaa;
+
+  font-size:9px;
   line-height:1.5;
 }
 
 .copy-button{
   width:100%;
+
   margin-top:10px;
   padding:11px;
+
   border:1px solid #fff;
   border-radius:10px;
-  background:linear-gradient(135deg,#fff,#aaa);
+
+  background:
+    linear-gradient(
+      135deg,
+      #fff,
+      #aaa
+    );
+
   color:#080808;
+
   font-size:10px;
   font-weight:900;
 }
 
-/* EDIT中 */
 
-body.editing .marker-pin{
+/* =========================================================
+   DETAIL
+========================================================= */
+
+.sheet-backdrop{
+  position:fixed;
+  inset:0;
+
+  z-index:1998;
+
+  background:rgba(0,0,0,.25);
+
+  opacity:0;
+
+  pointer-events:none;
+
+  transition:.2s;
+}
+
+.sheet-backdrop.show{
+  opacity:1;
+  pointer-events:auto;
+}
+
+.bottom-sheet{
+  position:fixed;
+
+  left:10px;
+  right:10px;
+
+  bottom:
+    calc(
+      10px +
+      env(safe-area-inset-bottom)
+    );
+
+  z-index:2000;
+
+  padding:11px 18px 19px;
+
+  border:1px solid rgba(255,255,255,.58);
+  border-radius:24px;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(120,120,120,.97),
+      rgba(32,32,32,.98) 32%,
+      rgba(6,6,6,.99) 67%,
+      rgba(70,70,70,.98)
+    );
+
+  backdrop-filter:blur(24px);
+
   box-shadow:
-    0 0 0 3px rgba(255,255,255,.75),
-    0 0 20px rgba(255,255,255,.9),
-    0 6px 17px rgba(0,0,0,.65);
+    0 -12px 55px rgba(0,0,0,.6),
+    inset 0 1px 0 rgba(255,255,255,.7);
+
+  transform:
+    translateY(
+      calc(100% + 60px)
+    );
+
+  transition:
+    transform
+    .34s
+    cubic-bezier(.22,.75,.25,1);
 }
 
-body.editing .marker-label::after{
-  content:"  ✥";
+.bottom-sheet.show{
+  transform:translateY(0);
 }
 
-/* TOAST */
+.sheet-handle{
+  width:43px;
+  height:4px;
+
+  margin:0 auto 17px;
+
+  border-radius:99px;
+
+  background:
+    linear-gradient(
+      90deg,
+      #777,
+      #fff,
+      #777
+    );
+}
+
+.sheet-category{
+  margin-bottom:5px;
+
+  color:#bbb;
+
+  font-size:9px;
+  font-weight:900;
+
+  letter-spacing:.18em;
+}
+
+.sheet-title{
+  font-size:23px;
+  font-weight:900;
+}
+
+.sheet-line{
+  height:1px;
+
+  margin:14px 0;
+
+  background:
+    linear-gradient(
+      90deg,
+      #fff,
+      #999 35%,
+      transparent
+    );
+}
+
+.sheet-description{
+  color:#ddd;
+
+  font-size:13px;
+
+  line-height:1.65;
+}
+
+.sheet-close{
+  width:100%;
+
+  margin-top:16px;
+  padding:11px;
+
+  border:1px solid rgba(255,255,255,.45);
+  border-radius:10px;
+
+  background:rgba(255,255,255,.10);
+
+  color:#fff;
+
+  font-size:10px;
+  font-weight:900;
+
+  letter-spacing:.15em;
+}
+
+
+/* =========================================================
+   TOAST
+========================================================= */
 
 .toast{
   position:fixed;
+
   left:50%;
-  bottom:calc(100px + env(safe-area-inset-bottom));
+
+  bottom:
+    calc(
+      100px +
+      env(safe-area-inset-bottom)
+    );
+
   z-index:3000;
 
   padding:10px 15px;
@@ -694,24 +1023,43 @@ body.editing .marker-label::after{
   border:1px solid rgba(255,255,255,.48);
   border-radius:999px;
 
-  background:linear-gradient(135deg,#777,#111);
+  background:
+    linear-gradient(
+      135deg,
+      #777,
+      #111
+    );
+
   color:#fff;
 
   font-size:10px;
+
   white-space:nowrap;
 
   opacity:0;
-  transform:translate(-50%,15px);
+
+  transform:
+    translate(-50%,15px);
+
   pointer-events:none;
+
   transition:.2s;
 }
 
 .toast.show{
   opacity:1;
-  transform:translate(-50%,0);
+
+  transform:
+    translate(-50%,0);
 }
 
+
+/* =========================================================
+   DESKTOP
+========================================================= */
+
 @media(min-width:800px){
+
   .header{
     width:390px;
     right:auto;
@@ -723,8 +1071,10 @@ body.editing .marker-label::after{
 
   .bottom-sheet{
     width:390px;
+
     left:20px;
     right:auto;
+
     bottom:20px;
   }
 
@@ -732,6 +1082,7 @@ body.editing .marker-label::after{
     width:390px;
     right:auto;
   }
+
 }
 </style>
 </head>
@@ -742,100 +1093,217 @@ body.editing .marker-label::after{
 
   <div id="map"></div>
 
+
+  <!-- OFFICIAL MAP -->
+
   <div id="officialMap">
+
     <div class="official-scroll">
-      <img src="./Map.JPG" alt="BMSG FES 2026 会場マップ">
+
+      <img
+        src="./Map.JPG"
+        alt="BMSG FES 2026 会場マップ"
+      >
+
     </div>
+
   </div>
+
+
+  <!-- HEADER -->
 
   <header class="header">
 
     <div class="brand">
-      <div class="brand-main">BMSG FES 2026</div>
-      <div class="brand-sub">VENUE NAVIGATOR</div>
+
+      <div class="brand-main">
+        BMSG FES 2026
+      </div>
+
+      <div class="brand-sub">
+        VENUE NAVIGATOR
+      </div>
+
     </div>
 
+
     <div class="mode-switch">
-      <button class="mode-button active" data-mode="real">
+
+      <button
+        class="mode-button active"
+        data-mode="real"
+      >
         REAL MAP
       </button>
 
-      <button class="mode-button" data-mode="official">
+      <button
+        class="mode-button"
+        data-mode="official"
+      >
         OFFICIAL MAP
       </button>
+
     </div>
 
   </header>
 
+
+  <!-- FILTER -->
+
   <div class="filters-wrap">
+
     <div class="filters">
 
-      <button class="filter active" data-filter="all">ALL</button>
-      <button class="filter" data-filter="stage">STAGE</button>
-      <button class="filter" data-filter="gate">GATE</button>
-      <button class="filter" data-filter="food">FOOD</button>
-      <button class="filter" data-filter="goods">GOODS</button>
-      <button class="filter" data-filter="wc">WC</button>
-      <button class="filter" data-filter="photo">PHOTO</button>
-      <button class="filter" data-filter="info">INFO</button>
-      <button class="filter" data-filter="booth">BOOTH</button>
+      <button class="filter active" data-filter="all">
+        ALL
+      </button>
+
+      <button class="filter" data-filter="stage">
+        STAGE
+      </button>
+
+      <button class="filter" data-filter="gate">
+        GATE
+      </button>
+
+      <button class="filter" data-filter="food">
+        FOOD
+      </button>
+
+      <button class="filter" data-filter="goods">
+        GOODS
+      </button>
+
+      <button class="filter" data-filter="wc">
+        WC
+      </button>
+
+      <button class="filter" data-filter="photo">
+        PHOTO
+      </button>
+
+      <button class="filter" data-filter="info">
+        INFO
+      </button>
+
+      <button class="filter" data-filter="booth">
+        BOOTH
+      </button>
 
     </div>
+
   </div>
 
-  <button class="edit-button" id="editButton">
+
+  <!-- EDIT -->
+
+  <button
+    class="edit-button"
+    id="editButton"
+  >
     EDIT MODE
   </button>
 
-  <div class="edit-panel" id="editPanel">
+
+  <div
+    class="edit-panel"
+    id="editPanel"
+  >
 
     <div class="edit-title">
       📍 PIN POSITION EDITOR
     </div>
 
     <div class="edit-text">
-      ピンをドラッグして実際の場所へ移動してください。
-      配置が終わったら下のボタンで座標をコピーできます。
+      全ピンをドラッグできます。
     </div>
 
-    <div class="edit-selected" id="editSelected">
+    <div
+      class="edit-selected"
+      id="editSelected"
+    >
       ピンを選択してください
     </div>
 
-    <button class="copy-button" id="copyButton">
+    <div class="edit-help">
+      PC：ピンをドラッグ<br>
+      スマホ：ピンをタップ → 地図上の移動先をタップでもOK
+    </div>
+
+    <button
+      class="copy-button"
+      id="copyButton"
+    >
       配置データをコピー
     </button>
 
   </div>
 
-  <button class="location-button" id="locationButton">
+
+  <!-- LOCATION -->
+
+  <button
+    class="location-button"
+    id="locationButton"
+    aria-label="現在地"
+  >
     <span class="location-symbol"></span>
   </button>
 
 </div>
 
-<div class="sheet-backdrop" id="sheetBackdrop"></div>
 
-<div class="bottom-sheet" id="bottomSheet">
+<!-- DETAIL -->
+
+<div
+  class="sheet-backdrop"
+  id="sheetBackdrop"
+></div>
+
+
+<div
+  class="bottom-sheet"
+  id="bottomSheet"
+>
 
   <div class="sheet-handle"></div>
 
-  <div class="sheet-category" id="sheetCategory"></div>
-  <div class="sheet-title" id="sheetTitle"></div>
+  <div
+    class="sheet-category"
+    id="sheetCategory"
+  ></div>
+
+  <div
+    class="sheet-title"
+    id="sheetTitle"
+  ></div>
 
   <div class="sheet-line"></div>
 
-  <div class="sheet-description" id="sheetDescription"></div>
+  <div
+    class="sheet-description"
+    id="sheetDescription"
+  ></div>
 
-  <button class="sheet-close" id="sheetClose">
+  <button
+    class="sheet-close"
+    id="sheetClose"
+  >
     CLOSE
   </button>
 
 </div>
 
-<div class="toast" id="toast"></div>
 
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<div
+  class="toast"
+  id="toast"
+></div>
+
+
+<script
+  src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+></script>
 
 <script>
 
@@ -843,434 +1311,513 @@ body.editing .marker-label::after{
    MAP
 ========================================================= */
 
-const map = L.map("map",{
-  zoomControl:false,
-  attributionControl:true
-}).setView(
-  [35.6249,139.7758],
+const map = L.map(
+  "map",
+  {
+    zoomControl:false,
+    attributionControl:true
+  }
+).setView(
+  [
+    35.6249,
+    139.7758
+  ],
   16
 );
 
+
 L.tileLayer(
+
   "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+
   {
+
     maxZoom:20,
-    attribution:"&copy; OpenStreetMap contributors"
+
+    attribution:
+      "&copy; OpenStreetMap contributors"
+
   }
+
 ).addTo(map);
 
 
 /* =========================================================
-   ICONS
+   ICON SVG
 ========================================================= */
 
-const icons={
+const icons = {
 
-stage:`
-<svg viewBox="0 0 24 24">
-<rect x="9" y="3" width="6" height="11" rx="3"></rect>
-<path d="M6 11a6 6 0 0 0 12 0"></path>
-<path d="M12 17v4"></path>
-<path d="M9 21h6"></path>
-</svg>`,
 
-gate:`
+stage: `
 <svg viewBox="0 0 24 24">
-<path d="M4 21V5h16v16"></path>
-<path d="M8 21V9h8v12"></path>
-<path d="M3 5h18"></path>
-</svg>`,
+  <rect x="9" y="3" width="6" height="11" rx="3"></rect>
+  <path d="M6 11a6 6 0 0 0 12 0"></path>
+  <path d="M12 17v4"></path>
+  <path d="M9 21h6"></path>
+</svg>
+`,
 
-food:`
-<svg viewBox="0 0 24 24">
-<path d="M7 3v8"></path>
-<path d="M4 3v5a3 3 0 0 0 6 0V3"></path>
-<path d="M7 11v10"></path>
-<path d="M16 3v18"></path>
-<path d="M16 3c4 2 4 7 0 9"></path>
-</svg>`,
 
-goods:`
+gate: `
 <svg viewBox="0 0 24 24">
-<path d="M5 8h14l-1 13H6L5 8z"></path>
-<path d="M9 8V6a3 3 0 0 1 6 0v2"></path>
-</svg>`,
+  <path d="M4 21V5h16v16"></path>
+  <path d="M8 21V9h8v12"></path>
+  <path d="M3 5h18"></path>
+</svg>
+`,
 
-wc:`
-<svg viewBox="0 0 24 24">
-<circle cx="7" cy="5" r="2"></circle>
-<path d="M7 8v6"></path>
-<path d="M4 11h6"></path>
-<path d="M5 21l2-7 2 7"></path>
-<circle cx="17" cy="5" r="2"></circle>
-<path d="M17 8l-4 8h8l-4-8z"></path>
-<path d="M17 16v5"></path>
-</svg>`,
 
-photo:`
+food: `
 <svg viewBox="0 0 24 24">
-<path d="M4 7h4l2-3h4l2 3h4v13H4V7z"></path>
-<circle cx="12" cy="13" r="4"></circle>
-</svg>`,
+  <path d="M7 3v8"></path>
+  <path d="M4 3v5a3 3 0 0 0 6 0V3"></path>
+  <path d="M7 11v10"></path>
+  <path d="M16 3v18"></path>
+  <path d="M16 3c4 2 4 7 0 9"></path>
+</svg>
+`,
 
-info:`
-<svg viewBox="0 0 24 24">
-<circle cx="12" cy="12" r="9"></circle>
-<path d="M12 11v6"></path>
-<path d="M12 7h.01"></path>
-</svg>`,
 
-bar:`
+goods: `
 <svg viewBox="0 0 24 24">
-<path d="M5 4h14l-7 8-7-8z"></path>
-<path d="M12 12v7"></path>
-<path d="M8 20h8"></path>
-</svg>`,
+  <path d="M5 8h14l-1 13H6L5 8z"></path>
+  <path d="M9 8V6a3 3 0 0 1 6 0v2"></path>
+</svg>
+`,
 
-booth:`
-<svg viewBox="0 0 24 24">
-<path d="M4 10h16"></path>
-<path d="M5 10l1-6h12l1 6"></path>
-<path d="M6 10v10"></path>
-<path d="M18 10v10"></path>
-<path d="M4 20h16"></path>
-</svg>`,
 
-rest:`
+wc: `
 <svg viewBox="0 0 24 24">
-<path d="M4 12h16"></path>
-<path d="M6 12v7"></path>
-<path d="M18 12v7"></path>
-<path d="M7 8h10"></path>
-</svg>`
+  <circle cx="7" cy="5" r="2"></circle>
+  <path d="M7 8v6"></path>
+  <path d="M4 11h6"></path>
+  <path d="M5 21l2-7 2 7"></path>
+  <circle cx="17" cy="5" r="2"></circle>
+  <path d="M17 8l-4 8h8l-4-8z"></path>
+  <path d="M17 16v5"></path>
+</svg>
+`,
+
+
+photo: `
+<svg viewBox="0 0 24 24">
+  <path d="M4 7h4l2-3h4l2 3h4v13H4V7z"></path>
+  <circle cx="12" cy="13" r="4"></circle>
+</svg>
+`,
+
+
+info: `
+<svg viewBox="0 0 24 24">
+  <circle cx="12" cy="12" r="9"></circle>
+  <path d="M12 11v6"></path>
+  <path d="M12 7h.01"></path>
+</svg>
+`,
+
+
+bar: `
+<svg viewBox="0 0 24 24">
+  <path d="M5 4h14l-7 8-7-8z"></path>
+  <path d="M12 12v7"></path>
+  <path d="M8 20h8"></path>
+</svg>
+`,
+
+
+booth: `
+<svg viewBox="0 0 24 24">
+  <path d="M4 10h16"></path>
+  <path d="M5 10l1-6h12l1 6"></path>
+  <path d="M6 10v10"></path>
+  <path d="M18 10v10"></path>
+  <path d="M4 20h16"></path>
+</svg>
+`,
+
+
+rest: `
+<svg viewBox="0 0 24 24">
+  <path d="M4 12h16"></path>
+  <path d="M6 12v7"></path>
+  <path d="M18 12v7"></path>
+  <path d="M7 8h10"></path>
+</svg>
+`
+
 };
 
 
 /* =========================================================
-   INITIAL PIN DATA
-
-   MAIN / SUBを基準として、
-   残りはEDIT MODEで正確に配置する。
+   VENUES
 ========================================================= */
 
-const venues=[
+const venues = [
 
 {
- id:"main",
- name:"MAIN STAGE",
- label:"MAIN STAGE",
- category:"stage",
- lat:35.62380,
- lng:139.77755,
- description:"第二臨時駐車場側 MAIN STAGE"
+  id:"main",
+  name:"MAIN STAGE",
+  label:"MAIN STAGE",
+  category:"stage",
+  lat:35.62380,
+  lng:139.77755,
+  description:"第二臨時駐車場側 MAIN STAGE"
 },
 
 {
- id:"sub",
- name:"SUB STAGE",
- label:"SUB STAGE",
- category:"stage",
- lat:35.62510,
- lng:139.77355,
- description:"臨時駐車場側 SUB STAGE"
+  id:"sub",
+  name:"SUB STAGE",
+  label:"SUB STAGE",
+  category:"stage",
+  lat:35.62510,
+  lng:139.77355,
+  description:"臨時駐車場側 SUB STAGE"
 },
 
 {
- id:"west",
- name:"WEST GATE",
- label:"WEST GATE",
- category:"gate",
- lat:35.62555,
- lng:139.77460,
- description:"WEST GATE"
+  id:"west",
+  name:"WEST GATE",
+  label:"WEST GATE",
+  category:"gate",
+  lat:35.62555,
+  lng:139.77460,
+  description:"WEST GATE"
 },
 
 {
- id:"east",
- name:"EAST GATE",
- label:"EAST GATE",
- category:"gate",
- lat:35.62485,
- lng:139.77630,
- description:"EAST GATE"
+  id:"east",
+  name:"EAST GATE",
+  label:"EAST GATE",
+  category:"gate",
+  lat:35.62485,
+  lng:139.77630,
+  description:"EAST GATE"
 },
 
 {
- id:"a",
- name:"A-GATE",
- label:"A-GATE",
- category:"gate",
- lat:35.62415,
- lng:139.77720,
- description:"A-GATE"
+  id:"a",
+  name:"A-GATE",
+  label:"A-GATE",
+  category:"gate",
+  lat:35.62415,
+  lng:139.77720,
+  description:"A-GATE"
 },
 
 {
- id:"b",
- name:"B-GATE",
- label:"B-GATE",
- category:"gate",
- lat:35.62365,
- lng:139.77580,
- description:"B-GATE"
+  id:"b",
+  name:"B-GATE",
+  label:"B-GATE",
+  category:"gate",
+  lat:35.62365,
+  lng:139.77580,
+  description:"B-GATE"
 },
 
 {
- id:"c",
- name:"C-GATE",
- label:"C-GATE",
- category:"gate",
- lat:35.62435,
- lng:139.77420,
- description:"C-GATE"
+  id:"c",
+  name:"C-GATE",
+  label:"C-GATE",
+  category:"gate",
+  lat:35.62435,
+  lng:139.77420,
+  description:"C-GATE"
 },
 
 {
- id:"info",
- name:"インフォメーション",
- label:"INFO",
- category:"info",
- lat:35.62540,
- lng:139.77565,
- description:"インフォメーション"
+  id:"info",
+  name:"インフォメーション",
+  label:"INFO",
+  category:"info",
+  lat:35.62540,
+  lng:139.77565,
+  description:"インフォメーション"
 },
 
 {
- id:"fc",
- name:"ファンクラブ＆CD販売",
- label:"FC・CD",
- category:"goods",
- lat:35.62625,
- lng:139.77365,
- description:"ファンクラブ＆CD販売ブース"
+  id:"fc",
+  name:"ファンクラブ＆CD販売",
+  label:"FC・CD",
+  category:"goods",
+  lat:35.62625,
+  lng:139.77365,
+  description:"ファンクラブ＆CD販売ブース"
 },
 
 {
- id:"capsule",
- name:"MEGA CAPSULE",
- label:"CAPSULE",
- category:"goods",
- lat:35.62615,
- lng:139.77415,
- description:"MEGA CAPSULE"
+  id:"capsule",
+  name:"MEGA CAPSULE",
+  label:"CAPSULE",
+  category:"goods",
+  lat:35.62615,
+  lng:139.77415,
+  description:"MEGA CAPSULE"
 },
 
 {
- id:"goods",
- name:"グッズ",
- label:"GOODS",
- category:"goods",
- lat:35.62605,
- lng:139.77470,
- description:"オフィシャルグッズ"
+  id:"goods",
+  name:"グッズ",
+  label:"GOODS",
+  category:"goods",
+  lat:35.62605,
+  lng:139.77470,
+  description:"オフィシャルグッズ"
 },
 
 {
- id:"penlight",
- name:"ペンライト",
- label:"PENLIGHT",
- category:"goods",
- lat:35.62590,
- lng:139.77505,
- description:"ペンライトブース"
+  id:"penlight",
+  name:"ペンライト",
+  label:"PENLIGHT",
+  category:"goods",
+  lat:35.62590,
+  lng:139.77505,
+  description:"ペンライトブース"
 },
 
 {
- id:"food",
- name:"キッチンカー",
- label:"FOOD",
- category:"food",
- lat:35.62585,
- lng:139.77340,
- description:"キッチンカー"
+  id:"food",
+  name:"キッチンカー",
+  label:"FOOD",
+  category:"food",
+  lat:35.62585,
+  lng:139.77340,
+  description:"キッチンカー"
 },
 
 {
- id:"bar1",
- name:"オフィシャルバー",
- label:"BAR",
- category:"bar",
- lat:35.62540,
- lng:139.77335,
- description:"オフィシャルバー"
+  id:"bar1",
+  name:"オフィシャルバー①",
+  label:"BAR",
+  category:"bar",
+  lat:35.62540,
+  lng:139.77335,
+  description:"オフィシャルバー"
 },
 
 {
- id:"bar2",
- name:"オフィシャルバー",
- label:"BAR",
- category:"bar",
- lat:35.62415,
- lng:139.77800,
- description:"オフィシャルバー"
+  id:"bar2",
+  name:"オフィシャルバー②",
+  label:"BAR",
+  category:"bar",
+  lat:35.62415,
+  lng:139.77800,
+  description:"オフィシャルバー"
 },
 
 {
- id:"rest",
- name:"休憩テント",
- label:"休憩テント",
- category:"rest",
- lat:35.62585,
- lng:139.77425,
- description:"休憩テント"
+  id:"rest",
+  name:"休憩テント",
+  label:"休憩テント",
+  category:"rest",
+  lat:35.62585,
+  lng:139.77425,
+  description:"休憩テント"
 },
 
 {
- id:"eco",
- name:"エコステーション",
- label:"ECO",
- category:"rest",
- lat:35.62570,
- lng:139.77485,
- description:"エコステーション"
+  id:"eco",
+  name:"エコステーション",
+  label:"ECO",
+  category:"rest",
+  lat:35.62570,
+  lng:139.77485,
+  description:"エコステーション"
 },
 
 {
- id:"suntory",
- name:"サントリー生ビール",
- label:"SUNTORY",
- category:"booth",
- lat:35.62515,
- lng:139.77475,
- description:"サントリー生ビールブース"
+  id:"suntory",
+  name:"サントリー生ビール",
+  label:"SUNTORY",
+  category:"booth",
+  lat:35.62515,
+  lng:139.77475,
+  description:"サントリー生ビールブース"
 },
 
 {
- id:"toyota",
- name:"TOYOTA 給電ラッピングカー",
- label:"TOYOTA",
- category:"booth",
- lat:35.62525,
- lng:139.77520,
- description:"TOYOTA 給電ラッピングカー"
+  id:"toyota",
+  name:"TOYOTA 給電ラッピングカー",
+  label:"TOYOTA",
+  category:"booth",
+  lat:35.62525,
+  lng:139.77520,
+  description:"TOYOTA 給電ラッピングカー"
 },
 
 {
- id:"umajo",
- name:"UMAJO",
- label:"UMAJO",
- category:"booth",
- lat:35.62490,
- lng:139.77475,
- description:"UMAJOブース"
+  id:"umajo",
+  name:"UMAJO",
+  label:"UMAJO",
+  category:"booth",
+  lat:35.62490,
+  lng:139.77475,
+  description:"UMAJOブース"
 },
 
 {
- id:"photo1",
- name:"フォトスポット",
- label:"PHOTO",
- category:"photo",
- lat:35.62510,
- lng:139.77535,
- description:"フォトスポット"
+  id:"photo1",
+  name:"フォトスポット①",
+  label:"PHOTO",
+  category:"photo",
+  lat:35.62510,
+  lng:139.77535,
+  description:"フォトスポット"
 },
 
 {
- id:"photo2",
- name:"フォトスポット",
- label:"PHOTO",
- category:"photo",
- lat:35.62455,
- lng:139.77455,
- description:"フォトスポット"
+  id:"photo2",
+  name:"フォトスポット②",
+  label:"PHOTO",
+  category:"photo",
+  lat:35.62455,
+  lng:139.77455,
+  description:"フォトスポット"
 },
 
 {
- id:"flower",
- name:"フラワーディスプレイ",
- label:"FLOWER",
- category:"photo",
- lat:35.62440,
- lng:139.77455,
- description:"フラワーディスプレイ"
+  id:"flower",
+  name:"フラワーディスプレイ",
+  label:"FLOWER",
+  category:"photo",
+  lat:35.62440,
+  lng:139.77455,
+  description:"フラワーディスプレイ"
 },
 
 {
- id:"wc1",
- name:"トイレ",
- label:"WC",
- category:"wc",
- lat:35.62530,
- lng:139.77355,
- description:"トイレ"
+  id:"wc1",
+  name:"トイレ①",
+  label:"WC",
+  category:"wc",
+  lat:35.62530,
+  lng:139.77355,
+  description:"トイレ"
 },
 
 {
- id:"wc2",
- name:"トイレ",
- label:"WC",
- category:"wc",
- lat:35.62505,
- lng:139.77355,
- description:"トイレ"
+  id:"wc2",
+  name:"トイレ②",
+  label:"WC",
+  category:"wc",
+  lat:35.62505,
+  lng:139.77355,
+  description:"トイレ"
 },
 
 {
- id:"wc3",
- name:"トイレ",
- label:"WC",
- category:"wc",
- lat:35.62480,
- lng:139.77355,
- description:"トイレ"
+  id:"wc3",
+  name:"トイレ③",
+  label:"WC",
+  category:"wc",
+  lat:35.62480,
+  lng:139.77355,
+  description:"トイレ"
 },
 
 {
- id:"wc4",
- name:"トイレ",
- label:"WC",
- category:"wc",
- lat:35.62510,
- lng:139.77585,
- description:"トイレ"
+  id:"wc4",
+  name:"トイレ④",
+  label:"WC",
+  category:"wc",
+  lat:35.62510,
+  lng:139.77585,
+  description:"トイレ"
 },
 
 {
- id:"wc5",
- name:"トイレ",
- label:"WC",
- category:"wc",
- lat:35.62505,
- lng:139.77685,
- description:"トイレ"
+  id:"wc5",
+  name:"トイレ⑤",
+  label:"WC",
+  category:"wc",
+  lat:35.62505,
+  lng:139.77685,
+  description:"トイレ"
 },
 
 {
- id:"wcPremium",
- name:"SS/S席専用トイレ",
- label:"SS/S WC",
- category:"wc",
- lat:35.62395,
- lng:139.77455,
- description:"SS/S席専用トイレ"
+  id:"wcPremium",
+  name:"SS/S席専用トイレ",
+  label:"SS/S WC",
+  category:"wc",
+  lat:35.62395,
+  lng:139.77455,
+  description:"SS/S席専用トイレ"
 }
 
 ];
 
 
 /* =========================================================
-   ICON
+   CREATE ICON
 ========================================================= */
 
 function createVenueIcon(v){
 
- const stage=v.category==="stage";
+  const stage =
+    v.category === "stage";
 
- return L.divIcon({
-   className:"",
-   html:`
-   <div class="venue-marker marker-${v.category} ${stage?"stage-marker":""}">
-     <div class="marker-pin">
-       <div class="marker-inner">
-         ${icons[v.category]}
-       </div>
-     </div>
-     <div class="marker-label">${v.label}</div>
-   </div>
-   `,
-   iconSize:[stage?155:125,stage?85:72],
-   iconAnchor:[0,stage?55:43]
- });
+  const width =
+    140;
+
+  const height =
+    stage ? 86 : 72;
+
+  const pinHeight =
+    stage ? 58 : 46;
+
+
+  return L.divIcon({
+
+    className:
+      "venue-leaflet-icon",
+
+    html: `
+      <div
+        class="
+          venue-marker
+          marker-${v.category}
+          ${stage ? "stage-marker" : ""}
+        "
+        data-id="${v.id}"
+      >
+
+        <div class="marker-hit">
+
+          <div class="marker-pin">
+
+            <div class="marker-inner">
+              ${icons[v.category]}
+            </div>
+
+          </div>
+
+        </div>
+
+        <div class="marker-label">
+          ${v.label}
+        </div>
+
+      </div>
+    `,
+
+    iconSize:
+      [
+        width,
+        height
+      ],
+
+    /*
+      ★ ピン先端が緯度経度になる
+    */
+
+    iconAnchor:
+      [
+        width / 2,
+        pinHeight
+      ]
+
+  });
 
 }
 
@@ -1279,410 +1826,1095 @@ function createVenueIcon(v){
    CREATE MARKERS
 ========================================================= */
 
-const venueMarkers=[];
+const venueMarkers = [];
 
-venues.forEach(v=>{
+let editMode = false;
 
- const marker=L.marker(
-   [v.lat,v.lng],
-   {
-     icon:createVenueIcon(v),
-     draggable:false
-   }
- ).addTo(map);
+let selectedItem = null;
 
- marker.on("click",()=>{
 
-   if(editMode){
-     selectedVenue=v;
-     showSelected(v,marker);
-     return;
-   }
+venues.forEach(v => {
 
-   openVenue(v);
+  const marker =
+    L.marker(
 
- });
+      [
+        v.lat,
+        v.lng
+      ],
 
- marker.on("dragstart",()=>{
-   selectedVenue=v;
- });
+      {
 
- marker.on("dragend",()=>{
+        icon:
+          createVenueIcon(v),
 
-   const p=marker.getLatLng();
+        draggable:
+          false,
 
-   v.lat=p.lat;
-   v.lng=p.lng;
+        autoPan:
+          true,
 
-   showSelected(v,marker);
+        riseOnHover:
+          true
 
- });
+      }
 
- venueMarkers.push({
-   venue:v,
-   marker
- });
+    ).addTo(map);
+
+
+  const item = {
+    venue:v,
+    marker:marker
+  };
+
+
+  venueMarkers.push(item);
+
+
+  /*
+    CLICK
+  */
+
+  marker.on(
+    "click",
+    event => {
+
+      L.DomEvent.stopPropagation(
+        event
+      );
+
+
+      if(editMode){
+
+        selectMarker(
+          item
+        );
+
+      }
+
+      else{
+
+        openVenue(
+          v
+        );
+
+      }
+
+    }
+  );
+
+
+  /*
+    DRAG START
+  */
+
+  marker.on(
+    "dragstart",
+    () => {
+
+      if(!editMode){
+        return;
+      }
+
+      selectMarker(
+        item
+      );
+
+      map.dragging.disable();
+
+    }
+  );
+
+
+  /*
+    DRAG
+  */
+
+  marker.on(
+    "drag",
+    () => {
+
+      if(!editMode){
+        return;
+      }
+
+      updateVenuePosition(
+        item
+      );
+
+    }
+  );
+
+
+  /*
+    DRAG END
+  */
+
+  marker.on(
+    "dragend",
+    () => {
+
+      if(!editMode){
+        return;
+      }
+
+      updateVenuePosition(
+        item
+      );
+
+      map.dragging.enable();
+
+      showToast(
+        `${v.name} を移動しました`
+      );
+
+    }
+  );
 
 });
+
+
+/* =========================================================
+   SELECT MARKER
+========================================================= */
+
+function selectMarker(item){
+
+  selectedItem =
+    item;
+
+
+  document
+    .querySelectorAll(
+      ".venue-marker"
+    )
+    .forEach(el => {
+
+      el.classList.remove(
+        "selected"
+      );
+
+    });
+
+
+  const markerElement =
+    item.marker.getElement();
+
+
+  if(markerElement){
+
+    const visual =
+      markerElement.querySelector(
+        ".venue-marker"
+      );
+
+
+    if(visual){
+
+      visual.classList.add(
+        "selected"
+      );
+
+    }
+
+  }
+
+
+  updateVenuePosition(
+    item
+  );
+
+}
+
+
+/* =========================================================
+   UPDATE POSITION
+========================================================= */
+
+function updateVenuePosition(item){
+
+  const position =
+    item.marker.getLatLng();
+
+
+  item.venue.lat =
+    position.lat;
+
+
+  item.venue.lng =
+    position.lng;
+
+
+  document.getElementById(
+    "editSelected"
+  ).innerHTML = `
+
+    <strong>
+      ${item.venue.name}
+    </strong>
+
+    <br>
+
+    LAT：
+    ${position.lat.toFixed(7)}
+
+    <br>
+
+    LNG：
+    ${position.lng.toFixed(7)}
+
+  `;
+
+}
 
 
 /* =========================================================
    EDIT MODE
 ========================================================= */
 
-let editMode=false;
-let selectedVenue=null;
-
-const editButton=document.getElementById("editButton");
-const editPanel=document.getElementById("editPanel");
-const editSelected=document.getElementById("editSelected");
+const editButton =
+  document.getElementById(
+    "editButton"
+  );
 
 
-editButton.addEventListener("click",()=>{
-
- editMode=!editMode;
-
- document.body.classList.toggle("editing",editMode);
-
- editButton.classList.toggle("active",editMode);
-
- editPanel.classList.toggle("show",editMode);
-
- editButton.textContent=
-   editMode
-   ?"EDITING"
-   :"EDIT MODE";
-
- venueMarkers.forEach(item=>{
-   if(editMode){
-     item.marker.dragging.enable();
-   }else{
-     item.marker.dragging.disable();
-   }
- });
-
- showToast(
-   editMode
-   ?"ピンをドラッグできます"
-   :"編集モードを終了しました"
- );
-
-});
+const editPanel =
+  document.getElementById(
+    "editPanel"
+  );
 
 
-function showSelected(v,marker){
+editButton.addEventListener(
+  "click",
+  () => {
 
- const p=marker.getLatLng();
+    editMode =
+      !editMode;
 
- editSelected.innerHTML=
- `
- <strong>${v.name}</strong><br>
- LAT：${p.lat.toFixed(6)}<br>
- LNG：${p.lng.toFixed(6)}
- `;
 
-}
+    document.body.classList.toggle(
+      "editing",
+      editMode
+    );
+
+
+    editButton.classList.toggle(
+      "active",
+      editMode
+    );
+
+
+    editPanel.classList.toggle(
+      "show",
+      editMode
+    );
+
+
+    editButton.textContent =
+      editMode
+        ? "EDITING"
+        : "EDIT MODE";
+
+
+    venueMarkers.forEach(
+      item => {
+
+        if(editMode){
+
+          item.marker.dragging.enable();
+
+        }
+
+        else{
+
+          item.marker.dragging.disable();
+
+        }
+
+      }
+    );
+
+
+    if(!editMode){
+
+      selectedItem =
+        null;
+
+
+      document
+        .querySelectorAll(
+          ".venue-marker"
+        )
+        .forEach(el => {
+
+          el.classList.remove(
+            "selected"
+          );
+
+        });
+
+
+      document.getElementById(
+        "editSelected"
+      ).textContent =
+        "ピンを選択してください";
+
+    }
+
+
+    showToast(
+      editMode
+        ? "全ピンを移動できます"
+        : "編集モードを終了しました"
+    );
+
+  }
+);
 
 
 /* =========================================================
-   COPY POSITION DATA
+   MAP TAP TO MOVE SELECTED PIN
+
+   スマホ用。
 ========================================================= */
 
-document.getElementById("copyButton")
-.addEventListener("click",async()=>{
+map.on(
+  "click",
+  event => {
 
- const output=venueMarkers.map(item=>{
+    if(
+      !editMode ||
+      !selectedItem
+    ){
+      return;
+    }
 
-   const p=item.marker.getLatLng();
 
-   return {
-     id:item.venue.id,
-     name:item.venue.name,
-     lat:Number(p.lat.toFixed(6)),
-     lng:Number(p.lng.toFixed(6))
-   };
+    selectedItem.marker.setLatLng(
+      event.latlng
+    );
 
- });
 
- const text=JSON.stringify(output,null,2);
+    updateVenuePosition(
+      selectedItem
+    );
 
- try{
 
-   await navigator.clipboard.writeText(text);
+    showToast(
+      `${selectedItem.venue.name} を移動しました`
+    );
 
-   showToast("配置データをコピーしました");
+  }
+);
 
- }catch(e){
 
-   prompt(
-     "この内容をコピーしてください",
-     text
-   );
+/* =========================================================
+   COPY
+========================================================= */
 
- }
+document.getElementById(
+  "copyButton"
+).addEventListener(
+  "click",
+  async () => {
 
-});
+    const output =
+      venueMarkers.map(
+        item => {
+
+          const p =
+            item.marker.getLatLng();
+
+
+          return {
+
+            id:
+              item.venue.id,
+
+            name:
+              item.venue.name,
+
+            lat:
+              Number(
+                p.lat.toFixed(7)
+              ),
+
+            lng:
+              Number(
+                p.lng.toFixed(7)
+              )
+
+          };
+
+        }
+      );
+
+
+    const text =
+      JSON.stringify(
+        output,
+        null,
+        2
+      );
+
+
+    try{
+
+      await navigator.clipboard.writeText(
+        text
+      );
+
+
+      showToast(
+        "配置データをコピーしました"
+      );
+
+    }
+
+    catch(error){
+
+      /*
+        clipboard APIが使えない場合
+      */
+
+      const textarea =
+        document.createElement(
+          "textarea"
+        );
+
+
+      textarea.value =
+        text;
+
+
+      textarea.style.position =
+        "fixed";
+
+
+      textarea.style.opacity =
+        "0";
+
+
+      document.body.appendChild(
+        textarea
+      );
+
+
+      textarea.focus();
+      textarea.select();
+
+
+      try{
+
+        document.execCommand(
+          "copy"
+        );
+
+
+        showToast(
+          "配置データをコピーしました"
+        );
+
+      }
+
+      catch(error2){
+
+        window.prompt(
+          "この配置データをコピーしてください",
+          text
+        );
+
+      }
+
+
+      textarea.remove();
+
+    }
+
+  }
+);
 
 
 /* =========================================================
    FILTER
 ========================================================= */
 
-document.querySelectorAll(".filter")
-.forEach(button=>{
+const filterButtons =
+  document.querySelectorAll(
+    ".filter"
+  );
 
- button.addEventListener("click",()=>{
 
-   document.querySelectorAll(".filter")
-   .forEach(b=>b.classList.remove("active"));
+filterButtons.forEach(
+  button => {
 
-   button.classList.add("active");
+    button.addEventListener(
+      "click",
+      () => {
 
-   const category=button.dataset.filter;
+        filterButtons.forEach(
+          b => {
 
-   venueMarkers.forEach(item=>{
+            b.classList.remove(
+              "active"
+            );
 
-     const visible=
-       category==="all" ||
-       item.venue.category===category;
+          }
+        );
 
-     if(visible){
 
-       if(!map.hasLayer(item.marker)){
-         item.marker.addTo(map);
-       }
+        button.classList.add(
+          "active"
+        );
 
-     }else{
 
-       if(map.hasLayer(item.marker)){
-         map.removeLayer(item.marker);
-       }
+        const category =
+          button.dataset.filter;
 
-     }
 
-   });
+        venueMarkers.forEach(
+          item => {
 
- });
+            const visible =
+              category === "all"
+              ||
+              item.venue.category ===
+              category;
 
-});
+
+            if(visible){
+
+              if(
+                !map.hasLayer(
+                  item.marker
+                )
+              ){
+
+                item.marker.addTo(
+                  map
+                );
+
+              }
+
+            }
+
+            else{
+
+              if(
+                map.hasLayer(
+                  item.marker
+                )
+              ){
+
+                map.removeLayer(
+                  item.marker
+                );
+
+              }
+
+            }
+
+          }
+        );
+
+      }
+    );
+
+  }
+);
 
 
 /* =========================================================
    DETAILS
 ========================================================= */
 
-const bottomSheet=document.getElementById("bottomSheet");
-const sheetBackdrop=document.getElementById("sheetBackdrop");
-const sheetCategory=document.getElementById("sheetCategory");
-const sheetTitle=document.getElementById("sheetTitle");
-const sheetDescription=document.getElementById("sheetDescription");
+const bottomSheet =
+  document.getElementById(
+    "bottomSheet"
+  );
+
+const sheetBackdrop =
+  document.getElementById(
+    "sheetBackdrop"
+  );
+
+const sheetCategory =
+  document.getElementById(
+    "sheetCategory"
+  );
+
+const sheetTitle =
+  document.getElementById(
+    "sheetTitle"
+  );
+
+const sheetDescription =
+  document.getElementById(
+    "sheetDescription"
+  );
 
 
 function openVenue(v){
 
- sheetCategory.textContent=v.category.toUpperCase();
- sheetTitle.textContent=v.name;
- sheetDescription.textContent=v.description;
+  sheetCategory.textContent =
+    v.category.toUpperCase();
 
- bottomSheet.classList.add("show");
- sheetBackdrop.classList.add("show");
+
+  sheetTitle.textContent =
+    v.name;
+
+
+  sheetDescription.textContent =
+    v.description;
+
+
+  bottomSheet.classList.add(
+    "show"
+  );
+
+
+  sheetBackdrop.classList.add(
+    "show"
+  );
 
 }
 
 
 function closeVenue(){
 
- bottomSheet.classList.remove("show");
- sheetBackdrop.classList.remove("show");
+  bottomSheet.classList.remove(
+    "show"
+  );
+
+
+  sheetBackdrop.classList.remove(
+    "show"
+  );
 
 }
 
 
-document.getElementById("sheetClose")
-.addEventListener("click",closeVenue);
+document
+  .getElementById(
+    "sheetClose"
+  )
+  .addEventListener(
+    "click",
+    closeVenue
+  );
 
-sheetBackdrop.addEventListener("click",closeVenue);
+
+sheetBackdrop.addEventListener(
+  "click",
+  closeVenue
+);
 
 
 /* =========================================================
    REAL / OFFICIAL
 ========================================================= */
 
-const officialMap=document.getElementById("officialMap");
-const filtersWrap=document.querySelector(".filters-wrap");
-const locationButton=document.getElementById("locationButton");
+const officialMap =
+  document.getElementById(
+    "officialMap"
+  );
 
 
-document.querySelectorAll(".mode-button")
-.forEach(button=>{
+const filtersWrap =
+  document.querySelector(
+    ".filters-wrap"
+  );
 
- button.addEventListener("click",()=>{
 
-   document.querySelectorAll(".mode-button")
-   .forEach(b=>b.classList.remove("active"));
+const locationButton =
+  document.getElementById(
+    "locationButton"
+  );
 
-   button.classList.add("active");
 
-   if(button.dataset.mode==="official"){
+document
+  .querySelectorAll(
+    ".mode-button"
+  )
+  .forEach(
+    button => {
 
-     officialMap.classList.add("show");
-     filtersWrap.style.display="none";
-     locationButton.style.display="none";
-     editButton.style.display="none";
-     editPanel.classList.remove("show");
+      button.addEventListener(
+        "click",
+        () => {
 
-   }else{
+          document
+            .querySelectorAll(
+              ".mode-button"
+            )
+            .forEach(
+              b => {
 
-     officialMap.classList.remove("show");
-     filtersWrap.style.display="";
-     locationButton.style.display="";
-     editButton.style.display="";
+                b.classList.remove(
+                  "active"
+                );
 
-     if(editMode){
-       editPanel.classList.add("show");
-     }
+              }
+            );
 
-     setTimeout(()=>{
-       map.invalidateSize();
-     },100);
 
-   }
+          button.classList.add(
+            "active"
+          );
 
- });
 
-});
+          if(
+            button.dataset.mode ===
+            "official"
+          ){
+
+            officialMap.classList.add(
+              "show"
+            );
+
+
+            filtersWrap.style.display =
+              "none";
+
+
+            locationButton.style.display =
+              "none";
+
+
+            editButton.style.display =
+              "none";
+
+
+            editPanel.style.display =
+              "none";
+
+          }
+
+          else{
+
+            officialMap.classList.remove(
+              "show"
+            );
+
+
+            filtersWrap.style.display =
+              "";
+
+
+            locationButton.style.display =
+              "";
+
+
+            editButton.style.display =
+              "";
+
+
+            editPanel.style.display =
+              "";
+
+
+            if(!editMode){
+
+              editPanel.classList.remove(
+                "show"
+              );
+
+            }
+
+
+            setTimeout(
+              () => {
+
+                map.invalidateSize();
+
+              },
+              100
+            );
+
+          }
+
+        }
+      );
+
+    }
+  );
 
 
 /* =========================================================
    GPS
-   保存・送信なし
+
+   現在地はサーバーへ送信しない。
+   localStorageにも保存しない。
 ========================================================= */
 
-let locationMarker=null;
-let accuracyCircle=null;
-let watchId=null;
-let firstLocation=true;
+let locationMarker =
+  null;
 
-const userIcon=L.divIcon({
- className:"",
- html:'<div class="user-location"></div>',
- iconSize:[22,22],
- iconAnchor:[11,11]
-});
+let accuracyCircle =
+  null;
 
+let watchId =
+  null;
 
-locationButton.addEventListener("click",()=>{
-
- if(locationMarker){
-
-   map.flyTo(
-     locationMarker.getLatLng(),
-     18,
-     {duration:.8}
-   );
-
-   return;
- }
-
- if(!navigator.geolocation){
-
-   showToast("位置情報を利用できません");
-
-   return;
- }
-
- showToast("現在地を取得しています…");
-
- watchId=navigator.geolocation.watchPosition(
-   locationSuccess,
-   locationError,
-   {
-     enableHighAccuracy:true,
-     maximumAge:2000,
-     timeout:15000
-   }
- );
-
-});
+let firstLocation =
+  true;
 
 
-function locationSuccess(position){
+const userIcon =
+  L.divIcon({
 
- const lat=position.coords.latitude;
- const lng=position.coords.longitude;
- const accuracy=position.coords.accuracy;
+    className:"",
 
- if(!locationMarker){
+    html:
+      '<div class="user-location"></div>',
 
-   locationMarker=L.marker(
-     [lat,lng],
-     {
-       icon:userIcon,
-       zIndexOffset:10000
-     }
-   ).addTo(map);
+    iconSize:
+      [22,22],
 
- }else{
+    iconAnchor:
+      [11,11]
 
-   locationMarker.setLatLng([lat,lng]);
+  });
 
- }
 
- if(!accuracyCircle){
+locationButton.addEventListener(
+  "click",
+  () => {
 
-   accuracyCircle=L.circle(
-     [lat,lng],
-     {
-       radius:accuracy,
-       color:"#1976ff",
-       weight:1,
-       opacity:.5,
-       fillColor:"#1976ff",
-       fillOpacity:.08
-     }
-   ).addTo(map);
+    if(locationMarker){
 
- }else{
+      map.flyTo(
 
-   accuracyCircle.setLatLng([lat,lng]);
-   accuracyCircle.setRadius(accuracy);
+        locationMarker.getLatLng(),
 
- }
+        18,
 
- if(firstLocation){
+        {
+          duration:.8
+        }
 
-   firstLocation=false;
+      );
 
-   map.flyTo(
-     [lat,lng],
-     18,
-     {duration:1}
-   );
+      return;
 
-   showToast("現在地を表示しました");
+    }
 
- }
+
+    if(!navigator.geolocation){
+
+      showToast(
+        "位置情報を利用できません"
+      );
+
+      return;
+
+    }
+
+
+    showToast(
+      "現在地を取得しています…"
+    );
+
+
+    watchId =
+      navigator.geolocation.watchPosition(
+
+        locationSuccess,
+
+        locationError,
+
+        {
+
+          enableHighAccuracy:
+            true,
+
+          maximumAge:
+            2000,
+
+          timeout:
+            15000
+
+        }
+
+      );
+
+  }
+);
+
+
+function locationSuccess(
+  position
+){
+
+  const lat =
+    position.coords.latitude;
+
+  const lng =
+    position.coords.longitude;
+
+  const accuracy =
+    position.coords.accuracy;
+
+
+  if(!locationMarker){
+
+    locationMarker =
+      L.marker(
+
+        [
+          lat,
+          lng
+        ],
+
+        {
+
+          icon:
+            userIcon,
+
+          zIndexOffset:
+            10000
+
+        }
+
+      ).addTo(map);
+
+  }
+
+  else{
+
+    locationMarker.setLatLng(
+      [
+        lat,
+        lng
+      ]
+    );
+
+  }
+
+
+  if(!accuracyCircle){
+
+    accuracyCircle =
+      L.circle(
+
+        [
+          lat,
+          lng
+        ],
+
+        {
+
+          radius:
+            accuracy,
+
+          color:
+            "#1976ff",
+
+          weight:
+            1,
+
+          opacity:
+            .5,
+
+          fillColor:
+            "#1976ff",
+
+          fillOpacity:
+            .08
+
+        }
+
+      ).addTo(map);
+
+  }
+
+  else{
+
+    accuracyCircle.setLatLng(
+      [
+        lat,
+        lng
+      ]
+    );
+
+
+    accuracyCircle.setRadius(
+      accuracy
+    );
+
+  }
+
+
+  if(firstLocation){
+
+    firstLocation =
+      false;
+
+
+    map.flyTo(
+
+      [
+        lat,
+        lng
+      ],
+
+      18,
+
+      {
+        duration:1
+      }
+
+    );
+
+
+    showToast(
+      "現在地を表示しました"
+    );
+
+  }
 
 }
 
 
-function locationError(error){
+/* =========================================================
+   GPS ERROR
+========================================================= */
 
- let message="現在地を取得できませんでした";
+function locationError(
+  error
+){
 
- if(error.code===1){
-   message="位置情報が許可されていません";
- }
+  let message =
+    "現在地を取得できませんでした";
 
- if(error.code===2){
-   message="現在地を確認できませんでした";
- }
 
- if(error.code===3){
-   message="現在地取得がタイムアウトしました";
- }
+  if(error.code === 1){
 
- showToast(message);
+    message =
+      "位置情報が許可されていません";
+
+  }
+
+
+  if(error.code === 2){
+
+    message =
+      "現在地を確認できませんでした";
+
+  }
+
+
+  if(error.code === 3){
+
+    message =
+      "現在地取得がタイムアウトしました";
+
+  }
+
+
+  showToast(
+    message
+  );
 
 }
 
@@ -1691,19 +2923,44 @@ function locationError(error){
    TOAST
 ========================================================= */
 
-const toast=document.getElementById("toast");
+const toast =
+  document.getElementById(
+    "toast"
+  );
+
 let toastTimer;
 
-function showToast(message){
 
- clearTimeout(toastTimer);
+function showToast(
+  message
+){
 
- toast.textContent=message;
- toast.classList.add("show");
+  clearTimeout(
+    toastTimer
+  );
 
- toastTimer=setTimeout(()=>{
-   toast.classList.remove("show");
- },2300);
+
+  toast.textContent =
+    message;
+
+
+  toast.classList.add(
+    "show"
+  );
+
+
+  toastTimer =
+    setTimeout(
+      () => {
+
+        toast.classList.remove(
+          "show"
+        );
+
+      },
+
+      2300
+    );
 
 }
 
@@ -1712,14 +2969,24 @@ function showToast(message){
    CLEANUP
 ========================================================= */
 
-window.addEventListener("pagehide",()=>{
+window.addEventListener(
+  "pagehide",
+  () => {
 
- if(watchId!==null){
-   navigator.geolocation.clearWatch(watchId);
- }
+    if(
+      watchId !== null
+    ){
 
-});
+      navigator.geolocation.clearWatch(
+        watchId
+      );
+
+    }
+
+  }
+);
 
 </script>
+
 </body>
 </html>
