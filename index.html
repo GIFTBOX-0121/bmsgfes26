@@ -1067,6 +1067,28 @@ button:active{transform:scale(.98);}
 }
 
 </style>
+
+<style id="main-stage-editor-style">
+.main-edit-btn{
+  position:absolute;right:10px;top:10px;z-index:900;
+  border:1px solid rgba(255,255,255,.45);border-radius:999px;
+  background:rgba(8,8,8,.86);color:#fff;padding:8px 11px;
+  font-size:11px;font-weight:800;letter-spacing:.04em;
+}
+.main-edit-panel{
+  position:absolute;left:10px;right:10px;bottom:12px;z-index:1100;
+  background:rgba(8,8,8,.94);border:1px solid rgba(255,255,255,.35);
+  border-radius:14px;padding:12px;color:#fff;display:none;
+  box-shadow:0 10px 30px rgba(0,0,0,.45)
+}
+.main-edit-panel.on{display:block}
+.main-edit-panel .row{display:flex;gap:8px;margin-top:9px}
+.main-edit-panel button{flex:1;border:0;border-radius:10px;padding:10px;font-weight:800}
+.main-edit-panel .save{background:#fff;color:#050505}
+.main-edit-panel .cancel{background:#292929;color:#fff}
+.main-edit-panel small{color:#cfcfcf;line-height:1.5}
+</style>
+
 </head>
 
 <body>
@@ -1458,7 +1480,7 @@ button:active{transform:scale(.98);}
         class="form-input"
         id="keywordInput"
         type="password"
-        placeholder="自分だけのキーワード"
+        placeholder="半角英数字8文字以上"
         autocomplete="new-password"
       >
 
@@ -2155,7 +2177,100 @@ saveSpotButton.addEventListener("click",()=>{
   scheduleCloudSync();
 
   updateSaveButton();
-  renderMySpots();
+  
+/* =========================================================
+   MAIN STAGE POSITION — MAINだけ編集
+   他のピン座標には一切触れない。
+========================================================= */
+const MAIN_STAGE_OVERRIDE_KEY = "bmsgfes_main_stage_position_v1";
+let mainStageEditMode = false;
+let mainStageDraft = null;
+
+function getMainMarker(){
+  if(typeof markers === "undefined" || !markers) return null;
+  if(markers instanceof Map) return markers.get("main") || null;
+  if(Array.isArray(markers)){
+    const found = markers.find(x => x && (x.id==="main" || x.data?.id==="main"));
+    return found?.marker || found || null;
+  }
+  return markers.main || null;
+}
+
+function applySavedMainStagePosition(){
+  try{
+    const saved = JSON.parse(localStorage.getItem(MAIN_STAGE_OVERRIDE_KEY) || "null");
+    if(!saved || !Number.isFinite(saved.lat) || !Number.isFinite(saved.lng)) return;
+    const marker = getMainMarker();
+    if(marker && marker.setLatLng) marker.setLatLng([saved.lat, saved.lng]);
+  }catch(e){}
+}
+
+function setupMainStageEditor(){
+  const mapEl = document.getElementById("map");
+  if(!mapEl || typeof map === "undefined") return;
+
+  const btn = document.createElement("button");
+  btn.className = "main-edit-btn";
+  btn.type = "button";
+  btn.textContent = "MAIN位置調整";
+  mapEl.parentElement.style.position = "relative";
+  mapEl.parentElement.appendChild(btn);
+
+  const panel = document.createElement("div");
+  panel.className = "main-edit-panel";
+  panel.innerHTML = `
+    <strong>MAIN STAGEだけ位置調整</strong><br>
+    <small>地図上の正しいMAIN STAGE位置をタップしてください。<br>
+    他のピンは一切変更されません。</small>
+    <div class="row">
+      <button type="button" class="cancel">キャンセル</button>
+      <button type="button" class="save">この位置で固定</button>
+    </div>
+  `;
+  mapEl.parentElement.appendChild(panel);
+
+  btn.addEventListener("click", ()=>{
+    mainStageEditMode = true;
+    mainStageDraft = null;
+    panel.classList.add("on");
+    btn.style.display = "none";
+    showToast("MAIN STAGEの正しい位置を地図でタップ");
+  });
+
+  map.on("click", e=>{
+    if(!mainStageEditMode) return;
+    mainStageDraft = {lat:e.latlng.lat, lng:e.latlng.lng};
+    const marker = getMainMarker();
+    if(marker && marker.setLatLng) marker.setLatLng(e.latlng);
+  });
+
+  panel.querySelector(".save").addEventListener("click", ()=>{
+    if(!mainStageDraft){
+      showToast("先に地図上の位置をタップしてください");
+      return;
+    }
+    localStorage.setItem(MAIN_STAGE_OVERRIDE_KEY, JSON.stringify(mainStageDraft));
+    mainStageEditMode = false;
+    panel.classList.remove("on");
+    btn.style.display = "";
+    showToast("MAIN STAGEの位置をこの端末に固定しました");
+  });
+
+  panel.querySelector(".cancel").addEventListener("click", ()=>{
+    mainStageEditMode = false;
+    mainStageDraft = null;
+    panel.classList.remove("on");
+    btn.style.display = "";
+    applySavedMainStagePosition();
+  });
+
+  setTimeout(applySavedMainStagePosition, 250);
+}
+
+
+setupMainStageEditor();
+
+renderMySpots();
 
 });
 
@@ -2525,6 +2640,39 @@ function normalizeXId(xid){
     .replace(/^@/,"");
 }
 
+
+function openXProfile(xid){
+  const clean = String(xid || "").trim().replace(/^@/, "");
+  if(!clean) return;
+
+  const webUrl = "https://x.com/" + encodeURIComponent(clean);
+  const ua = navigator.userAgent || "";
+
+  // iPhone / iPad: Xアプリを優先。開けなければWebへ。
+  if(/iPhone|iPad|iPod/i.test(ua)){
+    const appUrl = "twitter://user?screen_name=" + encodeURIComponent(clean);
+    const started = Date.now();
+    window.location.href = appUrl;
+
+    setTimeout(()=>{
+      if(Date.now() - started < 1800){
+        window.location.href = webUrl;
+      }
+    }, 1200);
+    return;
+  }
+
+  // Android: XアプリのIntentを優先。
+  if(/Android/i.test(ua)){
+    window.location.href =
+      "intent://x.com/" + encodeURIComponent(clean) +
+      "#Intent;scheme=https;package=com.twitter.android;S.browser_fallback_url=" +
+      encodeURIComponent(webUrl) + ";end";
+    return;
+  }
+
+  window.open(webUrl, "_blank", "noopener");
+}
 
 function renderTrades(){
 
@@ -3166,8 +3314,8 @@ document.getElementById("saveKeyword")
 
   const keyword = keywordInput.value.trim();
 
-  if(keyword.length<8){
-    showToast("8文字以上のキーワードにしてください");
+  if(!/^[A-Za-z0-9]{8,}$/.test(keyword)){
+    showToast("半角英数字8文字以上で入力してください");
     return;
   }
 
