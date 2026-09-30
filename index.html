@@ -12,6 +12,7 @@
 <link rel="manifest" href="./manifest.webmanifest">
 
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css">
 
 <style>
 *{
@@ -1676,52 +1677,11 @@ button:active{transform:scale(.98);}
 
 
 
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
-/* =========================================================
-   STATION OFFLINE ROUTE GUIDES
-========================================================= */
-function openStationGuide(id){
-  const modal=document.getElementById(id);
-  if(!modal) return;
-  modal.classList.add("on");
-  modal.setAttribute("aria-hidden","false");
-  document.body.style.overflow="hidden";
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+if(!window.L){
+  document.write('<script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"><\/script>');
 }
-function closeStationGuides(){
-  document.querySelectorAll(".route-guide-modal.on").forEach(modal=>{
-    modal.classList.remove("on");
-    modal.setAttribute("aria-hidden","true");
-  });
-  document.body.style.overflow="";
-}
-document.querySelectorAll("[data-close-route]").forEach(btn=>{
-  btn.addEventListener("click",closeStationGuides);
-});
-document.querySelectorAll(".route-guide-modal").forEach(modal=>{
-  modal.addEventListener("click",e=>{
-    if(e.target===modal) closeStationGuides();
-  });
-});
-
-/* 既存の駅ルートボタンをサイト内オフライン案内へ変更 */
-document.querySelectorAll("button,a").forEach(el=>{
-  const text=(el.textContent||"").replace(/\s+/g,"");
-  if(text.includes("東京テレポート駅") && text.includes("会場")){
-    el.addEventListener("click",e=>{
-      e.preventDefault();
-      e.stopImmediatePropagation();
-      openStationGuide("teleportGuide");
-    },true);
-  }
-  if(text.includes("台場駅") && text.includes("会場")){
-    el.addEventListener("click",e=>{
-      e.preventDefault();
-      e.stopImmediatePropagation();
-      openStationGuide("daibaGuide");
-    },true);
-  }
-});
-
 </script>
 
 
@@ -2198,24 +2158,6 @@ document.getElementById("pinEditCopy")
 document.getElementById("pinCopyAlways")
   ?.addEventListener("click",copyCurrentPinPositions);
 
-    const text=JSON.stringify(rows,null,2);
-
-    try{
-      await navigator.clipboard.writeText(text);
-      showToast("修正済み座標をコピーしました");
-    }catch(e){
-      const area=document.createElement("textarea");
-      area.value=text;
-      area.style.position="fixed";
-      area.style.left="-9999px";
-      document.body.appendChild(area);
-      area.select();
-      document.execCommand("copy");
-      area.remove();
-      showToast("修正済み座標をコピーしました");
-    }
-  });
-
 document.getElementById("pinEditReset")
   ?.addEventListener("click",()=>{
     if(!confirm("編集したピン位置をすべて初期位置に戻しますか？")) return;
@@ -2515,7 +2457,7 @@ function stationRoute(type){
   if(!origin) return;
 
   /* BMSG FES会場（青海R地区） */
-  const destination="BMSG FES 2026 青海R地区";
+  const destination="35.62345,139.77505";
 
   const url=
     "https://www.google.com/maps/dir/?api=1"+
@@ -4044,7 +3986,7 @@ loadWeather();
 /* PWA / OFFLINE */
 if("serviceWorker" in navigator){
   window.addEventListener("load",()=>{
-    navigator.serviceWorker.register("./sw.js?v=11-fix-map-weather")
+    navigator.serviceWorker.register("./sw.js?v=13-leaflet-fix")
       .catch(()=>{});
   });
 }
