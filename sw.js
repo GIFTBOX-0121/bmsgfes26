@@ -1,7 +1,6 @@
-const CACHE_NAME = "bmsgfes26-v9";
+const CACHE_NAME = "bmsgfes26-v11";
 
 const APP_SHELL = [
-  "./index.html",
   "./Map.JPG",
   "./manifest.webmanifest",
 
@@ -142,7 +141,20 @@ self.addEventListener(
           );
 
 
-        /* APP FILES */
+        /*
+        -----------------------------------------
+        APP FILES
+        -----------------------------------------
+
+        index.html はここでは保存しない。
+
+        理由：
+        SW更新時に古いindex.htmlを
+        先にキャッシュしてしまう事故を防ぐため。
+
+        index.htmlは実際にページを開いた時に
+        最新版を取得して保存する。
+        */
 
         for (
           const url of APP_SHELL
@@ -179,8 +191,8 @@ self.addEventListener(
           catch (error) {
 
             /*
-              1ファイル取得できなくても
-              Service Worker全体は止めない
+            1ファイル失敗しても
+            Service Worker全体は止めない
             */
 
           }
@@ -188,7 +200,14 @@ self.addEventListener(
         }
 
 
-        /* VENUE MAP TILES */
+        /*
+        -----------------------------------------
+        VENUE MAP TILES
+
+        会場周辺の地図を
+        オフライン用に保存
+        -----------------------------------------
+        */
 
         const tiles =
           venueTileUrls();
@@ -225,7 +244,7 @@ self.addEventListener(
           catch (error) {
 
             /*
-              一部の地図タイル取得失敗は無視
+            一部タイル取得失敗は無視
             */
 
           }
@@ -238,8 +257,7 @@ self.addEventListener(
 
 
     /*
-      新しいService Workerを
-      すぐ待機解除
+    新しいSWをすぐ有効化
     */
 
     self.skipWaiting();
@@ -261,7 +279,8 @@ self.addEventListener(
       (async () => {
 
         /*
-          v8以前のキャッシュを削除
+        v10以前など
+        古いBMSG FESキャッシュを削除
         */
 
         const keys =
@@ -286,8 +305,8 @@ self.addEventListener(
 
 
         /*
-          開いているページも
-          v9管理下へ
+        現在開いているページも
+        v11管理下へ
         */
 
         await self.clients.claim();
@@ -330,7 +349,10 @@ self.addEventListener(
     /* =====================================================
        PRIVATE DATA API / WEATHER
 
-       ここはService Workerでキャッシュしない
+       Service Workerではキャッシュしない。
+
+       天気はindex.html側で
+       最新取得＋圏外用保存を管理。
     ===================================================== */
 
     if (
@@ -351,13 +373,17 @@ self.addEventListener(
 
 
     /* =====================================================
-       INDEX / PAGE
+       PAGE NAVIGATION
+
+       ★重要★
 
        オンライン
-       → 必ず最新版を取得
+       ↓
+       必ずサーバー上の最新index.html
 
        オフライン
-       → 保存してある最新版を表示
+       ↓
+       最後に正常表示できたindex.html
     ===================================================== */
 
     if (
@@ -375,7 +401,9 @@ self.addEventListener(
 
 
           /*
-            ONLINE
+          -----------------------------------------
+          ONLINE
+          -----------------------------------------
           */
 
           try {
@@ -395,8 +423,8 @@ self.addEventListener(
             ) {
 
               /*
-                最新indexを
-                オフライン用にも保存
+              最新版を
+              圏外用として保存
               */
 
               await cache.put(
@@ -414,16 +442,18 @@ self.addEventListener(
           catch (error) {
 
             /*
-              ネット接続失敗
-              ↓
-              オフラインキャッシュへ
+            ネットワーク失敗
+            ↓
+            オフライン版へ
             */
 
           }
 
 
           /*
-            OFFLINE
+          -----------------------------------------
+          OFFLINE
+          -----------------------------------------
           */
 
           const cached =
@@ -440,8 +470,8 @@ self.addEventListener(
 
 
           /*
-            一度もオンラインで
-            開いていない場合
+          初回アクセス前など
+          index.htmlの保存もない場合
           */
 
           return new Response(
@@ -583,9 +613,12 @@ self.addEventListener(
 
 
     /* =====================================================
-       OPEN STREET MAP
+       OPENSTREETMAP
 
-       会場周辺は保存済み地図を優先
+       会場周辺は
+       キャッシュ済み地図を優先。
+
+       → 圏外でも会場マップを表示
     ===================================================== */
 
     if (
@@ -605,7 +638,7 @@ self.addEventListener(
 
 
           /*
-            保存済み地図
+          保存済み地図
           */
 
           const cached =
@@ -622,8 +655,8 @@ self.addEventListener(
 
 
           /*
-            保存されていなければ
-            オンライン取得
+          未保存なら
+          オンライン取得
           */
 
           try {
@@ -674,14 +707,15 @@ self.addEventListener(
        OTHER FILES
 
        Map.JPG
-       manifest
-       Leafletなど
+       manifest.webmanifest
+       Leaflet CSS / JS
+       その他静的ファイル
 
        オンライン
-       → 最新版
+       → 最新版を取得して保存
 
        オフライン
-       → キャッシュ
+       → 保存済みを使用
     ===================================================== */
 
     event.respondWith(
@@ -695,7 +729,9 @@ self.addEventListener(
 
 
         /*
-          ONLINE
+        -----------------------------------------
+        ONLINE
+        -----------------------------------------
         */
 
         try {
@@ -732,7 +768,9 @@ self.addEventListener(
         catch (error) {
 
           /*
-            OFFLINE
+          -----------------------------------------
+          OFFLINE
+          -----------------------------------------
           */
 
           const cached =
