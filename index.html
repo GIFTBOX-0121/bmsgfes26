@@ -1,0 +1,1768 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+
+<title>BMSG FES 2026 | VENUE NAVIGATOR</title>
+
+<meta name="theme-color" content="#070707">
+
+<!-- Leaflet -->
+<link
+  rel="stylesheet"
+  href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+/>
+
+<style>
+/* =========================================================
+   BASE
+========================================================= */
+
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+  background: #050505;
+  color: #f4f4f4;
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    "Helvetica Neue",
+    Arial,
+    sans-serif;
+}
+
+button {
+  font: inherit;
+}
+
+/* =========================================================
+   APP
+========================================================= */
+
+#app {
+  position: fixed;
+  inset: 0;
+  background: #050505;
+}
+
+/* =========================================================
+   MAP
+========================================================= */
+
+#map {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: #0b0b0b;
+}
+
+.leaflet-control-zoom {
+  display: none;
+}
+
+.leaflet-control-attribution {
+  background: rgba(0,0,0,.68) !important;
+  color: #aaa !important;
+  font-size: 9px !important;
+}
+
+.leaflet-control-attribution a {
+  color: #ddd !important;
+}
+
+/* =========================================================
+   DARK MAP FILTER
+========================================================= */
+
+.leaflet-tile-pane {
+  filter:
+    grayscale(1)
+    invert(.93)
+    contrast(.9)
+    brightness(.58);
+}
+
+/* =========================================================
+   TOP HEADER
+========================================================= */
+
+.header {
+  position: absolute;
+  top: calc(12px + env(safe-area-inset-top));
+  left: 14px;
+  right: 14px;
+
+  z-index: 1000;
+
+  border: 1px solid rgba(255,255,255,.24);
+  border-radius: 18px;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(35,35,35,.91),
+      rgba(4,4,4,.91)
+    );
+
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+
+  box-shadow:
+    0 12px 40px rgba(0,0,0,.38),
+    inset 0 1px 0 rgba(255,255,255,.12);
+
+  overflow: hidden;
+}
+
+.header::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 10%;
+  right: 10%;
+  height: 1px;
+
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255,255,255,.75),
+    transparent
+  );
+}
+
+.brand {
+  padding: 14px 16px 10px;
+}
+
+.brand-main {
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: .14em;
+}
+
+.brand-sub {
+  margin-top: 3px;
+
+  color: #aaa;
+
+  font-size: 9px;
+  letter-spacing: .32em;
+}
+
+/* =========================================================
+   MAP MODE SWITCH
+========================================================= */
+
+.mode-switch {
+  display: flex;
+  margin: 0 10px 10px;
+  padding: 3px;
+
+  border: 1px solid rgba(255,255,255,.13);
+  border-radius: 11px;
+
+  background: rgba(255,255,255,.035);
+}
+
+.mode-button {
+  flex: 1;
+
+  border: 0;
+  border-radius: 8px;
+
+  padding: 8px;
+
+  background: transparent;
+  color: #777;
+
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .14em;
+
+  cursor: pointer;
+}
+
+.mode-button.active {
+  color: #080808;
+
+  background:
+    linear-gradient(
+      135deg,
+      #f8f8f8,
+      #8f8f8f
+    );
+
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.9),
+    0 2px 12px rgba(255,255,255,.08);
+}
+
+/* =========================================================
+   FILTER BAR
+========================================================= */
+
+.filters-wrap {
+  position: absolute;
+
+  top: calc(132px + env(safe-area-inset-top));
+  left: 0;
+  right: 0;
+
+  z-index: 900;
+
+  overflow: hidden;
+}
+
+.filters {
+  display: flex;
+  gap: 7px;
+
+  overflow-x: auto;
+
+  padding:
+    6px
+    14px
+    10px;
+
+  scrollbar-width: none;
+}
+
+.filters::-webkit-scrollbar {
+  display: none;
+}
+
+.filter {
+  flex: 0 0 auto;
+
+  border: 1px solid rgba(255,255,255,.22);
+  border-radius: 999px;
+
+  padding: 8px 13px;
+
+  background: rgba(8,8,8,.82);
+  color: #aaa;
+
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: .1em;
+
+  cursor: pointer;
+}
+
+.filter.active {
+  background: #e9e9e9;
+  color: #080808;
+
+  border-color: #fff;
+}
+
+/* =========================================================
+   LOCATION BUTTON
+========================================================= */
+
+.location-button {
+  position: absolute;
+
+  right: 16px;
+  bottom: calc(30px + env(safe-area-inset-bottom));
+
+  z-index: 1000;
+
+  width: 54px;
+  height: 54px;
+
+  border: 1px solid rgba(255,255,255,.34);
+  border-radius: 50%;
+
+  background:
+    radial-gradient(
+      circle at 35% 25%,
+      #393939,
+      #0b0b0b 62%
+    );
+
+  color: white;
+
+  box-shadow:
+    0 12px 30px rgba(0,0,0,.5),
+    inset 0 1px 1px rgba(255,255,255,.22);
+
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.location-symbol {
+  position: relative;
+
+  width: 20px;
+  height: 20px;
+
+  border: 2px solid #eee;
+  border-radius: 50%;
+}
+
+.location-symbol::before {
+  content: "";
+
+  position: absolute;
+
+  width: 6px;
+  height: 6px;
+
+  top: 5px;
+  left: 5px;
+
+  border-radius: 50%;
+
+  background: #fff;
+
+  box-shadow: 0 0 10px #fff;
+}
+
+.location-symbol::after {
+  content: "";
+
+  position: absolute;
+
+  width: 2px;
+  height: 28px;
+
+  top: -6px;
+  left: 7px;
+
+  background:
+    linear-gradient(
+      transparent 0 12%,
+      #ddd 12% 27%,
+      transparent 27% 73%,
+      #ddd 73% 88%,
+      transparent 88%
+    );
+}
+
+/* =========================================================
+   LOCATION MARKER
+========================================================= */
+
+.user-location {
+  width: 22px;
+  height: 22px;
+
+  border-radius: 50%;
+
+  background: white;
+
+  border: 4px solid #333;
+
+  box-shadow:
+    0 0 0 5px rgba(255,255,255,.18),
+    0 0 22px rgba(255,255,255,.9);
+}
+
+.user-location::after {
+  content: "";
+
+  position: absolute;
+
+  inset: -12px;
+
+  border: 1px solid rgba(255,255,255,.4);
+  border-radius: 50%;
+
+  animation: locationPulse 2s infinite;
+}
+
+@keyframes locationPulse {
+
+  0% {
+    transform: scale(.55);
+    opacity: 1;
+  }
+
+  100% {
+    transform: scale(1.5);
+    opacity: 0;
+  }
+}
+
+/* =========================================================
+   VENUE MARKERS
+========================================================= */
+
+.venue-marker {
+  width: 38px;
+  height: 38px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 1px solid rgba(255,255,255,.65);
+  border-radius: 50%;
+
+  background:
+    radial-gradient(
+      circle at 35% 25%,
+      #454545,
+      #090909 65%
+    );
+
+  color: white;
+
+  box-shadow:
+    0 6px 20px rgba(0,0,0,.55),
+    inset 0 1px 1px rgba(255,255,255,.3);
+
+  font-size: 10px;
+  font-weight: 900;
+
+  letter-spacing: -.03em;
+}
+
+/* =========================================================
+   BOTTOM SHEET
+========================================================= */
+
+.sheet-backdrop {
+  position: fixed;
+  inset: 0;
+
+  z-index: 1998;
+
+  background: rgba(0,0,0,.26);
+
+  opacity: 0;
+  pointer-events: none;
+
+  transition: opacity .25s ease;
+}
+
+.sheet-backdrop.show {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.bottom-sheet {
+  position: fixed;
+
+  left: 10px;
+  right: 10px;
+
+  bottom:
+    calc(
+      10px +
+      env(safe-area-inset-bottom)
+    );
+
+  z-index: 2000;
+
+  border: 1px solid rgba(255,255,255,.24);
+  border-radius: 24px;
+
+  padding: 11px 18px 20px;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(35,35,35,.97),
+      rgba(4,4,4,.97)
+    );
+
+  backdrop-filter: blur(22px);
+  -webkit-backdrop-filter: blur(22px);
+
+  box-shadow:
+    0 -10px 50px rgba(0,0,0,.5),
+    inset 0 1px 0 rgba(255,255,255,.12);
+
+  transform: translateY(calc(100% + 50px));
+
+  transition:
+    transform .35s
+    cubic-bezier(.22,.75,.25,1);
+}
+
+.bottom-sheet.show {
+  transform: translateY(0);
+}
+
+.sheet-handle {
+  width: 42px;
+  height: 4px;
+
+  margin: 0 auto 18px;
+
+  border-radius: 99px;
+
+  background: #666;
+}
+
+.sheet-number {
+  margin-bottom: 6px;
+
+  color: #888;
+
+  font-size: 9px;
+  font-weight: 800;
+
+  letter-spacing: .25em;
+}
+
+.sheet-title {
+  font-size: 25px;
+  font-weight: 800;
+
+  letter-spacing: .04em;
+}
+
+.sheet-line {
+  height: 1px;
+
+  margin: 15px 0;
+
+  background:
+    linear-gradient(
+      90deg,
+      #aaa,
+      rgba(255,255,255,.05)
+    );
+}
+
+.sheet-description {
+  color: #bbb;
+
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.sheet-close {
+  width: 100%;
+
+  margin-top: 18px;
+
+  border: 1px solid rgba(255,255,255,.22);
+  border-radius: 11px;
+
+  padding: 11px;
+
+  background: rgba(255,255,255,.05);
+  color: #ddd;
+
+  font-size: 10px;
+  font-weight: 700;
+
+  letter-spacing: .18em;
+
+  cursor: pointer;
+}
+
+/* =========================================================
+   OFFICIAL MAP
+========================================================= */
+
+#officialMap {
+  position: absolute;
+
+  inset: 0;
+
+  z-index: 500;
+
+  display: none;
+
+  background: #050505;
+
+  padding:
+    calc(150px + env(safe-area-inset-top))
+    14px
+    calc(20px + env(safe-area-inset-bottom));
+}
+
+#officialMap.show {
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+}
+
+.official-placeholder {
+  width: 100%;
+  max-width: 700px;
+
+  padding: 38px 20px;
+
+  border: 1px solid rgba(255,255,255,.18);
+  border-radius: 20px;
+
+  background:
+    linear-gradient(
+      145deg,
+      #181818,
+      #080808
+    );
+
+  text-align: center;
+
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.1);
+}
+
+.official-placeholder strong {
+  display: block;
+
+  margin-bottom: 8px;
+
+  font-size: 15px;
+  letter-spacing: .14em;
+}
+
+.official-placeholder span {
+  color: #777;
+
+  font-size: 11px;
+  line-height: 1.7;
+}
+
+/* =========================================================
+   TOAST
+========================================================= */
+
+.toast {
+  position: fixed;
+
+  left: 50%;
+  bottom:
+    calc(
+      100px +
+      env(safe-area-inset-bottom)
+    );
+
+  z-index: 3000;
+
+  max-width: calc(100% - 40px);
+
+  padding: 10px 15px;
+
+  border: 1px solid rgba(255,255,255,.2);
+  border-radius: 999px;
+
+  background: rgba(10,10,10,.92);
+  color: #ddd;
+
+  backdrop-filter: blur(15px);
+
+  font-size: 11px;
+
+  transform:
+    translateX(-50%)
+    translateY(15px);
+
+  opacity: 0;
+  pointer-events: none;
+
+  transition: .25s ease;
+
+  white-space: nowrap;
+}
+
+.toast.show {
+  opacity: 1;
+
+  transform:
+    translateX(-50%)
+    translateY(0);
+}
+
+/* =========================================================
+   DESKTOP
+========================================================= */
+
+@media (min-width: 800px) {
+
+  .header {
+    width: 390px;
+    right: auto;
+  }
+
+  .filters-wrap {
+    width: 700px;
+  }
+
+  .bottom-sheet {
+    width: 390px;
+
+    left: 20px;
+    right: auto;
+
+    bottom: 20px;
+  }
+
+}
+</style>
+</head>
+
+<body>
+
+<div id="app">
+
+  <!-- REAL MAP -->
+  <div id="map"></div>
+
+  <!-- OFFICIAL MAP -->
+  <div id="officialMap">
+
+    <div class="official-placeholder">
+
+      <strong>OFFICIAL VENUE MAP</strong>
+
+      <span>
+        ここには後から公式会場MAP画像を入れます。<br>
+        PCで画像をGitHubに追加したら差し替え可能。
+      </span>
+
+    </div>
+
+  </div>
+
+  <!-- HEADER -->
+  <header class="header">
+
+    <div class="brand">
+
+      <div class="brand-main">
+        BMSG FES 2026
+      </div>
+
+      <div class="brand-sub">
+        VENUE NAVIGATOR
+      </div>
+
+    </div>
+
+    <div class="mode-switch">
+
+      <button
+        class="mode-button active"
+        data-mode="real"
+      >
+        REAL MAP
+      </button>
+
+      <button
+        class="mode-button"
+        data-mode="official"
+      >
+        OFFICIAL MAP
+      </button>
+
+    </div>
+
+  </header>
+
+  <!-- FILTER -->
+  <div class="filters-wrap">
+
+    <div class="filters">
+
+      <button class="filter active" data-filter="all">
+        ALL
+      </button>
+
+      <button class="filter" data-filter="stage">
+        STAGE
+      </button>
+
+      <button class="filter" data-filter="food">
+        FOOD
+      </button>
+
+      <button class="filter" data-filter="goods">
+        GOODS
+      </button>
+
+      <button class="filter" data-filter="wc">
+        WC
+      </button>
+
+      <button class="filter" data-filter="photo">
+        PHOTO
+      </button>
+
+      <button class="filter" data-filter="gate">
+        GATE
+      </button>
+
+      <button class="filter" data-filter="info">
+        INFO
+      </button>
+
+    </div>
+
+  </div>
+
+  <!-- LOCATION -->
+  <button
+    class="location-button"
+    id="locationButton"
+    aria-label="現在地を表示"
+  >
+    <span class="location-symbol"></span>
+  </button>
+
+</div>
+
+<!-- SHEET BACKDROP -->
+<div
+  class="sheet-backdrop"
+  id="sheetBackdrop"
+></div>
+
+<!-- BOTTOM SHEET -->
+<div
+  class="bottom-sheet"
+  id="bottomSheet"
+>
+
+  <div class="sheet-handle"></div>
+
+  <div
+    class="sheet-number"
+    id="sheetNumber"
+  ></div>
+
+  <div
+    class="sheet-title"
+    id="sheetTitle"
+  ></div>
+
+  <div class="sheet-line"></div>
+
+  <div
+    class="sheet-description"
+    id="sheetDescription"
+  ></div>
+
+  <button
+    class="sheet-close"
+    id="sheetClose"
+  >
+    CLOSE
+  </button>
+
+</div>
+
+<div
+  class="toast"
+  id="toast"
+></div>
+
+<!-- Leaflet -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<script>
+
+/* =========================================================
+   MAP INITIALIZE
+========================================================= */
+
+/*
+  仮の中心地点です。
+
+  PCで公式MAPとリアル地図を照合するときに
+  正確な中心座標へ変更します。
+*/
+
+const map = L.map(
+  "map",
+  {
+    zoomControl: false,
+    attributionControl: true
+  }
+).setView(
+  [35.6252, 139.7756],
+  16
+);
+
+
+/* =========================================================
+   MAP TILE
+========================================================= */
+
+L.tileLayer(
+  "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+  {
+    maxZoom: 19,
+
+    attribution:
+      '&copy; OpenStreetMap contributors'
+  }
+).addTo(map);
+
+
+/* =========================================================
+   VENUE DATA
+========================================================= */
+
+/*
+  ★★★★★★★★★★★★★★★★★★★★★★★
+
+  PCで作業するときは基本的に
+  ここを編集すればOK。
+
+  lat = 緯度
+  lng = 経度
+
+  現在入っている座標は
+  UI確認用の仮位置です。
+
+  ★★★★★★★★★★★★★★★★★★★★★★★
+*/
+
+const venues = [
+
+  {
+    id: 1,
+
+    name: "MAIN STAGE",
+
+    category: "stage",
+
+    icon: "ST",
+
+    lat: 35.6260,
+    lng: 139.7748,
+
+    description:
+      "MAIN STAGE。正確な位置・詳細情報は後から設定します。"
+  },
+
+  {
+    id: 2,
+
+    name: "SUB STAGE",
+
+    category: "stage",
+
+    icon: "ST",
+
+    lat: 35.6252,
+    lng: 139.7760,
+
+    description:
+      "SUB STAGE。正確な位置・詳細情報は後から設定します。"
+  },
+
+  {
+    id: 3,
+
+    name: "FOOD AREA",
+
+    category: "food",
+
+    icon: "FD",
+
+    lat: 35.6248,
+    lng: 139.7749,
+
+    description:
+      "キッチンカー・フードエリア。詳細は後から設定します。"
+  },
+
+  {
+    id: 4,
+
+    name: "GOODS",
+
+    category: "goods",
+
+    icon: "GD",
+
+    lat: 35.6256,
+    lng: 139.7767,
+
+    description:
+      "グッズ販売エリア。詳細は後から設定します。"
+  },
+
+  {
+    id: 5,
+
+    name: "RESTROOM",
+
+    category: "wc",
+
+    icon: "WC",
+
+    lat: 35.6244,
+    lng: 139.7758,
+
+    description:
+      "トイレ。正確な位置は後から設定します。"
+  },
+
+  {
+    id: 6,
+
+    name: "PHOTO SPOT",
+
+    category: "photo",
+
+    icon: "PH",
+
+    lat: 35.6257,
+    lng: 139.7739,
+
+    description:
+      "フォトスポット。詳細は後から設定します。"
+  },
+
+  {
+    id: 7,
+
+    name: "GATE",
+
+    category: "gate",
+
+    icon: "GT",
+
+    lat: 35.6239,
+    lng: 139.7748,
+
+    description:
+      "入退場ゲート。正確なゲート名と位置は後から設定します。"
+  },
+
+  {
+    id: 8,
+
+    name: "INFORMATION",
+
+    category: "info",
+
+    icon: "IN",
+
+    lat: 35.6249,
+    lng: 139.7739,
+
+    description:
+      "インフォメーション。詳細は後から設定します。"
+  }
+
+];
+
+
+/* =========================================================
+   VENUE MARKERS
+========================================================= */
+
+const venueMarkers = [];
+
+
+function createVenueIcon(text) {
+
+  return L.divIcon({
+
+    className: "",
+
+    html:
+      `<div class="venue-marker">${text}</div>`,
+
+    iconSize: [38, 38],
+
+    iconAnchor: [19, 19]
+
+  });
+
+}
+
+
+venues.forEach((venue) => {
+
+  const marker = L.marker(
+
+    [
+      venue.lat,
+      venue.lng
+    ],
+
+    {
+      icon:
+        createVenueIcon(
+          venue.icon
+        )
+    }
+
+  ).addTo(map);
+
+
+  marker.on(
+    "click",
+    () => {
+
+      openVenue(
+        venue
+      );
+
+    }
+  );
+
+
+  venueMarkers.push({
+
+    venue,
+    marker
+
+  });
+
+});
+
+
+/* =========================================================
+   BOTTOM SHEET
+========================================================= */
+
+const bottomSheet =
+  document.getElementById(
+    "bottomSheet"
+  );
+
+const sheetBackdrop =
+  document.getElementById(
+    "sheetBackdrop"
+  );
+
+const sheetNumber =
+  document.getElementById(
+    "sheetNumber"
+  );
+
+const sheetTitle =
+  document.getElementById(
+    "sheetTitle"
+  );
+
+const sheetDescription =
+  document.getElementById(
+    "sheetDescription"
+  );
+
+
+function openVenue(venue) {
+
+  sheetNumber.textContent =
+    String(
+      venue.id
+    ).padStart(
+      2,
+      "0"
+    )
+    +
+    " / "
+    +
+    venue.category.toUpperCase();
+
+  sheetTitle.textContent =
+    venue.name;
+
+  sheetDescription.textContent =
+    venue.description;
+
+  bottomSheet.classList.add(
+    "show"
+  );
+
+  sheetBackdrop.classList.add(
+    "show"
+  );
+
+}
+
+
+function closeVenue() {
+
+  bottomSheet.classList.remove(
+    "show"
+  );
+
+  sheetBackdrop.classList.remove(
+    "show"
+  );
+
+}
+
+
+document
+  .getElementById(
+    "sheetClose"
+  )
+  .addEventListener(
+    "click",
+    closeVenue
+  );
+
+
+sheetBackdrop.addEventListener(
+  "click",
+  closeVenue
+);
+
+
+/* =========================================================
+   FILTER
+========================================================= */
+
+const filterButtons =
+  document.querySelectorAll(
+    ".filter"
+  );
+
+
+filterButtons.forEach(
+  (button) => {
+
+    button.addEventListener(
+      "click",
+      () => {
+
+        filterButtons.forEach(
+          btn =>
+            btn.classList.remove(
+              "active"
+            )
+        );
+
+        button.classList.add(
+          "active"
+        );
+
+
+        const category =
+          button.dataset.filter;
+
+
+        venueMarkers.forEach(
+          ({
+            venue,
+            marker
+          }) => {
+
+            const show =
+              category === "all"
+              ||
+              venue.category === category;
+
+
+            if (show) {
+
+              if (
+                !map.hasLayer(
+                  marker
+                )
+              ) {
+
+                marker.addTo(
+                  map
+                );
+
+              }
+
+            }
+
+            else {
+
+              if (
+                map.hasLayer(
+                  marker
+                )
+              ) {
+
+                map.removeLayer(
+                  marker
+                );
+
+              }
+
+            }
+
+          }
+        );
+
+      }
+    );
+
+  }
+);
+
+
+/* =========================================================
+   MAP MODE
+========================================================= */
+
+const modeButtons =
+  document.querySelectorAll(
+    ".mode-button"
+  );
+
+const officialMap =
+  document.getElementById(
+    "officialMap"
+  );
+
+const filtersWrap =
+  document.querySelector(
+    ".filters-wrap"
+  );
+
+const locationButton =
+  document.getElementById(
+    "locationButton"
+  );
+
+
+modeButtons.forEach(
+  (button) => {
+
+    button.addEventListener(
+      "click",
+      () => {
+
+        modeButtons.forEach(
+          btn =>
+            btn.classList.remove(
+              "active"
+            )
+        );
+
+        button.classList.add(
+          "active"
+        );
+
+
+        const mode =
+          button.dataset.mode;
+
+
+        if (
+          mode === "official"
+        ) {
+
+          officialMap.classList.add(
+            "show"
+          );
+
+          filtersWrap.style.display =
+            "none";
+
+          locationButton.style.display =
+            "none";
+
+        }
+
+        else {
+
+          officialMap.classList.remove(
+            "show"
+          );
+
+          filtersWrap.style.display =
+            "";
+
+          locationButton.style.display =
+            "";
+
+          setTimeout(
+            () => {
+
+              map.invalidateSize();
+
+            },
+            100
+          );
+
+        }
+
+      }
+    );
+
+  }
+);
+
+
+/* =========================================================
+   CURRENT LOCATION
+========================================================= */
+
+/*
+  ★重要★
+
+  現在地はブラウザ内で
+  地図表示のためだけに使用します。
+
+  fetch / API / D1 / KV 等へ
+  位置情報を送信する処理はありません。
+
+  緯度経度をlocalStorage等へ
+  保存する処理もありません。
+*/
+
+let locationMarker = null;
+
+let accuracyCircle = null;
+
+let watchId = null;
+
+let hasCenteredLocation = false;
+
+
+const userIcon =
+  L.divIcon({
+
+    className: "",
+
+    html:
+      `<div class="user-location"></div>`,
+
+    iconSize:
+      [22,22],
+
+    iconAnchor:
+      [11,11]
+
+  });
+
+
+locationButton.addEventListener(
+  "click",
+  () => {
+
+    /*
+      すでに現在地取得中なら
+      現在地へ戻る
+    */
+
+    if (
+      locationMarker
+    ) {
+
+      map.flyTo(
+
+        locationMarker.getLatLng(),
+
+        18,
+
+        {
+          duration: .8
+        }
+
+      );
+
+      return;
+
+    }
+
+
+    if (
+      !navigator.geolocation
+    ) {
+
+      showToast(
+        "この端末では現在地を利用できません"
+      );
+
+      return;
+
+    }
+
+
+    showToast(
+      "現在地を取得しています…"
+    );
+
+
+    watchId =
+      navigator.geolocation.watchPosition(
+
+        locationSuccess,
+
+        locationError,
+
+        {
+
+          enableHighAccuracy: true,
+
+          maximumAge: 3000,
+
+          timeout: 15000
+
+        }
+
+      );
+
+  }
+);
+
+
+function locationSuccess(
+  position
+) {
+
+  const lat =
+    position.coords.latitude;
+
+  const lng =
+    position.coords.longitude;
+
+  const accuracy =
+    position.coords.accuracy;
+
+
+  /*
+    現在地マーカー
+  */
+
+  if (
+    !locationMarker
+  ) {
+
+    locationMarker =
+      L.marker(
+
+        [lat,lng],
+
+        {
+          icon:
+            userIcon,
+
+          zIndexOffset:
+            10000
+        }
+
+      ).addTo(
+        map
+      );
+
+  }
+
+  else {
+
+    locationMarker.setLatLng(
+      [lat,lng]
+    );
+
+  }
+
+
+  /*
+    GPS精度範囲
+  */
+
+  if (
+    !accuracyCircle
+  ) {
+
+    accuracyCircle =
+      L.circle(
+
+        [lat,lng],
+
+        {
+
+          radius:
+            accuracy,
+
+          color:
+            "#ffffff",
+
+          weight:
+            1,
+
+          opacity:
+            .25,
+
+          fillColor:
+            "#ffffff",
+
+          fillOpacity:
+            .05
+
+        }
+
+      ).addTo(
+        map
+      );
+
+  }
+
+  else {
+
+    accuracyCircle.setLatLng(
+      [lat,lng]
+    );
+
+    accuracyCircle.setRadius(
+      accuracy
+    );
+
+  }
+
+
+  /*
+    最初の取得時だけ
+    自動で現在地へ移動
+  */
+
+  if (
+    !hasCenteredLocation
+  ) {
+
+    hasCenteredLocation =
+      true;
+
+    map.flyTo(
+
+      [lat,lng],
+
+      18,
+
+      {
+        duration: 1
+      }
+
+    );
+
+
+    showToast(
+      "現在地を表示しました"
+    );
+
+  }
+
+}
+
+
+function locationError(
+  error
+) {
+
+  let message =
+    "現在地を取得できませんでした";
+
+
+  if (
+    error.code === 1
+  ) {
+
+    message =
+      "位置情報の利用が許可されていません";
+
+  }
+
+  else if (
+    error.code === 2
+  ) {
+
+    message =
+      "現在地を確認できませんでした";
+
+  }
+
+  else if (
+    error.code === 3
+  ) {
+
+    message =
+      "現在地の取得がタイムアウトしました";
+
+  }
+
+
+  showToast(
+    message
+  );
+
+}
+
+
+/* =========================================================
+   TOAST
+========================================================= */
+
+const toast =
+  document.getElementById(
+    "toast"
+  );
+
+let toastTimer;
+
+
+function showToast(
+  message
+) {
+
+  clearTimeout(
+    toastTimer
+  );
+
+
+  toast.textContent =
+    message;
+
+  toast.classList.add(
+    "show"
+  );
+
+
+  toastTimer =
+    setTimeout(
+      () => {
+
+        toast.classList.remove(
+          "show"
+        );
+
+      },
+      2500
+    );
+
+}
+
+
+/* =========================================================
+   SAFETY CLEANUP
+========================================================= */
+
+window.addEventListener(
+  "pagehide",
+  () => {
+
+    if (
+      watchId !== null
+    ) {
+
+      navigator.geolocation.clearWatch(
+        watchId
+      );
+
+    }
+
+  }
+);
+
+</script>
+
+</body>
+</html>
