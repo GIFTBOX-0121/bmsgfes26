@@ -1,4 +1,4 @@
-const CACHE_NAME = "bmsgfes26-v15";
+const CACHE_NAME = "bmsgfes26-v16-offline";
 
 /*
   =========================================================
