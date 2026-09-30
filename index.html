@@ -1097,58 +1097,6 @@ button:active{transform:scale(.98);}
 }
 </style>
 
-
-<style id="pin-editor-style">
-.pin-edit-launch{
-  position:absolute;right:10px;bottom:58px;z-index:1200;
-  border:1px solid rgba(255,255,255,.35);border-radius:999px;
-  background:#111;color:#fff;padding:9px 12px;font-size:11px;font-weight:900;
-  box-shadow:0 5px 18px rgba(0,0,0,.35)
-}
-.pin-edit-panel{
-  position:fixed;left:12px;right:12px;bottom:82px;z-index:220000;
-  display:none;max-width:520px;margin:auto;background:#0b0b0b;color:#fff;
-  border:1px solid #555;border-radius:16px;padding:13px;
-  box-shadow:0 12px 40px rgba(0,0,0,.7)
-}
-.pin-edit-panel.on{display:block}
-.pin-edit-title{font-size:13px;font-weight:900;margin-bottom:5px}
-.pin-edit-help{font-size:10px;line-height:1.55;color:#aaa;margin-bottom:9px}
-.pin-edit-selected{font-size:12px;font-weight:800;margin-bottom:9px;color:#fff}
-.pin-edit-actions{display:grid;grid-template-columns:1fr 1fr;gap:7px}
-.pin-edit-actions button{border:0;border-radius:10px;padding:10px;font-size:11px;font-weight:900}
-.pin-edit-save{background:#fff;color:#050505}
-.pin-edit-close{background:#292929;color:#fff}
-.pin-edit-reset{grid-column:1/-1;background:#3a2020!important;color:#fff}
-.pin-editing-marker{filter:drop-shadow(0 0 7px #fff)}
-</style>
-
-
-<style id="pin-export-v2-style">
-.pin-export-backdrop{
-  position:fixed;inset:0;z-index:300000;background:rgba(0,0,0,.82);
-  display:none;align-items:center;justify-content:center;padding:18px;
-}
-.pin-export-backdrop.on{display:flex}
-.pin-export-box{
-  width:min(520px,100%);max-height:82vh;overflow:auto;
-  background:#111;border:1px solid #555;border-radius:16px;padding:14px;
-}
-.pin-export-title{font-size:14px;font-weight:900;margin-bottom:8px}
-.pin-export-help{font-size:10px;color:#aaa;line-height:1.55;margin-bottom:9px}
-.pin-export-text{
-  width:100%;height:260px;resize:none;box-sizing:border-box;
-  border:1px solid #444;border-radius:10px;background:#050505;color:#fff;
-  padding:10px;font:11px/1.5 ui-monospace,SFMono-Regular,Menlo,monospace;
-}
-.pin-export-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:9px}
-.pin-export-actions button{
-  border:0;border-radius:10px;padding:11px;font-size:11px;font-weight:900;
-}
-#pinExportCopy{background:#fff;color:#000}
-#pinExportClose{background:#2b2b2b;color:#fff}
-</style>
-
 </head>
 
 <body>
@@ -1206,8 +1154,6 @@ button:active{transform:scale(.98);}
     <div class="map-shell">
 
       <div id="map"></div>
-      <button class="pin-edit-launch" id="pinEditLaunch" type="button">📍 ピン位置を確認・編集</button>
-      <button class="pin-edit-launch" id="pinCopyAlways" type="button" style="bottom:98px;">📋 座標コピー</button>
 
       <div class="official-map" id="officialMap">
         <img src="./Map.JPG" alt="BMSG FES 2026 OFFICIAL MAP">
@@ -1258,6 +1204,48 @@ button:active{transform:scale(.98);}
       <a class="action" href="https://www.google.com/maps/dir/?api=1&origin=%E6%9D%B1%E4%BA%AC%E3%83%86%E3%83%AC%E3%83%9D%E3%83%BC%E3%83%88%E9%A7%85&destination=35.62345%2C139.77505&travelmode=walking" style="display:block;text-decoration:none;text-align:center;">
         東京テレポート駅からマップを開く ↗
       </a>
+      <div style="margin-top:14px;padding-top:12px;border-top:1px solid rgba(255,255,255,.14);">
+        <div style="font-size:11px;font-weight:950;letter-spacing:.06em;margin-bottom:6px;">
+          🚻 会場外トイレ MAP
+        </div>
+
+        <div class="card-small" style="margin-bottom:8px;">
+          入場前に使える駅・公園のトイレを確認できます。
+        </div>
+
+        <a
+          class="action"
+          href="https://www.yurikamome.co.jp/route_guidance/u-07/"
+          target="_blank"
+          rel="noopener"
+          style="display:block;text-decoration:none;text-align:center;"
+        >
+          🚻 台場駅のトイレ・構内図 ↗
+        </a>
+
+        <a
+          class="action"
+          href="https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E3%83%86%E3%83%AC%E3%83%9D%E3%83%BC%E3%83%88%E9%A7%85%20%E3%83%88%E3%82%A4%E3%83%AC"
+          style="display:block;text-decoration:none;text-align:center;"
+        >
+          🚻 東京テレポート駅周辺のトイレ MAP ↗
+        </a>
+
+        <a
+          class="action"
+          href="https://www.tptc.co.jp/cms/park/img/map/shinbol_Eng_2025.7.pdf"
+          target="_blank"
+          rel="noopener"
+          style="display:block;text-decoration:none;text-align:center;"
+        >
+          🚻 シンボルプロムナード公園 トイレMAP ↗
+        </a>
+
+        <div class="card-small" style="margin-top:7px;">
+          ※ 台場駅は駅構内にトイレ・バリアフリートイレあり。公園MAPはトイレ位置を確認できる公式マップです。
+        </div>
+      </div>
+
     </div>
 
   </div>
@@ -1704,20 +1692,6 @@ button:active{transform:scale(.98);}
 
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-
-<div class="pin-export-backdrop" id="pinExportBackdrop">
-  <div class="pin-export-box">
-    <div class="pin-export-title">📍 現在のピン座標</div>
-    <div class="pin-export-help">
-      下に現在の全ピン座標を表示します。MAIN STAGE / SUB STAGEは含みません。<br>
-      「コピー」を押して、このチャットにそのまま貼り付けてください。
-    </div>
-    <textarea class="pin-export-text" id="pinExportText" readonly></textarea>
-    <div class="pin-export-actions">
-      <button id="pinExportCopy" type="button">コピー</button>
-      <button id="pinExportClose" type="button">閉じる</button>
-    </div>
-  </div>
 </div>
 
 <script>
@@ -1725,23 +1699,6 @@ if(!window.L){
   document.write('<script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"><\/script>');
 }
 </script>
-
-
-<div class="pin-edit-panel" id="pinEditPanel">
-  <div class="pin-edit-title">📍 ピン位置編集</div>
-  <div class="pin-edit-help">
-    MAIN STAGE / SUB STAGEは固定です。<br>
-    編集したいピンをタップ → 地図上の正しい位置をタップしてください。
-    位置はこの端末に保存されます。
-  </div>
-  <div class="pin-edit-selected" id="pinEditSelected">ピンを選択してください</div>
-  <div class="pin-edit-actions">
-    <button class="pin-edit-save" id="pinEditDone" type="button">編集を終了</button>
-    <button class="pin-edit-close" id="pinEditCancel" type="button">閉じる</button>
-    <button class="pin-edit-save" id="pinEditCopy" type="button" style="grid-column:1/-1;">📋 修正済み座標をコピー</button>
-    <button class="pin-edit-reset" id="pinEditReset" type="button">編集した位置をすべて初期値に戻す</button>
-  </div>
-</div>
 
 
 <script>
@@ -2069,248 +2026,24 @@ function createVenueIcon(v){
 
 const venueMarkers=[];
 
-/* USER-CHECKED PIN POSITIONS
-   MAIN / SUB are intentionally excluded and remain fixed. */
-const PIN_POSITION_KEY="bmsgfes_pin_positions_v2";
-
-function loadSavedPinPositions(){
-  try{
-    const data=JSON.parse(localStorage.getItem(PIN_POSITION_KEY)||"{}");
-    return data && typeof data==="object" ? data : {};
-  }catch(e){
-    return {};
-  }
-}
-
-let savedPinPositions=loadSavedPinPositions();
-
+/*
+  FIXED VENUE PINS
+  この座標は確定済み。端末保存値では上書きしない。
+  MAIN STAGE / SUB STAGEも別配列の固定座標を使用。
+*/
 venues.forEach(v=>{
 
-  const saved=savedPinPositions[v.id];
-  const lat=
-    saved && Number.isFinite(Number(saved.lat))
-      ? Number(saved.lat)
-      : v.lat;
-  const lng=
-    saved && Number.isFinite(Number(saved.lng))
-      ? Number(saved.lng)
-      : v.lng;
-
   const marker=L.marker(
-    [lat,lng],
+    [v.lat,v.lng],
     {
       icon:createVenueIcon(v),
       riseOnHover:true
     }
   ).addTo(map);
 
+  marker.on("click",()=>openVenue(v));
+
   venueMarkers.push({venue:v,marker});
-});
-
-
-
-/* =========================================================
-   ALL VENUE PIN EDITOR
-   MAIN STAGE / SUB STAGE stay fixed and are not editable.
-========================================================= */
-
-let pinEditMode=false;
-let pinEditTarget=null;
-
-const pinEditLaunch=document.getElementById("pinEditLaunch");
-const pinEditPanel=document.getElementById("pinEditPanel");
-const pinEditSelected=document.getElementById("pinEditSelected");
-
-function setPinEditTarget(item){
-
-  if(pinEditTarget?.marker?._icon){
-    pinEditTarget.marker._icon.classList.remove("pin-editing-marker");
-  }
-
-  pinEditTarget=item||null;
-
-  if(pinEditTarget?.marker?._icon){
-    pinEditTarget.marker._icon.classList.add("pin-editing-marker");
-  }
-
-  if(pinEditSelected){
-    pinEditSelected.textContent=
-      pinEditTarget
-        ? `編集中：${pinEditTarget.venue.name}`
-        : "ピンを選択してください";
-  }
-}
-
-function startPinEditMode(){
-  closeSheet();
-  pinEditMode=true;
-  setPinEditTarget(null);
-  pinEditPanel?.classList.add("on");
-  showToast("動かしたいピンをタップしてください");
-}
-
-function stopPinEditMode(){
-  pinEditMode=false;
-  setPinEditTarget(null);
-  pinEditPanel?.classList.remove("on");
-}
-
-pinEditLaunch?.addEventListener("click",startPinEditMode);
-
-document.getElementById("pinEditDone")
-  ?.addEventListener("click",()=>{
-    stopPinEditMode();
-    showToast("ピン位置を保存しました");
-  });
-
-document.getElementById("pinEditCancel")
-  ?.addEventListener("click",stopPinEditMode);
-
-function buildCurrentPinPositionText(){
-
-  const current=loadSavedPinPositions();
-
-  const rows=venueMarkers.map(item=>{
-
-    const saved=current[item.venue.id];
-    const point=saved
-      ? {lat:Number(saved.lat),lng:Number(saved.lng)}
-      : item.marker.getLatLng();
-
-    return {
-      id:item.venue.id,
-      name:item.venue.name,
-      lat:Number(Number(point.lat).toFixed(7)),
-      lng:Number(Number(point.lng).toFixed(7))
-    };
-  });
-
-  return JSON.stringify(rows,null,2);
-}
-
-function copyCurrentPinPositions(){
-
-  const text=buildCurrentPinPositionText();
-  const area=document.getElementById("pinExportText");
-  const modal=document.getElementById("pinExportBackdrop");
-
-  if(area){
-    area.value=text;
-  }
-
-  modal?.classList.add("on");
-
-  /*
-    iPhoneではClipboard APIが失敗する場合があるため、
-    まず必ず座標そのものを画面に表示する。
-  */
-  requestAnimationFrame(()=>{
-    area?.focus();
-    area?.select();
-    area?.setSelectionRange(0,area.value.length);
-  });
-}
-
-document.getElementById("pinEditCopy")
-  ?.addEventListener("click",copyCurrentPinPositions);
-
-document.getElementById("pinCopyAlways")
-  ?.addEventListener("click",copyCurrentPinPositions);
-
-document.getElementById("pinExportClose")
-  ?.addEventListener("click",()=>{
-    document.getElementById("pinExportBackdrop")?.classList.remove("on");
-  });
-
-document.getElementById("pinExportCopy")
-  ?.addEventListener("click",async()=>{
-
-    const area=document.getElementById("pinExportText");
-    if(!area) return;
-
-    area.focus();
-    area.select();
-    area.setSelectionRange(0,area.value.length);
-
-    let copied=false;
-
-    try{
-      if(navigator.clipboard && window.isSecureContext){
-        await navigator.clipboard.writeText(area.value);
-        copied=true;
-      }
-    }catch(e){}
-
-    if(!copied){
-      try{
-        copied=document.execCommand("copy");
-      }catch(e){}
-    }
-
-    if(copied){
-      showToast("座標をコピーしました");
-    }else{
-      showToast("座標を選択しました。長押し→コピーしてください");
-    }
-  });
-
-
-document.getElementById("pinEditReset")
-  ?.addEventListener("click",()=>{
-    if(!confirm("編集したピン位置をすべて初期位置に戻しますか？")) return;
-
-    localStorage.removeItem(PIN_POSITION_KEY);
-    savedPinPositions={};
-
-    venueMarkers.forEach(item=>{
-      item.marker.setLatLng([
-        item.venue.lat,
-        item.venue.lng
-      ]);
-    });
-
-    setPinEditTarget(null);
-    showToast("全ピンを初期位置に戻しました");
-  });
-
-venueMarkers.forEach(item=>{
-
-  item.marker.on("click",()=>{
-
-    if(pinEditMode){
-      setPinEditTarget(item);
-      showToast(`${item.venue.name}：地図上の正しい位置をタップ`);
-      return;
-    }
-
-    openVenue(item.venue);
-  });
-
-});
-
-map.on("click",event=>{
-
-  if(!pinEditMode || !pinEditTarget) return;
-
-  const lat=Number(event.latlng.lat.toFixed(7));
-  const lng=Number(event.latlng.lng.toFixed(7));
-
-  pinEditTarget.marker.setLatLng([lat,lng]);
-
-  savedPinPositions[pinEditTarget.venue.id]={
-    lat,
-    lng
-  };
-
-  localStorage.setItem(
-    PIN_POSITION_KEY,
-    JSON.stringify(savedPinPositions)
-  );
-
-  const movedName=pinEditTarget.venue.name;
-  setPinEditTarget(null);
-
-  showToast(`${movedName}の位置を保存しました`);
 });
 
 
@@ -4058,7 +3791,7 @@ loadWeather();
 /* PWA / OFFLINE */
 if("serviceWorker" in navigator){
   window.addEventListener("load",()=>{
-    navigator.serviceWorker.register("./sw.js?v=14-pin-copy")
+    navigator.serviceWorker.register("./sw.js?v=15-fixed-pins")
       .catch(()=>{});
   });
 }
