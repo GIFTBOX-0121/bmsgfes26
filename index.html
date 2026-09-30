@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 
-<title>BMSG FES 2026 | VENUE NAVIGATOR</title>
+<title>BMSG FES 2026 | UNOFFICIAL FAN SITE</title>
 <meta name="theme-color" content="#080808">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -1077,14 +1077,51 @@ button:active{transform:scale(.98);}
 
 
 
-<style id="route-image-v6-style">
-.route-image-modal{position:fixed;inset:0;z-index:250000;display:none;background:rgba(0,0,0,.94);padding:14px;overflow:auto}
-.route-image-modal.on{display:block}
-.route-image-wrap{max-width:520px;margin:10px auto 90px;background:#090909;border:1px solid #444;border-radius:18px;padding:10px}
-.route-image-wrap img{display:block;width:100%;height:auto;border-radius:12px;background:#fff}
-.route-image-close{width:100%;margin-top:10px;border:0;border-radius:11px;padding:12px;background:#fff;color:#050505;font-weight:900}
-.weather-source{font-size:8px;color:#888;text-align:center;margin-top:2px}
+
+<style id="unofficial-notice-style">
+.unofficial-footer{
+  margin:18px 12px 92px;
+  padding:7px 10px;
+  border:1px solid rgba(255,255,255,.14);
+  border-radius:9px;
+  background:rgba(255,255,255,.035);
+  color:#999;
+  font-size:9px;
+  line-height:1.55;
+  text-align:center;
+}
+.unofficial-footer strong{
+  color:#bbb;
+  font-weight:800;
+}
 </style>
+
+
+<style id="pin-editor-style">
+.pin-edit-launch{
+  position:absolute;right:10px;bottom:58px;z-index:1200;
+  border:1px solid rgba(255,255,255,.35);border-radius:999px;
+  background:#111;color:#fff;padding:9px 12px;font-size:11px;font-weight:900;
+  box-shadow:0 5px 18px rgba(0,0,0,.35)
+}
+.pin-edit-panel{
+  position:fixed;left:12px;right:12px;bottom:82px;z-index:220000;
+  display:none;max-width:520px;margin:auto;background:#0b0b0b;color:#fff;
+  border:1px solid #555;border-radius:16px;padding:13px;
+  box-shadow:0 12px 40px rgba(0,0,0,.7)
+}
+.pin-edit-panel.on{display:block}
+.pin-edit-title{font-size:13px;font-weight:900;margin-bottom:5px}
+.pin-edit-help{font-size:10px;line-height:1.55;color:#aaa;margin-bottom:9px}
+.pin-edit-selected{font-size:12px;font-weight:800;margin-bottom:9px;color:#fff}
+.pin-edit-actions{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.pin-edit-actions button{border:0;border-radius:10px;padding:10px;font-size:11px;font-weight:900}
+.pin-edit-save{background:#fff;color:#050505}
+.pin-edit-close{background:#292929;color:#fff}
+.pin-edit-reset{grid-column:1/-1;background:#3a2020!important;color:#fff}
+.pin-editing-marker{filter:drop-shadow(0 0 7px #fff)}
+</style>
+
 </head>
 
 <body>
@@ -1096,7 +1133,7 @@ button:active{transform:scale(.98);}
 
     <div class="brand">
       <div class="brand-title">BMSG FES 2026</div>
-      <div class="brand-sub">VENUE NAVIGATOR</div>
+      <div class="brand-sub">UNOFFICIAL FAN SITE</div>
     </div>
 
     <a
@@ -1131,6 +1168,8 @@ button:active{transform:scale(.98);}
 </header>
 
 
+
+
 <!-- MAP -->
 
 <section class="page active" id="page-map">
@@ -1140,6 +1179,7 @@ button:active{transform:scale(.98);}
     <div class="map-shell">
 
       <div id="map"></div>
+      <button class="pin-edit-launch" id="pinEditLaunch" type="button">📍 ピン位置を確認・編集</button>
 
       <div class="official-map" id="officialMap">
         <img src="./Map.JPG" alt="BMSG FES 2026 OFFICIAL MAP">
@@ -1180,14 +1220,14 @@ button:active{transform:scale(.98);}
       <div class="card-title">🚉 STATION → VENUE</div>
 
       <div class="card-small">
-        電波がなくても見られる駅→会場の案内画像を開きます。
+        主要駅から会場までの徒歩ルートをマップで開きます。
       </div>
 
-      <button class="action" id="daibaRouteImageButton" type="button">
+      <button class="action" type="button" onclick="stationRoute('daiba')">
         台場駅から
       </button>
 
-      <button class="action" id="teleportRouteImageButton" type="button">
+      <button class="action" type="button" onclick="stationRoute('teleport')">
         東京テレポート駅から
       </button>
     </div>
@@ -1631,6 +1671,9 @@ button:active{transform:scale(.98);}
 
 <div class="toast" id="toast"></div>
 
+<div class="unofficial-footer">非公式ファンサイトです。</div>
+
+
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
 /* =========================================================
@@ -2005,19 +2048,159 @@ function createVenueIcon(v){
 
 const venueMarkers=[];
 
+/* USER-CHECKED PIN POSITIONS
+   MAIN / SUB are intentionally excluded and remain fixed. */
+const PIN_POSITION_KEY="bmsgfes_pin_positions_v1";
+
+function loadSavedPinPositions(){
+  try{
+    const data=JSON.parse(localStorage.getItem(PIN_POSITION_KEY)||"{}");
+    return data && typeof data==="object" ? data : {};
+  }catch(e){
+    return {};
+  }
+}
+
+let savedPinPositions=loadSavedPinPositions();
+
 venues.forEach(v=>{
 
+  const saved=savedPinPositions[v.id];
+  const lat=
+    saved && Number.isFinite(Number(saved.lat))
+      ? Number(saved.lat)
+      : v.lat;
+  const lng=
+    saved && Number.isFinite(Number(saved.lng))
+      ? Number(saved.lng)
+      : v.lng;
+
   const marker=L.marker(
-    [v.lat,v.lng],
+    [lat,lng],
     {
       icon:createVenueIcon(v),
       riseOnHover:true
     }
   ).addTo(map);
 
-  marker.on("click",()=>openVenue(v));
-
   venueMarkers.push({venue:v,marker});
+});
+
+
+
+/* =========================================================
+   ALL VENUE PIN EDITOR
+   MAIN STAGE / SUB STAGE stay fixed and are not editable.
+========================================================= */
+
+let pinEditMode=false;
+let pinEditTarget=null;
+
+const pinEditLaunch=document.getElementById("pinEditLaunch");
+const pinEditPanel=document.getElementById("pinEditPanel");
+const pinEditSelected=document.getElementById("pinEditSelected");
+
+function setPinEditTarget(item){
+
+  if(pinEditTarget?.marker?._icon){
+    pinEditTarget.marker._icon.classList.remove("pin-editing-marker");
+  }
+
+  pinEditTarget=item||null;
+
+  if(pinEditTarget?.marker?._icon){
+    pinEditTarget.marker._icon.classList.add("pin-editing-marker");
+  }
+
+  if(pinEditSelected){
+    pinEditSelected.textContent=
+      pinEditTarget
+        ? `編集中：${pinEditTarget.venue.name}`
+        : "ピンを選択してください";
+  }
+}
+
+function startPinEditMode(){
+  closeSheet();
+  pinEditMode=true;
+  setPinEditTarget(null);
+  pinEditPanel?.classList.add("on");
+  showToast("動かしたいピンをタップしてください");
+}
+
+function stopPinEditMode(){
+  pinEditMode=false;
+  setPinEditTarget(null);
+  pinEditPanel?.classList.remove("on");
+}
+
+pinEditLaunch?.addEventListener("click",startPinEditMode);
+
+document.getElementById("pinEditDone")
+  ?.addEventListener("click",()=>{
+    stopPinEditMode();
+    showToast("ピン位置を保存しました");
+  });
+
+document.getElementById("pinEditCancel")
+  ?.addEventListener("click",stopPinEditMode);
+
+document.getElementById("pinEditReset")
+  ?.addEventListener("click",()=>{
+    if(!confirm("編集したピン位置をすべて初期位置に戻しますか？")) return;
+
+    localStorage.removeItem(PIN_POSITION_KEY);
+    savedPinPositions={};
+
+    venueMarkers.forEach(item=>{
+      item.marker.setLatLng([
+        item.venue.lat,
+        item.venue.lng
+      ]);
+    });
+
+    setPinEditTarget(null);
+    showToast("全ピンを初期位置に戻しました");
+  });
+
+venueMarkers.forEach(item=>{
+
+  item.marker.on("click",()=>{
+
+    if(pinEditMode){
+      setPinEditTarget(item);
+      showToast(`${item.venue.name}：地図上の正しい位置をタップ`);
+      return;
+    }
+
+    openVenue(item.venue);
+  });
+
+});
+
+map.on("click",event=>{
+
+  if(!pinEditMode || !pinEditTarget) return;
+
+  const lat=Number(event.latlng.lat.toFixed(7));
+  const lng=Number(event.latlng.lng.toFixed(7));
+
+  pinEditTarget.marker.setLatLng([lat,lng]);
+
+  savedPinPositions[pinEditTarget.venue.id]={
+    lat,
+    lng
+  };
+
+  localStorage.setItem(
+    PIN_POSITION_KEY,
+    JSON.stringify(savedPinPositions)
+  );
+
+  const movedName=pinEditTarget.venue.name;
+  setPinEditTarget(null);
+
+  showToast(`${movedName}の位置を保存しました`);
 });
 
 
@@ -2249,24 +2432,42 @@ localStorage.removeItem("bmsgfes_main_stage_position_v1");
 localStorage.removeItem("bmsgfes_main_stage_position_v2");
 localStorage.removeItem("bmsgfes_main_stage_position_v3");
 
-/* ROUTE IMAGES / RESALE */
-function openRouteImage(id){
-  const modal=document.getElementById(id);
-  if(!modal) return;
-  modal.classList.add("on");
-  document.body.style.overflow="hidden";
+
+function stationRoute(type){
+
+  const destinations={
+    daiba:{
+      lat:35.62575,
+      lng:139.77197
+    },
+    teleport:{
+      lat:35.62702,
+      lng:139.77875
+    }
+  };
+
+  const start=destinations[type];
+  if(!start) return;
+
+  const goal={
+    lat:35.6232112,
+    lng:139.7770309
+  };
+
+  const url=
+    `https://www.google.com/maps/dir/?api=1`+
+    `&origin=${start.lat},${start.lng}`+
+    `&destination=${goal.lat},${goal.lng}`+
+    `&travelmode=walking`;
+
+  window.open(url,"_blank","noopener");
+
 }
-function closeRouteImages(){
-  document.querySelectorAll(".route-image-modal.on").forEach(x=>x.classList.remove("on"));
-  document.body.style.overflow="";
-}
-document.getElementById("daibaRouteImageButton")?.addEventListener("click",()=>openRouteImage("daibaRouteModal"));
-document.getElementById("teleportRouteImageButton")?.addEventListener("click",()=>openRouteImage("teleportRouteModal"));
-document.querySelectorAll(".route-image-close").forEach(b=>b.addEventListener("click",closeRouteImages));
+
+/* RESALE */
 document.getElementById("resaleButton")?.addEventListener("click",()=>{
   window.open("https://bmsgfes.tokyo/news/260930","_blank","noopener");
 });
-
 
 renderMySpots();
 
@@ -3521,64 +3722,83 @@ function weatherEmoji(code){
 
 async function loadWeather(){
 
+  const WEATHER_CACHE_KEY="bmsgfes_weather_cache_v3";
+
   const url=
-    `https://api.open-meteo.com/v1/forecast?latitude=${VENUE_WEATHER_LAT}&longitude=${VENUE_WEATHER_LNG}&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=Asia%2FTokyo&forecast_days=16`;
+    `https://api.open-meteo.com/v1/forecast?latitude=${VENUE_WEATHER_LAT}&longitude=${VENUE_WEATHER_LNG}`+
+    `&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max`+
+    `&timezone=Asia%2FTokyo&forecast_days=16`;
 
   try{
 
+    /* オンライン時はブラウザの古いHTTPキャッシュを使わず最新値を取得 */
     const response=await fetch(url,{cache:"no-store"});
 
     if(!response.ok){
-      throw new Error();
+      throw new Error("weather_http_"+response.status);
     }
 
     const data=await response.json();
 
+    if(!data?.daily || !Array.isArray(data.daily.time)){
+      throw new Error("weather_invalid");
+    }
+
+    const savedAt=Date.now();
+
     localStorage.setItem(
-      "bmsgfes_weather_cache_v2",
-      JSON.stringify({
-        savedAt:Date.now(),
-        data
-      })
+      WEATHER_CACHE_KEY,
+      JSON.stringify({savedAt,data})
     );
 
-    renderWeather(data);
+    renderWeather(data,savedAt,false);
 
   }catch(error){
 
-    const cache=
-      localStorage.getItem(
-        "bmsgfes_weather_cache_v2"
+    /* 圏外では最後に正常取得した予報を表示 */
+    try{
+
+      const cached=JSON.parse(
+        localStorage.getItem(WEATHER_CACHE_KEY) || "null"
       );
 
-    if(cache){
+      if(cached?.data){
+        renderWeather(
+          cached.data,
+          cached.savedAt || null,
+          true
+        );
+        return;
+      }
 
-      renderWeather(
-        JSON.parse(cache).data
-      );
+    }catch(e){}
 
-    }else{
-
-      renderWeather(null);
-
-    }
+    renderWeather(null,null,true);
 
   }
 
 }
 
 
-function renderWeather(data){
+function renderWeather(data,savedAt=null,isOffline=false){
 
   const grid=
     document.getElementById(
       "weatherDetailGrid"
     );
 
+  if(!grid) return;
+
   grid.innerHTML="";
+
+  let availableCount=0;
 
   EVENT_DAYS.forEach((date,index)=>{
 
+    /*
+      10/10〜12を日付で完全一致検索。
+      予報範囲外なら別日の予報を代用しない。
+    */
     let dailyIndex=-1;
 
     if(
@@ -3586,39 +3806,31 @@ function renderWeather(data){
       data.daily &&
       Array.isArray(data.daily.time)
     ){
-
-      dailyIndex=
-        data.daily.time.indexOf(date);
-
+      dailyIndex=data.daily.time.indexOf(date);
     }
+
+    const available=dailyIndex!==-1;
 
     let icon="−";
     let max="−";
     let min="−";
     let rain="−";
 
-    if(dailyIndex!==-1){
+    if(available){
 
-      icon=
-        weatherEmoji(
-          data.daily.weather_code[dailyIndex]
-        );
+      availableCount++;
 
-      max=
-        Math.round(
-          data.daily.temperature_2m_max[dailyIndex]
-        );
+      icon=weatherEmoji(
+        data.daily.weather_code?.[dailyIndex]
+      );
 
-      min=
-        Math.round(
-          data.daily.temperature_2m_min[dailyIndex]
-        );
+      const maxRaw=data.daily.temperature_2m_max?.[dailyIndex];
+      const minRaw=data.daily.temperature_2m_min?.[dailyIndex];
+      const rainRaw=data.daily.precipitation_probability_max?.[dailyIndex];
 
-      rain=
-        data.daily.precipitation_probability_max[
-          dailyIndex
-        ];
-
+      max=Number.isFinite(maxRaw) ? Math.round(maxRaw) : "−";
+      min=Number.isFinite(minRaw) ? Math.round(minRaw) : "−";
+      rain=Number.isFinite(rainRaw) ? Math.round(rainRaw) : "−";
     }
 
     const mini=
@@ -3626,8 +3838,10 @@ function renderWeather(data){
         `weatherIcon${index}`
       );
 
-    mini.textContent=icon;
-    mini.classList.remove("weather-loading");
+    if(mini){
+      mini.textContent=icon;
+      mini.classList.remove("weather-loading");
+    }
 
     const dateLabel=
       date.slice(5).replace("-","/");
@@ -3637,7 +3851,7 @@ function renderWeather(data){
 
     card.className="weather-card";
 
-    card.innerHTML=`
+    card.innerHTML=available ? `
       <div class="weather-card-date">
         ${dateLabel}
       </div>
@@ -3654,11 +3868,61 @@ function renderWeather(data){
       <div class="weather-card-rain">
         ☂ ${rain}%
       </div>
+    ` : `
+      <div class="weather-card-date">
+        ${dateLabel}
+      </div>
+
+      <div class="weather-card-icon">
+        −
+      </div>
+
+      <div class="weather-card-temp">
+        予報待ち
+      </div>
+
+      <div class="weather-card-rain">
+        −
+      </div>
     `;
 
     grid.appendChild(card);
 
   });
+
+  const note=document.createElement("div");
+  note.style.cssText=
+    "grid-column:1/-1;margin-top:4px;font-size:9px;line-height:1.5;color:#888;text-align:center;";
+
+  let timeText="";
+
+  if(savedAt){
+    try{
+      timeText=new Intl.DateTimeFormat(
+        "ja-JP",
+        {
+          month:"numeric",
+          day:"numeric",
+          hour:"2-digit",
+          minute:"2-digit",
+          hour12:false,
+          timeZone:"Asia/Tokyo"
+        }
+      ).format(new Date(savedAt));
+    }catch(e){}
+  }
+
+  if(availableCount===0){
+    note.textContent=
+      "10/10〜10/12は現在の予報範囲外です。予報範囲に入り次第、自動表示します。";
+  }else{
+    note.textContent=
+      `Open-Meteo 会場付近の参考予報`+
+      (timeText ? ` / ${timeText}取得` : "")+
+      (isOffline ? " / オフライン：最後に取得した予報" : "");
+  }
+
+  grid.appendChild(note);
 
 }
 
@@ -3771,7 +4035,7 @@ loadWeather();
 /* PWA / OFFLINE */
 if("serviceWorker" in navigator){
   window.addEventListener("load",()=>{
-    navigator.serviceWorker.register("./sw.js")
+    navigator.serviceWorker.register("./sw.js?v=8-pin-editor")
       .catch(()=>{});
   });
 }
@@ -3779,17 +4043,19 @@ if("serviceWorker" in navigator){
 </script>
 
 
-<div class="route-image-modal" id="daibaRouteModal">
-  <div class="route-image-wrap">
-    <img src="./route-daiba.png" alt="台場駅から会場までのオフライン案内画像">
-    <button class="route-image-close" type="button">閉じる</button>
-  </div>
-</div>
 
-<div class="route-image-modal" id="teleportRouteModal">
-  <div class="route-image-wrap">
-    <img src="./route-teleport.png" alt="東京テレポート駅から会場までのオフライン案内画像">
-    <button class="route-image-close" type="button">閉じる</button>
+<div class="pin-edit-panel" id="pinEditPanel">
+  <div class="pin-edit-title">📍 ピン位置編集</div>
+  <div class="pin-edit-help">
+    MAIN STAGE / SUB STAGEは固定です。<br>
+    編集したいピンをタップ → 地図上の正しい位置をタップしてください。
+    位置はこの端末に保存されます。
+  </div>
+  <div class="pin-edit-selected" id="pinEditSelected">ピンを選択してください</div>
+  <div class="pin-edit-actions">
+    <button class="pin-edit-save" id="pinEditDone" type="button">編集を終了</button>
+    <button class="pin-edit-close" id="pinEditCancel" type="button">閉じる</button>
+    <button class="pin-edit-reset" id="pinEditReset" type="button">編集した位置をすべて初期値に戻す</button>
   </div>
 </div>
 
