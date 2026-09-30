@@ -1,11 +1,8 @@
-const CACHE_NAME = "bmsgfes26-v11";
+const CACHE_NAME = "bmsgfes26-v13";
 
 const APP_SHELL = [
   "./Map.JPG",
   "./manifest.webmanifest",
-
-  "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css",
-  "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
 ];
 
 
@@ -34,9 +31,7 @@ const VENUE_ZOOMS = [
 function lon2tile(lon, z) {
 
   return Math.floor(
-    (lon + 180)
-    / 360
-    * Math.pow(2, z)
+    (lon + 180) / 360 * Math.pow(2, z)
   );
 
 }
@@ -44,15 +39,12 @@ function lon2tile(lon, z) {
 
 function lat2tile(lat, z) {
 
-  const rad =
-    lat * Math.PI / 180;
+  const rad = lat * Math.PI / 180;
 
   return Math.floor(
     (
       1 -
-      Math.asinh(
-        Math.tan(rad)
-      ) / Math.PI
+      Math.asinh(Math.tan(rad)) / Math.PI
     )
     / 2
     * Math.pow(2, z)
@@ -61,39 +53,31 @@ function lat2tile(lat, z) {
 }
 
 
-/* =========================================================
-   VENUE TILE URLS
-========================================================= */
-
 function venueTileUrls() {
 
   const urls = [];
 
   for (const z of VENUE_ZOOMS) {
 
-    const x1 =
-      lon2tile(
-        VENUE_BOUNDS.west,
-        z
-      );
+    const x1 = lon2tile(
+      VENUE_BOUNDS.west,
+      z
+    );
 
-    const x2 =
-      lon2tile(
-        VENUE_BOUNDS.east,
-        z
-      );
+    const x2 = lon2tile(
+      VENUE_BOUNDS.east,
+      z
+    );
 
-    const y1 =
-      lat2tile(
-        VENUE_BOUNDS.north,
-        z
-      );
+    const y1 = lat2tile(
+      VENUE_BOUNDS.north,
+      z
+    );
 
-    const y2 =
-      lat2tile(
-        VENUE_BOUNDS.south,
-        z
-      );
+    const y2 = lat2tile(
+      VENUE_BOUNDS.south,
+      z
+    );
 
 
     for (
@@ -142,18 +126,7 @@ self.addEventListener(
 
 
         /*
-        -----------------------------------------
-        APP FILES
-        -----------------------------------------
-
-        index.html はここでは保存しない。
-
-        理由：
-        SW更新時に古いindex.htmlを
-        先にキャッシュしてしまう事故を防ぐため。
-
-        index.htmlは実際にページを開いた時に
-        最新版を取得して保存する。
+          Map.JPG / manifest を保存
         */
 
         for (
@@ -162,7 +135,7 @@ self.addEventListener(
 
           try {
 
-            const response =
+            const res =
               await fetch(
                 url,
                 {
@@ -172,27 +145,27 @@ self.addEventListener(
 
 
             if (
-              response &&
+              res &&
               (
-                response.ok ||
-                response.type === "opaque"
+                res.ok ||
+                res.type === "opaque"
               )
             ) {
 
               await cache.put(
                 url,
-                response.clone()
+                res.clone()
               );
 
             }
 
           }
 
-          catch (error) {
+          catch (e) {
 
             /*
-            1ファイル失敗しても
-            Service Worker全体は止めない
+              失敗しても
+              SW全体は止めない
             */
 
           }
@@ -201,25 +174,17 @@ self.addEventListener(
 
 
         /*
-        -----------------------------------------
-        VENUE MAP TILES
-
-        会場周辺の地図を
-        オフライン用に保存
-        -----------------------------------------
+          会場周辺の地図タイルを
+          圏外用に保存
         */
 
-        const tiles =
-          venueTileUrls();
-
-
         for (
-          const url of tiles
+          const url of venueTileUrls()
         ) {
 
           try {
 
-            const request =
+            const req =
               new Request(
                 url,
                 {
@@ -228,23 +193,21 @@ self.addEventListener(
               );
 
 
-            const response =
-              await fetch(
-                request
-              );
+            const res =
+              await fetch(req);
 
 
             await cache.put(
-              request,
-              response
+              req,
+              res
             );
 
           }
 
-          catch (error) {
+          catch (e) {
 
             /*
-            一部タイル取得失敗は無視
+              一部取得失敗は無視
             */
 
           }
@@ -255,10 +218,6 @@ self.addEventListener(
 
     );
 
-
-    /*
-    新しいSWをすぐ有効化
-    */
 
     self.skipWaiting();
 
@@ -278,14 +237,17 @@ self.addEventListener(
 
       (async () => {
 
-        /*
-        v10以前など
-        古いBMSG FESキャッシュを削除
-        */
-
         const keys =
           await caches.keys();
 
+
+        /*
+          v12以前の古いキャッシュを削除
+
+          localStorageは触らないので
+          MY / 持ち物 / 取引 /
+          キーワード接続情報は消えない
+        */
 
         await Promise.all(
 
@@ -303,11 +265,6 @@ self.addEventListener(
 
         );
 
-
-        /*
-        現在開いているページも
-        v11管理下へ
-        */
 
         await self.clients.claim();
 
@@ -327,12 +284,12 @@ self.addEventListener(
   "fetch",
   event => {
 
-    const request =
+    const req =
       event.request;
 
 
     if (
-      request.method !== "GET"
+      req.method !== "GET"
     ) {
 
       return;
@@ -342,17 +299,43 @@ self.addEventListener(
 
     const url =
       new URL(
-        request.url
+        req.url
       );
 
 
     /* =====================================================
-       PRIVATE DATA API / WEATHER
+       LEAFLET
 
-       Service Workerではキャッシュしない。
+       ★重要★
 
-       天気はindex.html側で
-       最新取得＋圏外用保存を管理。
+       Leaflet本体はSWで触らない。
+
+       index.html側で
+
+       unpkg
+       ↓失敗
+       jsDelivr
+
+       のフォールバックを行う。
+
+       ここをSWでキャッシュすると
+       マップ全体が死ぬ原因になるため除外。
+    ===================================================== */
+
+    if (
+      url.hostname === "unpkg.com" ||
+      url.hostname === "cdn.jsdelivr.net"
+    ) {
+
+      return;
+
+    }
+
+
+    /* =====================================================
+       PRIVATE API / WEATHER
+
+       SWではキャッシュしない
     ===================================================== */
 
     if (
@@ -373,21 +356,17 @@ self.addEventListener(
 
 
     /* =====================================================
-       PAGE NAVIGATION
-
-       ★重要★
+       INDEX.HTML
 
        オンライン
-       ↓
-       必ずサーバー上の最新index.html
+       → サーバーの最新版
 
        オフライン
-       ↓
-       最後に正常表示できたindex.html
+       → 最後に正常表示したindex.html
     ===================================================== */
 
     if (
-      request.mode === "navigate"
+      req.mode === "navigate"
     ) {
 
       event.respondWith(
@@ -401,16 +380,14 @@ self.addEventListener(
 
 
           /*
-          -----------------------------------------
-          ONLINE
-          -----------------------------------------
+            ONLINE
           */
 
           try {
 
             const fresh =
               await fetch(
-                request,
+                req,
                 {
                   cache: "no-store"
                 }
@@ -423,8 +400,8 @@ self.addEventListener(
             ) {
 
               /*
-              最新版を
-              圏外用として保存
+                最新indexを
+                オフライン用に保存
               */
 
               await cache.put(
@@ -439,21 +416,19 @@ self.addEventListener(
 
           }
 
-          catch (error) {
+          catch (e) {
 
             /*
-            ネットワーク失敗
-            ↓
-            オフライン版へ
+              ネットワーク失敗
+              ↓
+              保存版へ
             */
 
           }
 
 
           /*
-          -----------------------------------------
-          OFFLINE
-          -----------------------------------------
+            OFFLINE
           */
 
           const cached =
@@ -469,137 +444,11 @@ self.addEventListener(
           }
 
 
-          /*
-          初回アクセス前など
-          index.htmlの保存もない場合
-          */
-
           return new Response(
-
-            `
-            <!DOCTYPE html>
-
-            <html lang="ja">
-
-            <head>
-
-              <meta charset="UTF-8">
-
-              <meta
-                name="viewport"
-                content="width=device-width,initial-scale=1"
-              >
-
-              <meta
-                name="theme-color"
-                content="#080808"
-              >
-
-              <title>
-                BMSG FES 2026
-              </title>
-
-              <style>
-
-                body{
-
-                  margin:0;
-
-                  min-height:100vh;
-
-                  display:flex;
-
-                  align-items:center;
-
-                  justify-content:center;
-
-                  padding:30px;
-
-                  box-sizing:border-box;
-
-                  background:#050505;
-
-                  color:#fff;
-
-                  font-family:
-                    -apple-system,
-                    BlinkMacSystemFont,
-                    sans-serif;
-
-                  text-align:center;
-
-                }
-
-
-                .box{
-
-                  max-width:420px;
-
-                }
-
-
-                h1{
-
-                  font-size:22px;
-
-                }
-
-
-                p{
-
-                  color:#aaa;
-
-                  font-size:13px;
-
-                  line-height:1.7;
-
-                }
-
-              </style>
-
-            </head>
-
-
-            <body>
-
-              <div class="box">
-
-                <h1>
-                  BMSG FES 2026
-                </h1>
-
-                <p>
-
-                  オフラインデータの準備が
-                  完了していません。
-
-                  <br><br>
-
-                  一度オンライン状態で
-                  サイトを開いてください。
-
-                </p>
-
-              </div>
-
-            </body>
-
-            </html>
-            `,
-
+            "Offline",
             {
-
-              status: 200,
-
-              headers: {
-
-                "Content-Type":
-                  "text/html; charset=UTF-8"
-
-              }
-
+              status: 503
             }
-
           );
 
         })()
@@ -615,10 +464,10 @@ self.addEventListener(
     /* =====================================================
        OPENSTREETMAP
 
-       会場周辺は
-       キャッシュ済み地図を優先。
+       保存済みタイルを優先。
 
-       → 圏外でも会場マップを表示
+       圏外でも会場周辺の地図を
+       表示できるようにする。
     ===================================================== */
 
     if (
@@ -637,57 +486,45 @@ self.addEventListener(
             );
 
 
-          /*
-          保存済み地図
-          */
-
-          const cached =
+          const hit =
             await cache.match(
-              request
+              req
             );
 
 
-          if (cached) {
+          if (hit) {
 
-            return cached;
+            return hit;
 
           }
 
 
-          /*
-          未保存なら
-          オンライン取得
-          */
-
           try {
 
-            const response =
-              await fetch(
-                request
-              );
+            const res =
+              await fetch(req);
 
 
-            if (response) {
+            if (res) {
 
               await cache.put(
-                request,
-                response.clone()
+                req,
+                res.clone()
               );
 
             }
 
 
-            return response;
+            return res;
 
           }
 
-          catch (error) {
+          catch (e) {
 
             return new Response(
               "",
               {
-                status: 504,
-                statusText: "Offline"
+                status: 504
               }
             );
 
@@ -706,11 +543,6 @@ self.addEventListener(
     /* =====================================================
        OTHER FILES
 
-       Map.JPG
-       manifest.webmanifest
-       Leaflet CSS / JS
-       その他静的ファイル
-
        オンライン
        → 最新版を取得して保存
 
@@ -728,17 +560,11 @@ self.addEventListener(
           );
 
 
-        /*
-        -----------------------------------------
-        ONLINE
-        -----------------------------------------
-        */
-
         try {
 
           const fresh =
             await fetch(
-              request,
+              req,
               {
                 cache: "no-store"
               }
@@ -754,7 +580,7 @@ self.addEventListener(
           ) {
 
             await cache.put(
-              request,
+              req,
               fresh.clone()
             );
 
@@ -765,17 +591,11 @@ self.addEventListener(
 
         }
 
-        catch (error) {
-
-          /*
-          -----------------------------------------
-          OFFLINE
-          -----------------------------------------
-          */
+        catch (e) {
 
           const cached =
             await cache.match(
-              request
+              req
             );
 
 
@@ -789,8 +609,7 @@ self.addEventListener(
           return new Response(
             "",
             {
-              status: 504,
-              statusText: "Offline"
+              status: 504
             }
           );
 
