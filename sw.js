@@ -1,14 +1,10 @@
-const CACHE_NAME = "bmsgfes26-v5";
-
-/*
-=========================================================
-APP SHELL
-=========================================================
-*/
+const CACHE_NAME = "bmsgfes26-v6";
 
 const APP_SHELL = [
   "./index.html",
   "./Map.JPG",
+  "./route-daiba.png",
+  "./route-teleport.png",
   "./manifest.webmanifest",
 
   "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css",
@@ -16,33 +12,16 @@ const APP_SHELL = [
 ];
 
 
-/*
-=========================================================
-VENUE AREA
-
-フェス会場周辺のみ保存。
-端末容量を必要以上に使用しない。
-=========================================================
-*/
+/* =========================================================
+   OFFLINE MAP AREA
+========================================================= */
 
 const VENUE_BOUNDS = {
-
   south: 35.6209,
   west: 139.7712,
-
   north: 35.6257,
   east: 139.7786
-
 };
-
-
-/*
-ズームレベル
-
-16 = 会場全体
-17 = 通常
-18 = 詳細
-*/
 
 const VENUE_ZOOMS = [
   16,
@@ -51,20 +30,16 @@ const VENUE_ZOOMS = [
 ];
 
 
-/*
-=========================================================
-MAP TILE CALCULATION
-=========================================================
-*/
+/* =========================================================
+   MAP TILE CALCULATION
+========================================================= */
 
 function lon2tile(lon, z) {
 
   return Math.floor(
-
     (lon + 180)
     / 360
     * Math.pow(2, z)
-
   );
 
 }
@@ -75,38 +50,29 @@ function lat2tile(lat, z) {
   const rad =
     lat * Math.PI / 180;
 
-
   return Math.floor(
-
     (
       1 -
       Math.asinh(
         Math.tan(rad)
       ) / Math.PI
     )
-
     / 2
-
     * Math.pow(2, z)
-
   );
 
 }
 
 
-/*
-=========================================================
-VENUE TILE URLS
-=========================================================
-*/
+/* =========================================================
+   VENUE TILE URLS
+========================================================= */
 
 function venueTileUrls() {
 
   const urls = [];
 
-
   for (const z of VENUE_ZOOMS) {
-
 
     const x1 =
       lon2tile(
@@ -114,20 +80,17 @@ function venueTileUrls() {
         z
       );
 
-
     const x2 =
       lon2tile(
         VENUE_BOUNDS.east,
         z
       );
 
-
     const y1 =
       lat2tile(
         VENUE_BOUNDS.north,
         z
       );
-
 
     const y2 =
       lat2tile(
@@ -142,20 +105,15 @@ function venueTileUrls() {
       x++
     ) {
 
-
       for (
         let y = y1;
         y <= y2;
         y++
       ) {
 
-
         urls.push(
-
           `https://tile.openstreetmap.org/${z}/${x}/${y}.png`
-
         );
-
 
       }
 
@@ -163,27 +121,22 @@ function venueTileUrls() {
 
   }
 
-
   return urls;
 
 }
 
 
-/*
-=========================================================
-INSTALL
-=========================================================
-*/
+/* =========================================================
+   INSTALL
+========================================================= */
 
 self.addEventListener(
   "install",
   event => {
 
-
     event.waitUntil(
 
       (async () => {
-
 
         const cache =
           await caches.open(
@@ -193,51 +146,7 @@ self.addEventListener(
 
         /*
         -----------------------------------------
-        INDEX.HTML
-
-        最重要。
-
-        iPhoneホーム画面版を
-        オフライン起動するため
-        必ず保存を試みる。
-        -----------------------------------------
-        */
-
-        try {
-
-          const indexResponse =
-            await fetch(
-              "./index.html",
-              {
-                cache: "reload"
-              }
-            );
-
-
-          if (indexResponse.ok) {
-
-            await cache.put(
-              "./index.html",
-              indexResponse.clone()
-            );
-
-          }
-
-        }
-
-        catch (error) {
-
-          /*
-          既存キャッシュがある場合は
-          activate後に利用可能
-          */
-
-        }
-
-
-        /*
-        -----------------------------------------
-        OTHER SITE FILES
+        APP FILES
         -----------------------------------------
         */
 
@@ -245,23 +154,15 @@ self.addEventListener(
           const url of APP_SHELL
         ) {
 
-
           try {
 
-
-            const alreadyCached =
-              await cache.match(url);
-
-
-            if (alreadyCached) {
-
-              continue;
-
-            }
-
-
             const response =
-              await fetch(url);
+              await fetch(
+                url,
+                {
+                  cache: "reload"
+                }
+              );
 
 
             if (
@@ -272,15 +173,12 @@ self.addEventListener(
               )
             ) {
 
-
               await cache.put(
                 url,
                 response.clone()
               );
 
-
             }
-
 
           }
 
@@ -293,16 +191,14 @@ self.addEventListener(
 
           }
 
-
         }
 
 
         /*
         -----------------------------------------
-        VENUE MAP PRE-CACHE
+        VENUE MAP TILES
         -----------------------------------------
         */
-
 
         const tiles =
           venueTileUrls();
@@ -312,9 +208,7 @@ self.addEventListener(
           const url of tiles
         ) {
 
-
           try {
-
 
             const request =
               new Request(
@@ -323,19 +217,6 @@ self.addEventListener(
                   mode: "no-cors"
                 }
               );
-
-
-            const cached =
-              await cache.match(
-                request
-              );
-
-
-            if (cached) {
-
-              continue;
-
-            }
 
 
             const response =
@@ -349,20 +230,17 @@ self.addEventListener(
               response
             );
 
-
           }
 
           catch (error) {
 
             /*
-            一部の地図取得失敗は無視
+            一部タイル取得失敗は無視
             */
 
           }
 
-
         }
-
 
       })()
 
@@ -370,8 +248,7 @@ self.addEventListener(
 
 
     /*
-    新しいService Workerを
-    すぐ待機状態から進める
+    新しいSWをすぐ有効化
     */
 
     self.skipWaiting();
@@ -380,24 +257,20 @@ self.addEventListener(
 );
 
 
-/*
-=========================================================
-ACTIVATE
-=========================================================
-*/
+/* =========================================================
+   ACTIVATE
+========================================================= */
 
 self.addEventListener(
   "activate",
   event => {
 
-
     event.waitUntil(
 
       (async () => {
 
-
         /*
-        古いキャッシュ削除
+        v5など古いキャッシュを削除
         */
 
         const keys =
@@ -423,11 +296,10 @@ self.addEventListener(
 
         /*
         開いているページを
-        即座に新Service Worker管理下へ
+        v6管理下へ
         */
 
         await self.clients.claim();
-
 
       })()
 
@@ -437,16 +309,13 @@ self.addEventListener(
 );
 
 
-/*
-=========================================================
-FETCH
-=========================================================
-*/
+/* =========================================================
+   FETCH
+========================================================= */
 
 self.addEventListener(
   "fetch",
   event => {
-
 
     const request =
       event.request;
@@ -467,14 +336,11 @@ self.addEventListener(
       );
 
 
-    /*
-    =====================================================
-    PRIVATE DATA API / WEATHER
+    /* =====================================================
+       PRIVATE DATA API / WEATHER
 
-    キャッシュ対象外
-    =====================================================
-    */
-
+       常にネットワーク側へ任せる
+    ===================================================== */
 
     if (
 
@@ -488,34 +354,34 @@ self.addEventListener(
 
     ) {
 
-
       return;
 
     }
 
 
-    /*
-    =====================================================
-    PAGE NAVIGATION
+    /* =====================================================
+       PAGE NAVIGATION
 
-    ★ iPhoneホーム画面起動で重要 ★
+       ★ v6重要変更 ★
 
-    URLが何であっても、
-    同一サイト内のページ起動なら
-    保存済みindex.htmlを最優先。
-    =====================================================
-    */
+       オンライン
+       ↓
+       最新index.htmlを取得
 
+       オフライン
+       ↓
+       保存済みindex.html
+
+       古いindex.htmlを先に表示しない
+    ===================================================== */
 
     if (
       request.mode === "navigate"
     ) {
 
-
       event.respondWith(
 
         (async () => {
-
 
           const cache =
             await caches.open(
@@ -524,84 +390,18 @@ self.addEventListener(
 
 
           /*
-          まず保存済みindex.html
+          -----------------------------------------
+          ONLINE
+
+          必ず最新版を先に取得
+          -----------------------------------------
           */
-
-          const cachedIndex =
-            await cache.match(
-              "./index.html"
-            );
-
-
-          /*
-          キャッシュがある場合
-          即座に表示
-          */
-
-          if (cachedIndex) {
-
-
-            /*
-            オンラインなら
-            裏側で最新版を取得
-            */
-
-            event.waitUntil(
-
-              fetch(
-                "./index.html",
-                {
-                  cache: "no-store"
-                }
-              )
-
-                .then(
-                  async response => {
-
-
-                    if (
-                      response &&
-                      response.ok
-                    ) {
-
-
-                      await cache.put(
-                        "./index.html",
-                        response.clone()
-                      );
-
-
-                    }
-
-
-                  }
-                )
-
-                .catch(
-                  () => {}
-                )
-
-            );
-
-
-            return cachedIndex;
-
-          }
-
-
-          /*
-          index.htmlがまだ保存されていない場合
-
-          オンライン取得を試す
-          */
-
 
           try {
 
-
-            const response =
+            const fresh =
               await fetch(
-                "./index.html",
+                request,
                 {
                   cache: "no-store"
                 }
@@ -609,34 +409,61 @@ self.addEventListener(
 
 
             if (
-              response &&
-              response.ok
+              fresh &&
+              fresh.ok
             ) {
 
+              /*
+              最新版を
+              オフライン用として保存
+              */
 
               await cache.put(
                 "./index.html",
-                response.clone()
+                fresh.clone()
               );
 
 
-              return response;
-
+              return fresh;
 
             }
 
+          }
+
+          catch (error) {
+
+            /*
+            ネットワーク失敗
+            ↓
+            オフラインキャッシュへ
+            */
 
           }
 
-          catch (error) {}
+
+          /*
+          -----------------------------------------
+          OFFLINE
+          -----------------------------------------
+          */
+
+          const cached =
+            await cache.match(
+              "./index.html"
+            );
+
+
+          if (cached) {
+
+            return cached;
+
+          }
 
 
           /*
-          完全オフライン
-          ＋
-          index.html未保存
+          初回アクセス前など
+          キャッシュも存在しない場合
           */
-
 
           return new Response(
 
@@ -647,74 +474,79 @@ self.addEventListener(
 
             <head>
 
-            <meta charset="UTF-8">
+              <meta charset="UTF-8">
 
-            <meta
-              name="viewport"
-              content="width=device-width,initial-scale=1"
-            >
+              <meta
+                name="viewport"
+                content="width=device-width,initial-scale=1"
+              >
 
-            <meta
-              name="theme-color"
-              content="#080808"
-            >
+              <meta
+                name="theme-color"
+                content="#080808"
+              >
 
-            <title>BMSG FES 2026</title>
+              <title>
+                BMSG FES 2026
+              </title>
 
-            <style>
+              <style>
 
-            body{
+                body{
 
-              margin:0;
+                  margin:0;
 
-              background:#050505;
+                  min-height:100vh;
 
-              color:#fff;
+                  display:flex;
 
-              font-family:
-                -apple-system,
-                BlinkMacSystemFont,
-                sans-serif;
+                  align-items:center;
 
-              display:flex;
+                  justify-content:center;
 
-              align-items:center;
+                  padding:30px;
 
-              justify-content:center;
+                  box-sizing:border-box;
 
-              min-height:100vh;
+                  background:#050505;
 
-              text-align:center;
+                  color:#fff;
 
-              padding:30px;
+                  font-family:
+                    -apple-system,
+                    BlinkMacSystemFont,
+                    sans-serif;
 
-              box-sizing:border-box;
+                  text-align:center;
 
-            }
+                }
 
-            .box{
 
-              max-width:420px;
+                .box{
 
-            }
+                  max-width:420px;
 
-            h1{
+                }
 
-              font-size:22px;
 
-            }
+                h1{
 
-            p{
+                  font-size:22px;
 
-              color:#aaa;
+                }
 
-              line-height:1.7;
 
-              font-size:13px;
+                p{
 
-            }
+                  color:#aaa;
 
-            </style>
+                  font-size:13px;
+
+                  line-height:1.7;
+
+                }
+
+              </style>
 
             </head>
 
@@ -730,7 +562,9 @@ self.addEventListener(
                 <p>
 
                   オフラインデータの準備が
-                  完了していません。<br><br>
+                  完了していません。
+
+                  <br><br>
 
                   一度オンライン状態で
                   サイトを開いてください。
@@ -759,7 +593,6 @@ self.addEventListener(
 
           );
 
-
         })()
 
       );
@@ -770,12 +603,11 @@ self.addEventListener(
     }
 
 
-    /*
-    =====================================================
-    OPEN STREET MAP
-    =====================================================
-    */
+    /* =====================================================
+       OPEN STREET MAP
 
+       会場周辺はキャッシュ優先
+    ===================================================== */
 
     if (
       url.hostname.endsWith(
@@ -783,11 +615,9 @@ self.addEventListener(
       )
     ) {
 
-
       event.respondWith(
 
         (async () => {
-
 
           const cache =
             await caches.open(
@@ -796,9 +626,8 @@ self.addEventListener(
 
 
           /*
-          キャッシュ優先
+          保存済み地図
           */
-
 
           const cached =
             await cache.match(
@@ -814,13 +643,11 @@ self.addEventListener(
 
 
           /*
-          キャッシュがなければ
-          ネット取得
+          保存されていなければ
+          オンライン取得
           */
 
-
           try {
-
 
             const response =
               await fetch(
@@ -830,23 +657,19 @@ self.addEventListener(
 
             if (response) {
 
-
               await cache.put(
                 request,
                 response.clone()
               );
-
 
             }
 
 
             return response;
 
-
           }
 
           catch (error) {
-
 
             return new Response(
               "",
@@ -856,9 +679,7 @@ self.addEventListener(
               }
             );
 
-
           }
-
 
         })()
 
@@ -870,17 +691,22 @@ self.addEventListener(
     }
 
 
-    /*
-    =====================================================
-    OTHER FILES
-    =====================================================
-    */
+    /* =====================================================
+       OTHER FILES
 
+       route-daiba.png
+       route-teleport.png
+       Map.JPG
+       Leaflet
+       manifest
+
+       オンライン時：最新版
+       オフライン時：キャッシュ
+    ===================================================== */
 
     event.respondWith(
 
       (async () => {
-
 
         const cache =
           await caches.open(
@@ -889,110 +715,61 @@ self.addEventListener(
 
 
         /*
-        キャッシュ優先
+        -----------------------------------------
+        ONLINE
+        -----------------------------------------
         */
-
-
-        const cached =
-          await cache.match(
-            request
-          );
-
-
-        if (cached) {
-
-
-          /*
-          オンライン時は
-          裏で最新版へ更新
-          */
-
-
-          fetch(request)
-
-            .then(
-              async response => {
-
-
-                if (
-
-                  response &&
-
-                  (
-                    response.ok ||
-                    response.type ===
-                      "opaque"
-                  )
-
-                ) {
-
-
-                  await cache.put(
-                    request,
-                    response.clone()
-                  );
-
-
-                }
-
-
-              }
-            )
-
-            .catch(
-              () => {}
-            );
-
-
-          return cached;
-
-        }
-
-
-        /*
-        キャッシュなし
-        ↓
-        ネット取得
-        */
-
 
         try {
 
-
-          const response =
+          const fresh =
             await fetch(
-              request
+              request,
+              {
+                cache: "no-store"
+              }
             );
 
 
           if (
-
-            response &&
-
+            fresh &&
             (
-              response.ok ||
-              response.type ===
-                "opaque"
+              fresh.ok ||
+              fresh.type === "opaque"
             )
-
           ) {
-
 
             await cache.put(
               request,
-              response.clone()
+              fresh.clone()
             );
-
 
           }
 
 
-          return response;
-
+          return fresh;
 
         }
 
         catch (error) {
+
+          /*
+          -----------------------------------------
+          OFFLINE
+          -----------------------------------------
+          */
+
+          const cached =
+            await cache.match(
+              request
+            );
+
+
+          if (cached) {
+
+            return cached;
+
+          }
 
 
           return new Response(
@@ -1003,9 +780,7 @@ self.addEventListener(
             }
           );
 
-
         }
-
 
       })()
 
