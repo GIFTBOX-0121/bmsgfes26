@@ -1128,26 +1128,6 @@ button:active{transform:scale(.98);}
 </style>
 
 
-<style id="page-position-fix">
-/* Each bottom-nav page must begin directly below the sticky header. */
-.page{
-  display:none !important;
-  min-height:0 !important;
-  margin-top:0 !important;
-  padding-top:0 !important;
-}
-.page.active{
-  display:block !important;
-}
-#page-info,
-#page-goods,
-#page-checklist,
-#page-trade,
-#page-my{
-  margin-top:0 !important;
-  padding-top:0 !important;
-}
-</style>
 
 </head>
 
@@ -1267,8 +1247,6 @@ button:active{transform:scale(.98);}
           <a href="https://www.tptc.co.jp/park/01_04" target="_blank" rel="noopener">シンボルプロムナード公園 公式MAP ↗</a>
         </div>
       </div>
-
-</div>
 
     </div>
 
@@ -3535,20 +3513,31 @@ document.getElementById("weatherClose")
 });
 
 
-function weatherEmoji(code){
+function weatherEmoji(code,rainProbability=null){
 
   const c=Number(code);
+  const rain=Number(rainProbability);
 
-  /* Open-Meteo / WMO weather interpretation codes */
-  if(c===0) return "☀️";                 // Clear sky
-  if(c===1) return "🌤️";                // Mainly clear
-  if(c===2) return "⛅";                 // Partly cloudy
-  if(c===3) return "☁️";                 // Overcast
-  if(c===45 || c===48) return "🌫️";     // Fog
-  if([51,53,55,56,57].includes(c)) return "🌦️"; // Drizzle
-  if([61,63,65,66,67,80,81,82].includes(c)) return "🌧️"; // Rain/showers
-  if([71,73,75,77,85,86].includes(c)) return "🌨️"; // Snow
-  if([95,96,99].includes(c)) return "⛈️"; // Thunderstorm
+  if(c===0) return "☀️";
+  if(c===1) return "🌤️";
+  if(c===2) return "⛅";
+  if(c===3) return "☁️";
+  if(c===45 || c===48) return "🌫️";
+
+  /*
+    10日以上先の予報では、一時的な降水を含むWMOコードだけで
+    終日「雨」に見せない。日降水確率50%以上のときだけ雨系表示。
+  */
+  if([51,53,55,56,57,61,63,65,66,67,80,81,82].includes(c)){
+    if(Number.isFinite(rain) && rain < 50) return "☁️";
+    return "🌧️";
+  }
+
+  if([71,73,75,77,85,86].includes(c)) return "🌨️";
+  if([95,96,99].includes(c)){
+    if(Number.isFinite(rain) && rain < 50) return "☁️";
+    return "⛈️";
+  }
 
   return "−";
 }
@@ -3556,7 +3545,7 @@ function weatherEmoji(code){
 
 async function loadWeather(){
 
-  const WEATHER_CACHE_KEY="bmsgfes_weather_cache_v5";
+  const WEATHER_CACHE_KEY="bmsgfes_weather_cache_v6";
 
   /*
     会場付近（青海R地区）。
@@ -3645,7 +3634,7 @@ function renderWeather(data,savedAt=null,isOffline=false){
 
     if(available){
       availableCount++;
-      icon=weatherEmoji(data.daily.weather_code?.[i]);
+      icon=weatherEmoji(data.daily.weather_code?.[i],data.daily.precipitation_probability_max?.[i]);
 
       const maxRaw=Number(data.daily.temperature_2m_max?.[i]);
       const minRaw=Number(data.daily.temperature_2m_min?.[i]);
