@@ -1,36 +1,47 @@
-const CACHE_NAME = "bmsgfes26-v4";
+const CACHE_NAME = "bmsgfes26-v5";
+
+/*
+=========================================================
+APP SHELL
+=========================================================
+*/
 
 const APP_SHELL = [
-  "./",
   "./index.html",
   "./Map.JPG",
   "./manifest.webmanifest",
+
   "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css",
   "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
 ];
 
 
-/* =========================================================
-   FESTIVAL AREA
+/*
+=========================================================
+VENUE AREA
 
-   フェス会場周辺だけを事前保存します。
-   広範囲を保存しないことで容量を抑えます。
-========================================================= */
+フェス会場周辺のみ保存。
+端末容量を必要以上に使用しない。
+=========================================================
+*/
 
 const VENUE_BOUNDS = {
+
   south: 35.6209,
   west: 139.7712,
+
   north: 35.6257,
   east: 139.7786
+
 };
 
 
 /*
-  保存するズームレベル
+ズームレベル
 
-  16 = 会場全体
-  17 = 通常表示
-  18 = 詳細表示
+16 = 会場全体
+17 = 通常
+18 = 詳細
 */
 
 const VENUE_ZOOMS = [
@@ -40,16 +51,20 @@ const VENUE_ZOOMS = [
 ];
 
 
-/* =========================================================
-   TILE CALCULATION
-========================================================= */
+/*
+=========================================================
+MAP TILE CALCULATION
+=========================================================
+*/
 
 function lon2tile(lon, z) {
 
   return Math.floor(
-    (lon + 180) /
-    360 *
-    Math.pow(2, z)
+
+    (lon + 180)
+    / 360
+    * Math.pow(2, z)
+
   );
 
 }
@@ -60,6 +75,7 @@ function lat2tile(lat, z) {
   const rad =
     lat * Math.PI / 180;
 
+
   return Math.floor(
 
     (
@@ -69,18 +85,20 @@ function lat2tile(lat, z) {
       ) / Math.PI
     )
 
-    / 2 *
+    / 2
 
-    Math.pow(2, z)
+    * Math.pow(2, z)
 
   );
 
 }
 
 
-/* =========================================================
-   VENUE TILE LIST
-========================================================= */
+/*
+=========================================================
+VENUE TILE URLS
+=========================================================
+*/
 
 function venueTileUrls() {
 
@@ -89,11 +107,13 @@ function venueTileUrls() {
 
   for (const z of VENUE_ZOOMS) {
 
+
     const x1 =
       lon2tile(
         VENUE_BOUNDS.west,
         z
       );
+
 
     const x2 =
       lon2tile(
@@ -108,6 +128,7 @@ function venueTileUrls() {
         z
       );
 
+
     const y2 =
       lat2tile(
         VENUE_BOUNDS.south,
@@ -121,15 +142,20 @@ function venueTileUrls() {
       x++
     ) {
 
+
       for (
         let y = y1;
         y <= y2;
         y++
       ) {
 
+
         urls.push(
+
           `https://tile.openstreetmap.org/${z}/${x}/${y}.png`
+
         );
+
 
       }
 
@@ -143,17 +169,21 @@ function venueTileUrls() {
 }
 
 
-/* =========================================================
-   INSTALL
-========================================================= */
+/*
+=========================================================
+INSTALL
+=========================================================
+*/
 
 self.addEventListener(
   "install",
   event => {
 
+
     event.waitUntil(
 
       (async () => {
+
 
         const cache =
           await caches.open(
@@ -162,41 +192,117 @@ self.addEventListener(
 
 
         /*
-          -----------------------------------------
-          SITE FILES
-          -----------------------------------------
+        -----------------------------------------
+        INDEX.HTML
+
+        最重要。
+
+        iPhoneホーム画面版を
+        オフライン起動するため
+        必ず保存を試みる。
+        -----------------------------------------
+        */
+
+        try {
+
+          const indexResponse =
+            await fetch(
+              "./index.html",
+              {
+                cache: "reload"
+              }
+            );
+
+
+          if (indexResponse.ok) {
+
+            await cache.put(
+              "./index.html",
+              indexResponse.clone()
+            );
+
+          }
+
+        }
+
+        catch (error) {
+
+          /*
+          既存キャッシュがある場合は
+          activate後に利用可能
+          */
+
+        }
+
+
+        /*
+        -----------------------------------------
+        OTHER SITE FILES
+        -----------------------------------------
         */
 
         for (
           const url of APP_SHELL
         ) {
 
+
           try {
 
-            await cache.add(url);
+
+            const alreadyCached =
+              await cache.match(url);
+
+
+            if (alreadyCached) {
+
+              continue;
+
+            }
+
+
+            const response =
+              await fetch(url);
+
+
+            if (
+              response &&
+              (
+                response.ok ||
+                response.type === "opaque"
+              )
+            ) {
+
+
+              await cache.put(
+                url,
+                response.clone()
+              );
+
+
+            }
+
 
           }
 
           catch (error) {
 
             /*
-              1ファイル取得失敗で
-              Service Worker全体を止めない
+            1ファイル失敗しても
+            Service Worker全体は止めない
             */
 
           }
+
 
         }
 
 
         /*
-          -----------------------------------------
-          VENUE MAP
-
-          会場周辺の地図を
-          オンライン時に先回り保存
-          -----------------------------------------
+        -----------------------------------------
+        VENUE MAP PRE-CACHE
+        -----------------------------------------
         */
+
 
         const tiles =
           venueTileUrls();
@@ -206,7 +312,9 @@ self.addEventListener(
           const url of tiles
         ) {
 
+
           try {
+
 
             const request =
               new Request(
@@ -223,38 +331,48 @@ self.addEventListener(
               );
 
 
-            if (!cached) {
+            if (cached) {
 
-              const response =
-                await fetch(
-                  request
-                );
-
-
-              await cache.put(
-                request,
-                response
-              );
+              continue;
 
             }
+
+
+            const response =
+              await fetch(
+                request
+              );
+
+
+            await cache.put(
+              request,
+              response
+            );
+
 
           }
 
           catch (error) {
 
             /*
-              一部タイル取得失敗でも
-              他のタイル保存を続行
+            一部の地図取得失敗は無視
             */
 
           }
 
+
         }
+
 
       })()
 
     );
 
+
+    /*
+    新しいService Workerを
+    すぐ待機状態から進める
+    */
 
     self.skipWaiting();
 
@@ -262,63 +380,77 @@ self.addEventListener(
 );
 
 
-/* =========================================================
-   ACTIVATE
-========================================================= */
+/*
+=========================================================
+ACTIVATE
+=========================================================
+*/
 
 self.addEventListener(
   "activate",
   event => {
 
+
     event.waitUntil(
 
-      caches
-        .keys()
+      (async () => {
 
-        .then(keys =>
 
-          Promise.all(
+        /*
+        古いキャッシュ削除
+        */
 
-            keys
+        const keys =
+          await caches.keys();
 
-              .filter(
-                key =>
-                  key !== CACHE_NAME
-              )
 
-              .map(
-                key =>
-                  caches.delete(key)
-              )
+        await Promise.all(
 
-          )
+          keys
 
-        )
+            .filter(
+              key =>
+                key !== CACHE_NAME
+            )
+
+            .map(
+              key =>
+                caches.delete(key)
+            )
+
+        );
+
+
+        /*
+        開いているページを
+        即座に新Service Worker管理下へ
+        */
+
+        await self.clients.claim();
+
+
+      })()
 
     );
-
-
-    self.clients.claim();
 
   }
 );
 
 
-/* =========================================================
-   FETCH
-========================================================= */
+/*
+=========================================================
+FETCH
+=========================================================
+*/
 
 self.addEventListener(
   "fetch",
   event => {
 
+
     const request =
       event.request;
 
-
-    /*
-      GET以外はキャッシュしない
-    */
 
     if (
       request.method !== "GET"
@@ -335,19 +467,14 @@ self.addEventListener(
       );
 
 
-    /* =====================================================
-       PRIVATE DATA / WEATHER
+    /*
+    =====================================================
+    PRIVATE DATA API / WEATHER
 
-       この2つはキャッシュしない。
+    キャッシュ対象外
+    =====================================================
+    */
 
-       PRIVATE DATA
-       ↓
-       通信可能時のみCloudflare同期
-
-       WEATHER
-       ↓
-       最新情報はオンライン時取得
-    ===================================================== */
 
     if (
 
@@ -361,24 +488,34 @@ self.addEventListener(
 
     ) {
 
+
       return;
 
     }
 
 
-    /* =====================================================
-       OPEN STREET MAP
-    ===================================================== */
+    /*
+    =====================================================
+    PAGE NAVIGATION
+
+    ★ iPhoneホーム画面起動で重要 ★
+
+    URLが何であっても、
+    同一サイト内のページ起動なら
+    保存済みindex.htmlを最優先。
+    =====================================================
+    */
+
 
     if (
-      url.hostname.endsWith(
-        ".tile.openstreetmap.org"
-      )
+      request.mode === "navigate"
     ) {
+
 
       event.respondWith(
 
         (async () => {
+
 
           const cache =
             await caches.open(
@@ -387,8 +524,281 @@ self.addEventListener(
 
 
           /*
-            まず端末保存済み地図を確認
+          まず保存済みindex.html
           */
+
+          const cachedIndex =
+            await cache.match(
+              "./index.html"
+            );
+
+
+          /*
+          キャッシュがある場合
+          即座に表示
+          */
+
+          if (cachedIndex) {
+
+
+            /*
+            オンラインなら
+            裏側で最新版を取得
+            */
+
+            event.waitUntil(
+
+              fetch(
+                "./index.html",
+                {
+                  cache: "no-store"
+                }
+              )
+
+                .then(
+                  async response => {
+
+
+                    if (
+                      response &&
+                      response.ok
+                    ) {
+
+
+                      await cache.put(
+                        "./index.html",
+                        response.clone()
+                      );
+
+
+                    }
+
+
+                  }
+                )
+
+                .catch(
+                  () => {}
+                )
+
+            );
+
+
+            return cachedIndex;
+
+          }
+
+
+          /*
+          index.htmlがまだ保存されていない場合
+
+          オンライン取得を試す
+          */
+
+
+          try {
+
+
+            const response =
+              await fetch(
+                "./index.html",
+                {
+                  cache: "no-store"
+                }
+              );
+
+
+            if (
+              response &&
+              response.ok
+            ) {
+
+
+              await cache.put(
+                "./index.html",
+                response.clone()
+              );
+
+
+              return response;
+
+
+            }
+
+
+          }
+
+          catch (error) {}
+
+
+          /*
+          完全オフライン
+          ＋
+          index.html未保存
+          */
+
+
+          return new Response(
+
+            `
+            <!DOCTYPE html>
+
+            <html lang="ja">
+
+            <head>
+
+            <meta charset="UTF-8">
+
+            <meta
+              name="viewport"
+              content="width=device-width,initial-scale=1"
+            >
+
+            <meta
+              name="theme-color"
+              content="#080808"
+            >
+
+            <title>BMSG FES 2026</title>
+
+            <style>
+
+            body{
+
+              margin:0;
+
+              background:#050505;
+
+              color:#fff;
+
+              font-family:
+                -apple-system,
+                BlinkMacSystemFont,
+                sans-serif;
+
+              display:flex;
+
+              align-items:center;
+
+              justify-content:center;
+
+              min-height:100vh;
+
+              text-align:center;
+
+              padding:30px;
+
+              box-sizing:border-box;
+
+            }
+
+            .box{
+
+              max-width:420px;
+
+            }
+
+            h1{
+
+              font-size:22px;
+
+            }
+
+            p{
+
+              color:#aaa;
+
+              line-height:1.7;
+
+              font-size:13px;
+
+            }
+
+            </style>
+
+            </head>
+
+
+            <body>
+
+              <div class="box">
+
+                <h1>
+                  BMSG FES 2026
+                </h1>
+
+                <p>
+
+                  オフラインデータの準備が
+                  完了していません。<br><br>
+
+                  一度オンライン状態で
+                  サイトを開いてください。
+
+                </p>
+
+              </div>
+
+            </body>
+
+            </html>
+            `,
+
+            {
+
+              status: 200,
+
+              headers: {
+
+                "Content-Type":
+                  "text/html; charset=UTF-8"
+
+              }
+
+            }
+
+          );
+
+
+        })()
+
+      );
+
+
+      return;
+
+    }
+
+
+    /*
+    =====================================================
+    OPEN STREET MAP
+    =====================================================
+    */
+
+
+    if (
+      url.hostname.endsWith(
+        ".tile.openstreetmap.org"
+      )
+    ) {
+
+
+      event.respondWith(
+
+        (async () => {
+
+
+          const cache =
+            await caches.open(
+              CACHE_NAME
+            );
+
+
+          /*
+          キャッシュ優先
+          */
+
 
           const cached =
             await cache.match(
@@ -404,11 +814,13 @@ self.addEventListener(
 
 
           /*
-            保存されていなければ
-            ネットから取得
+          キャッシュがなければ
+          ネット取得
           */
 
+
           try {
+
 
             const response =
               await fetch(
@@ -418,24 +830,23 @@ self.addEventListener(
 
             if (response) {
 
+
               await cache.put(
                 request,
                 response.clone()
               );
+
 
             }
 
 
             return response;
 
+
           }
 
           catch (error) {
 
-            /*
-              完全オフラインかつ
-              キャッシュなし
-            */
 
             return new Response(
               "",
@@ -445,7 +856,9 @@ self.addEventListener(
               }
             );
 
+
           }
+
 
         })()
 
@@ -457,13 +870,17 @@ self.addEventListener(
     }
 
 
-    /* =====================================================
-       SITE FILES
-    ===================================================== */
+    /*
+    =====================================================
+    OTHER FILES
+    =====================================================
+    */
+
 
     event.respondWith(
 
       (async () => {
+
 
         const cache =
           await caches.open(
@@ -472,8 +889,9 @@ self.addEventListener(
 
 
         /*
-          端末保存済みファイル確認
+        キャッシュ優先
         */
+
 
         const cached =
           await cache.match(
@@ -481,44 +899,45 @@ self.addEventListener(
           );
 
 
-        /*
-          キャッシュがあれば
-          即表示
-        */
-
         if (cached) {
 
 
           /*
-            裏側で最新版確認
-
-            ※表示は待たせない
+          オンライン時は
+          裏で最新版へ更新
           */
+
 
           fetch(request)
 
-            .then(response => {
+            .then(
+              async response => {
 
-              if (
 
-                response &&
+                if (
 
-                (
-                  response.ok ||
-                  response.type ===
-                    "opaque"
-                )
+                  response &&
 
-              ) {
+                  (
+                    response.ok ||
+                    response.type ===
+                      "opaque"
+                  )
 
-                cache.put(
-                  request,
-                  response.clone()
-                );
+                ) {
+
+
+                  await cache.put(
+                    request,
+                    response.clone()
+                  );
+
+
+                }
+
 
               }
-
-            })
+            )
 
             .catch(
               () => {}
@@ -531,12 +950,14 @@ self.addEventListener(
 
 
         /*
-          キャッシュなし
-          ↓
-          ネットから取得
+        キャッシュなし
+        ↓
+        ネット取得
         */
 
+
         try {
+
 
           const response =
             await fetch(
@@ -556,57 +977,22 @@ self.addEventListener(
 
           ) {
 
-            cache.put(
+
+            await cache.put(
               request,
               response.clone()
             );
+
 
           }
 
 
           return response;
 
+
         }
 
-
-        /*
-          ネットも使えない
-        */
-
         catch (error) {
-
-
-          /*
-            ページ遷移なら
-            保存済みindex.html
-          */
-
-          if (
-            request.mode ===
-              "navigate"
-          ) {
-
-            const fallback =
-              await cache.match(
-                "./index.html"
-              );
-
-
-            if (fallback) {
-
-              return fallback;
-
-            }
-
-
-            return new Response(
-              "Offline",
-              {
-                status: 503
-              }
-            );
-
-          }
 
 
           return new Response(
@@ -617,7 +1003,9 @@ self.addEventListener(
             }
           );
 
+
         }
+
 
       })()
 
