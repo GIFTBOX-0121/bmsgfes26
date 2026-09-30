@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 
 <title>BMSG FES 2026 | VENUE NAVIGATOR</title>
-<meta name="theme-color" content="#090909">
+<meta name="theme-color" content="#080808">
 
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 
@@ -15,17 +15,27 @@
   -webkit-tap-highlight-color:transparent;
 }
 
-html,body{
-  width:100%;
-  height:100%;
-  margin:0;
-  overflow:hidden;
+:root{
+  --bg:#050505;
+  --panel:#111;
+  --silver:#d7d7d7;
+  --muted:#999;
+  --line:rgba(255,255,255,.24);
+}
+
+html{
   background:#050505;
+}
+
+body{
+  margin:0;
   color:#fff;
+  background:
+    radial-gradient(circle at 50% -10%,#363636 0,#101010 28%,#050505 60%);
   font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;
 }
 
-button,input{
+button,input,textarea{
   font:inherit;
 }
 
@@ -33,42 +43,22 @@ button{
   cursor:pointer;
 }
 
-#app{
-  position:fixed;
-  inset:0;
+button:active{
+  transform:scale(.98);
+}
+
+.hidden{
+  display:none!important;
 }
 
 
 /* =========================================================
-   MAP
+   APP
 ========================================================= */
 
-#map{
-  position:absolute;
-  inset:0;
-  z-index:1;
-  background:#ddd;
-}
-
-.leaflet-control-zoom{
-  display:none;
-}
-
-.leaflet-control-attribution{
-  background:rgba(5,5,5,.72)!important;
-  color:#ccc!important;
-  font-size:8px!important;
-}
-
-.leaflet-control-attribution a{
-  color:#fff!important;
-}
-
-.leaflet-tile-pane{
-  filter:
-    saturate(.92)
-    brightness(.99)
-    contrast(.96);
+#app{
+  min-height:100vh;
+  padding-bottom:calc(86px + env(safe-area-inset-bottom));
 }
 
 
@@ -77,118 +67,352 @@ button{
 ========================================================= */
 
 .header{
-  position:absolute;
-  top:calc(10px + env(safe-area-inset-top));
-  left:12px;
-  right:12px;
-  z-index:1000;
+  position:sticky;
+  top:0;
+  z-index:3000;
 
-  overflow:hidden;
-
-  border:1px solid rgba(255,255,255,.58);
-  border-radius:20px;
+  padding:
+    calc(10px + env(safe-area-inset-top))
+    12px
+    9px;
 
   background:
     linear-gradient(
       125deg,
-      rgba(230,230,230,.40),
-      rgba(115,115,115,.48) 20%,
-      rgba(25,25,25,.95) 48%,
-      rgba(88,88,88,.78) 74%,
-      rgba(205,205,205,.32)
+      rgba(225,225,225,.34),
+      rgba(90,90,90,.43) 18%,
+      rgba(15,15,15,.97) 47%,
+      rgba(62,62,62,.88) 76%,
+      rgba(200,200,200,.26)
     );
+
+  border-bottom:1px solid rgba(255,255,255,.38);
 
   backdrop-filter:blur(22px);
   -webkit-backdrop-filter:blur(22px);
 
   box-shadow:
-    0 14px 42px rgba(0,0,0,.48),
-    inset 0 1px 0 rgba(255,255,255,.82);
+    0 8px 28px rgba(0,0,0,.5),
+    inset 0 1px 0 rgba(255,255,255,.7);
 }
 
-.header::before{
-  content:"";
-  position:absolute;
-  left:6%;
-  right:6%;
-  top:0;
-  height:1px;
-
-  background:
-    linear-gradient(
-      90deg,
-      transparent,
-      #fff,
-      #999,
-      #fff,
-      transparent
-    );
+.header-row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
 }
 
 .brand{
-  padding:14px 15px 9px;
+  flex:1;
+  min-width:0;
 }
 
-.brand-main{
-  font-size:18px;
-  font-weight:900;
-  letter-spacing:.13em;
+.brand-title{
+  font-size:17px;
+  font-weight:950;
+  letter-spacing:.10em;
+  white-space:nowrap;
 }
 
 .brand-sub{
   margin-top:3px;
-  color:#ddd;
-  font-size:8px;
-  font-weight:700;
-  letter-spacing:.30em;
+
+  color:#c8c8c8;
+
+  font-size:7px;
+  font-weight:800;
+  letter-spacing:.28em;
 }
 
 
 /* =========================================================
-   MODE
+   WEATHER COMPACT
 ========================================================= */
 
-.mode-switch{
-  display:flex;
-  margin:0 9px 9px;
-  padding:3px;
+.weather-mini{
+  flex:0 0 auto;
 
-  border:1px solid rgba(255,255,255,.25);
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+
+  min-width:145px;
+
+  padding:5px 7px;
+
+  border:1px solid rgba(255,255,255,.27);
   border-radius:11px;
 
-  background:rgba(0,0,0,.25);
+  background:rgba(0,0,0,.24);
+
+  cursor:pointer;
 }
 
-.mode-button{
-  flex:1;
-  padding:9px 5px;
+.weather-day{
+  min-width:42px;
+  text-align:center;
+}
 
-  border:0;
-  border-radius:8px;
+.weather-date{
+  color:#d7d7d7;
 
-  background:transparent;
-  color:#aaa;
-
-  font-size:9px;
+  font-size:7px;
   font-weight:900;
-  letter-spacing:.12em;
+  letter-spacing:.02em;
 }
 
-.mode-button.active{
-  color:#080808;
+.weather-icon{
+  height:21px;
+
+  margin-top:1px;
+
+  font-size:16px;
+  line-height:21px;
+}
+
+.weather-loading{
+  opacity:.5;
+}
+
+
+/* =========================================================
+   WEATHER DETAIL
+========================================================= */
+
+.weather-detail{
+  position:fixed;
+
+  top:calc(76px + env(safe-area-inset-top));
+  left:12px;
+  right:12px;
+
+  z-index:5000;
+
+  display:none;
+
+  padding:14px;
+
+  border:1px solid rgba(255,255,255,.48);
+  border-radius:18px;
 
   background:
     linear-gradient(
       135deg,
-      #fff,
-      #c7c7c7 32%,
-      #888 55%,
-      #eee
+      rgba(125,125,125,.97),
+      rgba(20,20,20,.99) 36%,
+      rgba(5,5,5,.99)
     );
 
+  box-shadow:0 18px 50px rgba(0,0,0,.65);
+
+  backdrop-filter:blur(20px);
+}
+
+.weather-detail.show{
+  display:block;
+}
+
+.weather-detail-title{
+  margin-bottom:11px;
+
+  font-size:11px;
+  font-weight:950;
+  letter-spacing:.14em;
+}
+
+.weather-detail-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:7px;
+}
+
+.weather-card{
+  padding:10px 6px;
+
+  border:1px solid rgba(255,255,255,.18);
+  border-radius:12px;
+
+  background:rgba(255,255,255,.06);
+
+  text-align:center;
+}
+
+.weather-card-date{
+  font-size:9px;
+  font-weight:900;
+}
+
+.weather-card-icon{
+  margin:7px 0;
+  font-size:25px;
+}
+
+.weather-card-temp{
+  font-size:9px;
+  line-height:1.55;
+}
+
+.weather-card-rain{
+  margin-top:4px;
+  color:#a9cfff;
+  font-size:8px;
+}
+
+.weather-close{
+  width:100%;
+
+  margin-top:10px;
+  padding:9px;
+
+  border:1px solid rgba(255,255,255,.3);
+  border-radius:9px;
+
+  background:rgba(255,255,255,.08);
+
+  color:#fff;
+
+  font-size:9px;
+  font-weight:900;
+}
+
+
+/* =========================================================
+   MAIN CONTENT
+========================================================= */
+
+.page{
+  display:none;
+}
+
+.page.active{
+  display:block;
+}
+
+
+/* =========================================================
+   MAP
+========================================================= */
+
+.map-section{
+  padding:10px 10px 0;
+}
+
+.map-shell{
+  position:relative;
+
+  overflow:hidden;
+
+  height:57vh;
+  min-height:430px;
+  max-height:620px;
+
+  border:1px solid rgba(255,255,255,.48);
+  border-radius:20px;
+
+  background:#ddd;
+
   box-shadow:
-    inset 0 1px 0 #fff,
-    0 3px 12px rgba(0,0,0,.35);
+    0 15px 38px rgba(0,0,0,.48),
+    inset 0 1px 0 rgba(255,255,255,.7);
+}
+
+#map{
+  position:absolute;
+  inset:0;
+}
+
+.leaflet-control-zoom{
+  display:none;
+}
+
+.leaflet-control-attribution{
+  background:rgba(0,0,0,.68)!important;
+  color:#ddd!important;
+  font-size:7px!important;
+}
+
+.leaflet-control-attribution a{
+  color:#fff!important;
+}
+
+.leaflet-tile-pane{
+  filter:saturate(.95) contrast(.96) brightness(1.01);
+}
+
+
+/* =========================================================
+   MAP TOP
+========================================================= */
+
+.map-toolbar{
+  position:absolute;
+
+  top:10px;
+  left:10px;
+  right:10px;
+
+  z-index:800;
+
+  display:flex;
+  justify-content:space-between;
+  gap:7px;
+
+  pointer-events:none;
+}
+
+.map-toolbar > *{
+  pointer-events:auto;
+}
+
+.map-mode{
+  display:flex;
+  gap:3px;
+
+  padding:3px;
+
+  border:1px solid rgba(255,255,255,.52);
+  border-radius:10px;
+
+  background:rgba(5,5,5,.82);
+
+  backdrop-filter:blur(12px);
+}
+
+.map-mode button{
+  padding:7px 9px;
+
+  border:0;
+  border-radius:7px;
+
+  background:transparent;
+
+  color:#aaa;
+
+  font-size:8px;
+  font-weight:900;
+}
+
+.map-mode button.active{
+  color:#050505;
+
+  background:linear-gradient(135deg,#fff,#aaa);
+}
+
+.locate-btn{
+  width:38px;
+  height:38px;
+
+  border:1px solid rgba(255,255,255,.8);
+  border-radius:50%;
+
+  background:
+    radial-gradient(circle at 30% 20%,#fff,#aaa 30%,#222 70%);
+
+  color:#fff;
+
+  box-shadow:0 5px 16px rgba(0,0,0,.45);
+
+  font-size:17px;
 }
 
 
@@ -196,23 +420,13 @@ button{
    FILTER
 ========================================================= */
 
-.filters-wrap{
-  position:absolute;
-  top:calc(130px + env(safe-area-inset-top));
-  left:0;
-  right:0;
-
-  z-index:900;
-  overflow:hidden;
-}
-
 .filters{
   display:flex;
-  gap:7px;
+  gap:6px;
 
   overflow-x:auto;
 
-  padding:6px 12px 12px;
+  padding:9px 1px 4px;
 
   scrollbar-width:none;
 }
@@ -224,77 +438,152 @@ button{
 .filter{
   flex:0 0 auto;
 
-  padding:8px 13px;
+  padding:7px 11px;
 
-  border:1px solid rgba(255,255,255,.48);
+  border:1px solid rgba(255,255,255,.32);
   border-radius:999px;
 
   background:
-    linear-gradient(
-      145deg,
-      rgba(95,95,95,.94),
-      rgba(12,12,12,.95)
-    );
+    linear-gradient(145deg,#626262,#111 65%);
 
   color:#ddd;
 
-  box-shadow:
-    inset 0 1px 0 rgba(255,255,255,.28),
-    0 5px 14px rgba(0,0,0,.30);
-
-  font-size:9px;
+  font-size:8px;
   font-weight:900;
-
-  white-space:nowrap;
 }
 
 .filter.active{
-  color:#080808;
+  color:#050505;
 
-  background:
-    linear-gradient(
-      135deg,
-      #fff,
-      #bdbdbd 38%,
-      #858585 60%,
-      #eee
-    );
+  background:linear-gradient(135deg,#fff,#aaa);
 }
 
 
 /* =========================================================
-   NORMAL MARKERS
+   OFFICIAL MAP
 ========================================================= */
 
-.venue-marker{
-  width:140px;
-  height:72px;
+.official-map{
+  position:absolute;
+  inset:0;
 
-  display:flex;
-  flex-direction:column;
-  align-items:center;
+  z-index:700;
 
-  pointer-events:auto;
+  display:none;
+
+  overflow:auto;
+
+  padding:10px;
+
+  background:#090909;
 }
 
-.marker-hit{
-  position:relative;
+.official-map.show{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
 
-  width:46px;
-  height:46px;
+.official-map img{
+  display:block;
+
+  width:100%;
+  height:auto;
+
+  max-width:900px;
+
+  border-radius:12px;
+}
+
+
+/* =========================================================
+   STAGES
+========================================================= */
+
+.stage-fixed{
+  width:146px;
+  height:50px;
 
   display:flex;
   align-items:center;
   justify-content:center;
 
-  touch-action:none;
+  pointer-events:none;
+}
+
+.stage-plate{
+  width:146px;
+
+  padding:8px 11px;
+
+  border:1px solid rgba(255,255,255,.92);
+  border-radius:9px;
+
+  background:
+    linear-gradient(
+      120deg,
+      #d8d8d8,
+      #696969 11%,
+      #101010 29%,
+      #050505 67%,
+      #666 89%,
+      #ddd
+    );
+
+  box-shadow:
+    0 5px 15px rgba(0,0,0,.65),
+    0 0 12px rgba(135,91,255,.55);
+}
+
+.stage-name{
+  font-size:10px;
+  font-weight:950;
+  white-space:nowrap;
+}
+
+.stage-dot{
+  display:inline-block;
+
+  width:6px;
+  height:6px;
+
+  margin-right:5px;
+
+  border-radius:50%;
+
+  background:#9567ff;
+
+  box-shadow:0 0 7px #9567ff;
+}
+
+.stage-sub{
+  margin-top:2px;
+
+  color:#aaa;
+
+  font-size:6px;
+  letter-spacing:.12em;
+}
+
+
+/* =========================================================
+   PINS
+========================================================= */
+
+.venue-marker{
+  width:110px;
+  height:62px;
+
+  display:flex;
+  flex-direction:column;
+  align-items:center;
 }
 
 .marker-pin{
   position:relative;
 
-  width:40px;
-  height:40px;
+  width:36px;
+  height:36px;
 
   display:flex;
   align-items:center;
@@ -303,19 +592,10 @@ button{
   border:2px solid #fff;
   border-radius:50%;
 
-  background:
-    linear-gradient(
-      145deg,
-      #fff,
-      #999 25%,
-      #333 52%,
-      #ddd 78%,
-      #666
-    );
+  background:linear-gradient(145deg,#fff,#777 30%,#222 65%,#bbb);
 
   box-shadow:
-    0 6px 17px rgba(0,0,0,.65),
-    0 0 0 2px rgba(0,0,0,.35);
+    0 5px 14px rgba(0,0,0,.6);
 }
 
 .marker-pin::after{
@@ -326,14 +606,12 @@ button{
   left:50%;
   bottom:-5px;
 
-  width:9px;
-  height:9px;
+  width:8px;
+  height:8px;
 
-  transform:
-    translateX(-50%)
-    rotate(45deg);
+  transform:translateX(-50%) rotate(45deg);
 
-  background:#aaa;
+  background:#888;
 
   border-right:1px solid #fff;
   border-bottom:1px solid #fff;
@@ -342,8 +620,8 @@ button{
 }
 
 .marker-inner{
-  width:31px;
-  height:31px;
+  width:27px;
+  height:27px;
 
   display:flex;
   align-items:center;
@@ -353,17 +631,12 @@ button{
 
   background:var(--marker-color);
 
-  border:1px solid rgba(255,255,255,.72);
-
-  box-shadow:
-    inset 0 1px 2px rgba(255,255,255,.4),
-    inset 0 -4px 8px rgba(0,0,0,.22),
-    0 0 9px var(--marker-glow);
+  box-shadow:0 0 8px var(--marker-glow);
 }
 
 .marker-inner svg{
-  width:18px;
-  height:18px;
+  width:16px;
+  height:16px;
 
   fill:none;
   stroke:#fff;
@@ -374,37 +647,26 @@ button{
 }
 
 .marker-label{
+  max-width:108px;
+
   margin-top:4px;
-
-  max-width:138px;
-
-  padding:4px 7px;
+  padding:3px 6px;
 
   overflow:hidden;
 
-  border:1px solid rgba(255,255,255,.48);
-  border-radius:6px;
+  border:1px solid rgba(255,255,255,.42);
+  border-radius:5px;
 
-  background:rgba(3,3,3,.90);
+  background:rgba(0,0,0,.86);
 
   color:#fff;
 
-  box-shadow:
-    0 3px 9px rgba(0,0,0,.6);
-
-  font-size:8px;
+  font-size:7px;
   font-weight:900;
-
-  line-height:1.1;
 
   text-overflow:ellipsis;
   white-space:nowrap;
 }
-
-
-/* =========================================================
-   COLORS
-========================================================= */
 
 .marker-gate{
   --marker-color:#00a875;
@@ -473,135 +735,42 @@ button{
 
 
 /* =========================================================
-   STAGES
+   STATION DIRECTION
 ========================================================= */
 
-.stage-fixed{
-  width:164px;
-  height:60px;
+.station-direction{
+  min-width:130px;
 
-  display:flex;
-  align-items:center;
-  justify-content:center;
+  padding:7px 9px;
 
-  pointer-events:auto;
-}
-
-.stage-plate{
-  position:relative;
-
-  width:164px;
-
-  padding:10px 15px;
-
-  overflow:hidden;
-
-  border:1px solid rgba(255,255,255,.92);
-  border-radius:11px;
+  border:1px solid rgba(255,255,255,.7);
+  border-radius:9px;
 
   background:
-    linear-gradient(
-      120deg,
-      #eeeeee 0%,
-      #858585 12%,
-      #151515 28%,
-      #050505 65%,
-      #686868 88%,
-      #d5d5d5 100%
-    );
+    linear-gradient(135deg,rgba(220,220,220,.94),rgba(35,35,35,.96));
 
-  box-shadow:
-    0 7px 20px rgba(0,0,0,.7),
-    0 0 16px rgba(118,78,255,.55),
-    inset 0 1px 0 rgba(255,255,255,.75);
-}
+  color:#050505;
 
-.stage-name{
-  color:#fff;
+  box-shadow:0 5px 16px rgba(0,0,0,.5);
 
-  font-size:11px;
+  text-align:center;
+
+  font-size:9px;
   font-weight:950;
-
-  letter-spacing:.08em;
 
   white-space:nowrap;
 }
 
-.stage-dot{
-  display:inline-block;
+.station-arrow{
+  display:block;
 
-  width:7px;
-  height:7px;
+  margin-bottom:1px;
 
-  margin-right:7px;
+  color:#fff;
 
-  border-radius:50%;
+  font-size:17px;
 
-  background:#8c61ff;
-
-  box-shadow:
-    0 0 9px #8c61ff;
-}
-
-.stage-sub{
-  margin-top:3px;
-
-  color:#bcbcbc;
-
-  font-size:7px;
-  font-weight:800;
-
-  letter-spacing:.15em;
-}
-
-
-/*
- ★ MAINが編集可能な時に光らせる
-*/
-
-body.editing .stage-editable .stage-plate{
-  border:2px solid #fff;
-
-  box-shadow:
-    0 0 0 3px rgba(255,255,255,.35),
-    0 0 28px rgba(150,110,255,.95),
-    0 8px 22px rgba(0,0,0,.7);
-}
-
-.stage-selected .stage-plate{
-  border:2px solid #fff;
-
-  box-shadow:
-    0 0 0 4px rgba(255,255,255,.35),
-    0 0 36px #fff;
-}
-
-
-/* =========================================================
-   EDITABLE PINS
-========================================================= */
-
-body.editing .editable-marker .marker-pin{
-  box-shadow:
-    0 0 0 3px rgba(255,255,255,.70),
-    0 0 24px rgba(255,255,255,.9),
-    0 6px 17px rgba(0,0,0,.65);
-}
-
-body.editing .editable-marker .marker-label::after{
-  content:" ✥";
-}
-
-.venue-marker.selected .marker-pin{
-  box-shadow:
-    0 0 0 4px #fff,
-    0 0 0 8px rgba(255,255,255,.20),
-    0 0 30px #fff;
-}
-
-.venue-marker.selected .marker-label{
-  color:#050505;
-  background:#fff;
+  text-shadow:0 1px 4px #000;
 }
 
 
@@ -610,10 +779,8 @@ body.editing .editable-marker .marker-label::after{
 ========================================================= */
 
 .user-location{
-  position:relative;
-
-  width:22px;
-  height:22px;
+  width:21px;
+  height:21px;
 
   border:3px solid #fff;
   border-radius:50%;
@@ -621,279 +788,79 @@ body.editing .editable-marker .marker-label::after{
   background:#1976ff;
 
   box-shadow:
-    0 0 0 5px rgba(25,118,255,.18),
-    0 0 14px rgba(25,118,255,.95);
-}
-
-.user-location::after{
-  content:"";
-
-  position:absolute;
-  inset:-12px;
-
-  border:1px solid rgba(25,118,255,.65);
-  border-radius:50%;
-
-  animation:pulse 2s infinite;
-}
-
-@keyframes pulse{
-  0%{
-    transform:scale(.55);
-    opacity:1;
-  }
-
-  100%{
-    transform:scale(1.5);
-    opacity:0;
-  }
+    0 0 0 5px rgba(25,118,255,.17),
+    0 0 14px #1976ff;
 }
 
 
 /* =========================================================
-   BUTTONS
+   GENERIC CONTENT
 ========================================================= */
 
-.location-button{
-  position:absolute;
-
-  right:15px;
-
-  bottom:calc(30px + env(safe-area-inset-bottom));
-
-  z-index:1000;
-
-  width:56px;
-  height:56px;
-
-  display:flex;
-  align-items:center;
-  justify-content:center;
-
-  border:1px solid rgba(255,255,255,.9);
-  border-radius:50%;
-
-  background:
-    radial-gradient(
-      circle at 30% 22%,
-      #fff,
-      #d3d3d3 16%,
-      #858585 38%,
-      #363636 62%,
-      #0b0b0b 84%
-    );
-
-  box-shadow:
-    0 10px 28px rgba(0,0,0,.55),
-    inset 0 2px 2px rgba(255,255,255,.8);
+.content{
+  padding:13px 12px 25px;
 }
 
-.location-symbol{
-  position:relative;
+.section-title{
+  margin:8px 0 11px;
 
-  width:21px;
-  height:21px;
-
-  border:2px solid #fff;
-  border-radius:50%;
+  font-size:16px;
+  font-weight:950;
+  letter-spacing:.08em;
 }
 
-.location-symbol::before{
-  content:"";
+.section-sub{
+  margin-top:-7px;
+  margin-bottom:14px;
 
-  position:absolute;
+  color:#999;
 
-  top:5px;
-  left:5px;
-
-  width:7px;
-  height:7px;
-
-  border-radius:50%;
-
-  background:#fff;
+  font-size:9px;
+  line-height:1.5;
 }
 
+.card{
+  margin-bottom:10px;
+  padding:14px;
 
-.overlay-button{
-  position:absolute;
-
-  top:calc(190px + env(safe-area-inset-top));
-  right:12px;
-
-  z-index:950;
-
-  padding:9px 12px;
-
-  border:1px solid rgba(255,255,255,.62);
-  border-radius:999px;
+  border:1px solid rgba(255,255,255,.23);
+  border-radius:16px;
 
   background:
     linear-gradient(
       135deg,
-      rgba(150,150,150,.94),
-      rgba(15,15,15,.97)
+      rgba(120,120,120,.22),
+      rgba(20,20,20,.96) 34%,
+      rgba(5,5,5,.98)
     );
 
-  color:#fff;
-
-  font-size:9px;
-  font-weight:900;
+  box-shadow:
+    0 8px 22px rgba(0,0,0,.3),
+    inset 0 1px 0 rgba(255,255,255,.16);
 }
 
-.overlay-button.active{
-  color:#050505;
-  background:linear-gradient(135deg,#fff,#aaa);
+.card-title{
+  font-size:12px;
+  font-weight:950;
 }
 
-
-/* =========================================================
-   OFFICIAL OVERLAY
-========================================================= */
-
-.free-overlay{
-  position:absolute;
-
-  z-index:600;
-
-  display:none;
-
-  left:50%;
-  top:52%;
-
-  width:min(86vw,720px);
-
-  transform:translate(-50%,-50%);
-
-  touch-action:none;
-  user-select:none;
-
-  cursor:move;
-}
-
-.free-overlay.show{
-  display:block;
-}
-
-.free-overlay img{
-  display:block;
-
-  width:100%;
-  height:auto;
-
-  pointer-events:none;
-
-  border:1px solid rgba(255,255,255,.75);
-  border-radius:12px;
-}
-
-.overlay-panel{
-  position:absolute;
-
-  top:calc(232px + env(safe-area-inset-top));
-  right:12px;
-
-  z-index:960;
-
-  display:none;
-
-  width:185px;
-
-  padding:10px;
-
-  border:1px solid rgba(255,255,255,.5);
-  border-radius:13px;
-
-  background:rgba(10,10,10,.94);
-}
-
-.overlay-panel.show{
-  display:block;
-}
-
-.overlay-title{
-  font-size:8px;
-  font-weight:900;
-}
-
-.overlay-opacity{
-  width:100%;
-  margin-top:8px;
-}
-
-.overlay-hint{
-  margin-top:4px;
+.card-small{
+  margin-top:5px;
 
   color:#aaa;
 
-  font-size:7px;
+  font-size:9px;
+  line-height:1.5;
 }
 
-
-/* =========================================================
-   OFFICIAL MAP
-========================================================= */
-
-#officialMap{
-  position:absolute;
-  inset:0;
-
-  z-index:500;
-
-  display:none;
-
-  padding:
-    calc(138px + env(safe-area-inset-top))
-    6px
-    calc(8px + env(safe-area-inset-bottom));
-
-  background:#050505;
-}
-
-#officialMap.show{
-  display:block;
-}
-
-.official-scroll{
+.action{
   width:100%;
-  height:100%;
 
-  overflow:auto;
+  margin-top:9px;
+  padding:11px;
 
-  display:flex;
-  align-items:center;
-  justify-content:center;
-}
-
-.official-scroll img{
-  display:block;
-
-  width:100%;
-  height:auto;
-
-  max-width:1100px;
-
-  border-radius:14px;
-}
-
-
-/* =========================================================
-   EDIT
-========================================================= */
-
-.edit-button{
-  position:absolute;
-
-  left:14px;
-
-  bottom:calc(28px + env(safe-area-inset-bottom));
-
-  z-index:1200;
-
-  padding:11px 15px;
-
-  border:1px solid rgba(255,255,255,.7);
-  border-radius:999px;
+  border:1px solid rgba(255,255,255,.45);
+  border-radius:10px;
 
   background:linear-gradient(135deg,#777,#111);
 
@@ -903,97 +870,324 @@ body.editing .editable-marker .marker-label::after{
   font-weight:900;
 }
 
-.edit-button.active{
+.action.primary{
   color:#050505;
-  background:linear-gradient(135deg,#fff,#aaa);
+
+  background:linear-gradient(135deg,#fff,#a8a8a8);
 }
 
-.edit-panel{
-  position:absolute;
-
-  left:12px;
-  right:12px;
-
-  bottom:calc(82px + env(safe-area-inset-bottom));
-
-  z-index:1300;
-
-  display:none;
-
-  padding:14px;
-
-  border:1px solid rgba(255,255,255,.6);
-  border-radius:18px;
-
-  background:rgba(12,12,12,.96);
-
-  backdrop-filter:blur(20px);
+.action:disabled{
+  opacity:.35;
 }
 
-.edit-panel.show{
-  display:block;
+
+/* =========================================================
+   DAY TABS
+========================================================= */
+
+.day-tabs{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:5px;
+
+  margin:10px 0;
 }
 
-.edit-title{
-  font-size:12px;
+.day-tab{
+  padding:9px 4px;
+
+  border:1px solid rgba(255,255,255,.25);
+  border-radius:9px;
+
+  background:#111;
+
+  color:#aaa;
+
+  font-size:8px;
   font-weight:900;
 }
 
-.edit-text{
-  margin-top:7px;
-
-  color:#ccc;
-
-  font-size:10px;
-  line-height:1.55;
-}
-
-.edit-selected{
-  margin-top:10px;
-
-  padding:9px 10px;
-
-  border:1px solid rgba(255,255,255,.2);
-  border-radius:10px;
-
-  background:rgba(255,255,255,.06);
-
-  font-size:10px;
-  line-height:1.5;
-}
-
-.copy-button{
-  width:100%;
-
-  margin-top:10px;
-  padding:11px;
-
-  border:1px solid #fff;
-  border-radius:10px;
+.day-tab.active{
+  color:#050505;
 
   background:linear-gradient(135deg,#fff,#aaa);
+}
 
-  color:#080808;
 
-  font-size:10px;
+/* =========================================================
+   GOODS
+========================================================= */
+
+.goods-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:8px;
+}
+
+.goods-item{
+  overflow:hidden;
+
+  border:1px solid rgba(255,255,255,.18);
+  border-radius:12px;
+
+  background:#0b0b0b;
+}
+
+.goods-placeholder{
+  aspect-ratio:1;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  background:
+    radial-gradient(circle,#444,#151515 70%);
+
+  color:#777;
+
+  font-size:25px;
+}
+
+.goods-name{
+  padding:9px;
+
+  font-size:9px;
   font-weight:900;
 }
 
 
 /* =========================================================
-   DETAIL
+   MY
+========================================================= */
+
+.my-status{
+  display:flex;
+  align-items:center;
+  gap:9px;
+}
+
+.lock{
+  width:37px;
+  height:37px;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  border:1px solid rgba(255,255,255,.4);
+  border-radius:50%;
+
+  background:linear-gradient(135deg,#777,#111);
+
+  font-size:17px;
+}
+
+.checklist-add{
+  display:flex;
+  gap:6px;
+
+  margin-top:10px;
+}
+
+.text-input{
+  width:100%;
+
+  padding:10px;
+
+  border:1px solid rgba(255,255,255,.25);
+  border-radius:9px;
+
+  outline:none;
+
+  background:#080808;
+
+  color:#fff;
+}
+
+.add-btn{
+  flex:0 0 auto;
+
+  padding:0 14px;
+
+  border:1px solid #fff;
+  border-radius:9px;
+
+  background:#ddd;
+
+  color:#050505;
+
+  font-weight:950;
+}
+
+.check-item{
+  display:flex;
+  align-items:center;
+  gap:8px;
+
+  padding:9px 2px;
+
+  border-bottom:1px solid rgba(255,255,255,.09);
+}
+
+.check-item input{
+  width:18px;
+  height:18px;
+}
+
+.check-text{
+  flex:1;
+
+  font-size:11px;
+}
+
+.check-text.done{
+  color:#777;
+  text-decoration:line-through;
+}
+
+.delete-btn{
+  border:0;
+  background:transparent;
+  color:#777;
+  font-size:15px;
+}
+
+.memo{
+  width:100%;
+  min-height:180px;
+
+  padding:11px;
+
+  resize:vertical;
+
+  border:1px solid rgba(255,255,255,.2);
+  border-radius:11px;
+
+  outline:none;
+
+  background:#080808;
+
+  color:#fff;
+
+  font-size:11px;
+  line-height:1.6;
+}
+
+
+/* =========================================================
+   MY SPOTS
+========================================================= */
+
+.spot-row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+
+  padding:10px 0;
+
+  border-bottom:1px solid rgba(255,255,255,.1);
+}
+
+.spot-name{
+  font-size:10px;
+  font-weight:900;
+}
+
+.spot-go{
+  padding:7px 9px;
+
+  border:1px solid rgba(255,255,255,.3);
+  border-radius:8px;
+
+  background:#151515;
+
+  color:#fff;
+
+  font-size:8px;
+}
+
+
+/* =========================================================
+   BOTTOM NAV
+========================================================= */
+
+.bottom-nav{
+  position:fixed;
+
+  left:8px;
+  right:8px;
+
+  bottom:calc(8px + env(safe-area-inset-bottom));
+
+  z-index:4000;
+
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+
+  padding:5px;
+
+  border:1px solid rgba(255,255,255,.48);
+  border-radius:17px;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(180,180,180,.42),
+      rgba(22,22,22,.97) 35%,
+      rgba(4,4,4,.98) 65%,
+      rgba(100,100,100,.48)
+    );
+
+  backdrop-filter:blur(20px);
+  -webkit-backdrop-filter:blur(20px);
+
+  box-shadow:0 10px 35px rgba(0,0,0,.55);
+}
+
+.nav-btn{
+  padding:9px 3px;
+
+  border:0;
+  border-radius:11px;
+
+  background:transparent;
+
+  color:#888;
+
+  font-size:8px;
+  font-weight:950;
+  letter-spacing:.08em;
+}
+
+.nav-icon{
+  display:block;
+
+  margin-bottom:3px;
+
+  font-size:17px;
+}
+
+.nav-btn.active{
+  color:#050505;
+
+  background:linear-gradient(135deg,#fff,#aaa);
+}
+
+
+/* =========================================================
+   BOTTOM SHEET
 ========================================================= */
 
 .sheet-backdrop{
   position:fixed;
   inset:0;
 
-  z-index:1998;
+  z-index:5998;
 
-  background:rgba(0,0,0,.25);
+  background:rgba(0,0,0,.35);
 
   opacity:0;
-
   pointer-events:none;
 
   transition:.2s;
@@ -1007,30 +1201,31 @@ body.editing .editable-marker .marker-label::after{
 .bottom-sheet{
   position:fixed;
 
-  left:10px;
-  right:10px;
+  left:8px;
+  right:8px;
 
-  bottom:calc(10px + env(safe-area-inset-bottom));
+  bottom:calc(8px + env(safe-area-inset-bottom));
 
-  z-index:2000;
+  z-index:6000;
 
-  padding:11px 18px 19px;
+  padding:10px 16px 17px;
 
-  border:1px solid rgba(255,255,255,.58);
-  border-radius:24px;
+  border:1px solid rgba(255,255,255,.5);
+  border-radius:22px;
 
   background:
     linear-gradient(
       135deg,
-      rgba(120,120,120,.97),
-      rgba(32,32,32,.98) 32%,
-      rgba(6,6,6,.99) 67%,
-      rgba(70,70,70,.98)
+      rgba(125,125,125,.98),
+      rgba(25,25,25,.99) 35%,
+      rgba(5,5,5,.99) 70%
     );
 
-  transform:translateY(calc(100% + 80px));
+  box-shadow:0 -10px 50px rgba(0,0,0,.65);
 
-  transition:transform .34s cubic-bezier(.22,.75,.25,1);
+  transform:translateY(calc(100% + 70px));
+
+  transition:transform .3s ease;
 }
 
 .bottom-sheet.show{
@@ -1038,10 +1233,10 @@ body.editing .editable-marker .marker-label::after{
 }
 
 .sheet-handle{
-  width:43px;
+  width:40px;
   height:4px;
 
-  margin:0 auto 17px;
+  margin:0 auto 14px;
 
   border-radius:99px;
 
@@ -1049,72 +1244,60 @@ body.editing .editable-marker .marker-label::after{
 }
 
 .sheet-category{
-  margin-bottom:5px;
+  color:#aaa;
 
-  color:#bbb;
-
-  font-size:9px;
+  font-size:8px;
   font-weight:900;
+  letter-spacing:.15em;
 }
 
 .sheet-title{
-  font-size:22px;
+  margin-top:3px;
+
+  font-size:20px;
+  font-weight:950;
+}
+
+.sheet-desc{
+  margin-top:9px;
+
+  color:#ccc;
+
+  font-size:11px;
+}
+
+.sheet-actions{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:7px;
+
+  margin-top:13px;
+}
+
+.sheet-btn{
+  padding:11px 5px;
+
+  border:1px solid rgba(255,255,255,.38);
+  border-radius:10px;
+
+  background:#111;
+
+  color:#fff;
+
+  font-size:9px;
   font-weight:900;
 }
 
-.sheet-line{
-  height:1px;
+.sheet-btn.saved{
+  color:#050505;
 
-  margin:14px 0;
-
-  background:linear-gradient(90deg,#fff,#999 35%,transparent);
+  background:#fff;
 }
 
-.sheet-description{
-  color:#ddd;
-  font-size:13px;
-  line-height:1.65;
-}
+.sheet-btn.navigate{
+  color:#050505;
 
-.sheet-arrow-wrap{
-  display:none;
-  margin:10px 0 5px;
-  text-align:center;
-}
-
-.sheet-arrow-wrap.show{
-  display:block;
-}
-
-.sheet-arrow{
-  display:inline-flex;
-
-  width:76px;
-  height:76px;
-
-  align-items:center;
-  justify-content:center;
-
-  font-size:58px;
-}
-
-.sheet-arrow-note{
-  color:#aaa;
-  font-size:9px;
-}
-
-.sheet-close{
-  width:100%;
-
-  margin-top:16px;
-  padding:11px;
-
-  border:1px solid rgba(255,255,255,.45);
-  border-radius:10px;
-
-  background:rgba(255,255,255,.10);
-
-  color:#fff;
+  background:linear-gradient(135deg,#fff,#aaa);
 }
 
 
@@ -1127,23 +1310,26 @@ body.editing .editable-marker .marker-label::after{
 
   left:50%;
 
-  bottom:calc(100px + env(safe-area-inset-bottom));
+  bottom:calc(92px + env(safe-area-inset-bottom));
 
-  z-index:3000;
+  z-index:9000;
 
-  padding:10px 15px;
+  padding:9px 14px;
 
+  border:1px solid rgba(255,255,255,.4);
   border-radius:999px;
 
   background:#111;
 
   color:#fff;
 
-  font-size:10px;
+  font-size:9px;
+
+  white-space:nowrap;
 
   opacity:0;
 
-  transform:translate(-50%,15px);
+  transform:translate(-50%,10px);
 
   pointer-events:none;
 
@@ -1162,177 +1348,649 @@ body.editing .editable-marker .marker-label::after{
 
 <div id="app">
 
-<div id="map"></div>
-
-
-<div class="free-overlay" id="freeOverlay">
-  <img src="./Map.JPG" id="overlayImage" alt="">
-</div>
-
-
-<div id="officialMap">
-  <div class="official-scroll">
-    <img src="./Map.JPG" alt="BMSG FES 2026 会場マップ">
-  </div>
-</div>
-
-
 <header class="header">
 
-<div class="brand">
+  <div class="header-row">
 
-<div class="brand-main">
-BMSG FES 2026
-</div>
+    <div class="brand">
+      <div class="brand-title">
+        BMSG FES 2026
+      </div>
 
-<div class="brand-sub">
-VENUE NAVIGATOR
-</div>
+      <div class="brand-sub">
+        VENUE NAVIGATOR
+      </div>
+    </div>
 
-</div>
 
+    <div
+      class="weather-mini"
+      id="weatherMini"
+      aria-label="3日間の天気"
+    >
 
-<div class="mode-switch">
+      <div class="weather-day">
+        <div class="weather-date">10/10</div>
+        <div class="weather-icon weather-loading" id="weatherIcon0">•</div>
+      </div>
 
-<button class="mode-button active" data-mode="real">
-REAL MAP
-</button>
+      <div class="weather-day">
+        <div class="weather-date">10/11</div>
+        <div class="weather-icon weather-loading" id="weatherIcon1">•</div>
+      </div>
 
-<button class="mode-button" data-mode="official">
-OFFICIAL MAP
-</button>
+      <div class="weather-day">
+        <div class="weather-date">10/12</div>
+        <div class="weather-icon weather-loading" id="weatherIcon2">•</div>
+      </div>
 
-</div>
+    </div>
+
+  </div>
 
 </header>
 
 
-<div class="filters-wrap">
+<!-- ======================================================
+     MAP
+====================================================== -->
 
-<div class="filters">
+<section class="page active" id="page-map">
 
-<button class="filter active" data-filter="all">ALL</button>
-<button class="filter" data-filter="info">INFO</button>
-<button class="filter" data-filter="gate">GATE</button>
-<button class="filter" data-filter="food">FOOD</button>
-<button class="filter" data-filter="goods">GOODS</button>
-<button class="filter" data-filter="penlight">PENLIGHT</button>
-<button class="filter" data-filter="wc">WC</button>
-<button class="filter" data-filter="photo">PHOTO</button>
-<button class="filter" data-filter="booth">BOOTH</button>
-<button class="filter" data-filter="smoking">SMOKING</button>
-<button class="filter" data-filter="other">OTHER</button>
+  <div class="map-section">
+
+    <div class="map-shell">
+
+      <div id="map"></div>
+
+
+      <div class="official-map" id="officialMap">
+
+        <img
+          src="./Map.JPG"
+          alt="BMSG FES 2026 OFFICIAL MAP"
+        >
+
+      </div>
+
+
+      <div class="map-toolbar">
+
+        <div class="map-mode">
+
+          <button
+            class="map-mode-btn active"
+            data-mapmode="real"
+          >
+            REAL
+          </button>
+
+          <button
+            class="map-mode-btn"
+            data-mapmode="official"
+          >
+            OFFICIAL
+          </button>
+
+        </div>
+
+
+        <button
+          class="locate-btn"
+          id="locateButton"
+          aria-label="現在地"
+        >
+          ◎
+        </button>
+
+      </div>
+
+    </div>
+
+
+    <div class="filters">
+
+      <button class="filter active" data-filter="all">ALL</button>
+      <button class="filter" data-filter="info">INFO</button>
+      <button class="filter" data-filter="gate">GATE</button>
+      <button class="filter" data-filter="food">FOOD</button>
+      <button class="filter" data-filter="goods">GOODS</button>
+      <button class="filter" data-filter="penlight">PENLIGHT</button>
+      <button class="filter" data-filter="wc">WC</button>
+      <button class="filter" data-filter="photo">PHOTO</button>
+      <button class="filter" data-filter="booth">BOOTH</button>
+      <button class="filter" data-filter="smoking">SMOKING</button>
+      <button class="filter" data-filter="other">OTHER</button>
+
+    </div>
+
+  </div>
+
+
+  <div class="content">
+
+    <div class="card">
+
+      <div class="card-title">
+        🚉 STATION → VENUE
+      </div>
+
+      <div class="card-small">
+        主要駅から会場までの徒歩ルートを開きます。
+      </div>
+
+      <button
+        class="action"
+        onclick="stationRoute('daiba')"
+      >
+        台場駅から
+      </button>
+
+      <button
+        class="action"
+        onclick="stationRoute('teleport')"
+      >
+        東京テレポート駅から
+      </button>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- ======================================================
+     INFO
+====================================================== -->
+
+<section class="page" id="page-info">
+
+  <div class="content">
+
+    <div class="section-title">
+      INFORMATION
+    </div>
+
+    <div class="section-sub">
+      当日の情報・SUB STAGE・公式リンク
+    </div>
+
+
+    <div class="card">
+
+      <div class="card-title">
+        🎤 SUB STAGE
+      </div>
+
+      <div class="day-tabs sub-tabs">
+
+        <button class="day-tab active" data-subday="0">
+          10/10
+        </button>
+
+        <button class="day-tab" data-subday="1">
+          10/11
+        </button>
+
+        <button class="day-tab" data-subday="2">
+          10/12
+        </button>
+
+      </div>
+
+      <div
+        class="card-small"
+        id="subStageContent"
+      >
+        出演アーティストは後から登録できます。
+      </div>
+
+    </div>
+
+
+    <div class="card">
+
+      <div class="card-title">
+        🎧 公式 予習LIST
+      </div>
+
+      <div class="card-small">
+        公式の予習リストが公開されたらURLを設定できます。
+      </div>
+
+      <button
+        class="action primary"
+        id="studyButton"
+        disabled
+      >
+        予習LISTを開く
+      </button>
+
+    </div>
+
+
+    <div
+      class="card hidden"
+      id="streamCard"
+    >
+
+      <div class="card-title">
+        📺 STREAMING
+      </div>
+
+      <div class="card-small">
+        配信ページへ移動します。
+      </div>
+
+      <button
+        class="action primary"
+        id="streamButton"
+      >
+        配信を見る
+      </button>
+
+    </div>
+
+
+    <div
+      class="card hidden"
+      id="ticketCard"
+    >
+
+      <div class="card-title">
+        🎫 GOODS 整理券
+      </div>
+
+      <div class="card-small">
+        グッズ整理券ページへ移動します。
+      </div>
+
+      <button
+        class="action primary"
+        id="ticketButton"
+      >
+        整理券を開く
+      </button>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- ======================================================
+     GOODS
+====================================================== -->
+
+<section class="page" id="page-goods">
+
+  <div class="content">
+
+    <div class="section-title">
+      GOODS
+    </div>
+
+    <div class="section-sub">
+      BMSG FES 2026 GOODS LINEUP
+    </div>
+
+
+    <div
+      class="goods-grid"
+      id="goodsGrid"
+    >
+
+      <div class="goods-item">
+
+        <div class="goods-placeholder">
+          +
+        </div>
+
+        <div class="goods-name">
+          グッズ情報を追加予定
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- ======================================================
+     MY
+====================================================== -->
+
+<section class="page" id="page-my">
+
+  <div class="content">
+
+    <div class="section-title">
+      MY
+    </div>
+
+    <div class="section-sub">
+      この端末では自動保存されます
+    </div>
+
+
+    <div class="card">
+
+      <div class="my-status">
+
+        <div class="lock">
+          🔐
+        </div>
+
+        <div>
+
+          <div class="card-title">
+            MY DATA
+          </div>
+
+          <div class="card-small">
+            現在は端末内保存モード
+          </div>
+
+        </div>
+
+      </div>
+
+      <div class="card-small">
+        別端末からパスワードだけで復元する暗号化同期は、
+        バックエンド接続後に有効化します。
+        現在地は保存しません。
+      </div>
+
+    </div>
+
+
+    <div class="card">
+
+      <div class="card-title">
+        ♡ MY SPOTS
+      </div>
+
+      <div class="card-small">
+        マップで「行きたい」を押した場所
+      </div>
+
+      <div id="mySpots"></div>
+
+    </div>
+
+
+    <div class="card">
+
+      <div class="card-title">
+        🎒 持ち物LIST
+      </div>
+
+      <div class="checklist-add">
+
+        <input
+          class="text-input"
+          id="checkInput"
+          placeholder="持ち物を追加"
+        >
+
+        <button
+          class="add-btn"
+          id="checkAdd"
+        >
+          ＋
+        </button>
+
+      </div>
+
+      <div id="checkList"></div>
+
+    </div>
+
+
+    <div class="card">
+
+      <div class="card-title">
+        🔄 交換・買取MEMO
+      </div>
+
+
+      <div class="day-tabs memo-tabs">
+
+        <button
+          class="day-tab active"
+          data-memoday="0"
+        >
+          10/10
+        </button>
+
+        <button
+          class="day-tab"
+          data-memoday="1"
+        >
+          10/11
+        </button>
+
+        <button
+          class="day-tab"
+          data-memoday="2"
+        >
+          10/12
+        </button>
+
+      </div>
+
+
+      <textarea
+        class="memo"
+        id="tradeMemo"
+        placeholder="交換・買取の予定やメモを自由に入力"
+      ></textarea>
+
+      <div class="card-small">
+        入力内容は自動保存されます。
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- ======================================================
+     BOTTOM NAV
+====================================================== -->
+
+<nav class="bottom-nav">
+
+  <button
+    class="nav-btn active"
+    data-page="map"
+  >
+    <span class="nav-icon">⌖</span>
+    MAP
+  </button>
+
+  <button
+    class="nav-btn"
+    data-page="info"
+  >
+    <span class="nav-icon">ⓘ</span>
+    INFO
+  </button>
+
+  <button
+    class="nav-btn"
+    data-page="goods"
+  >
+    <span class="nav-icon">◇</span>
+    GOODS
+  </button>
+
+  <button
+    class="nav-btn"
+    data-page="my"
+  >
+    <span class="nav-icon">♡</span>
+    MY
+  </button>
+
+</nav>
 
 </div>
 
-</div>
 
+<!-- WEATHER DETAIL -->
 
-<button class="overlay-button" id="overlayButton">
-OVERLAY
-</button>
-
-
-<div class="overlay-panel" id="overlayPanel">
-
-<div class="overlay-title">
-OFFICIAL MAP OPACITY
-</div>
-
-<input
-class="overlay-opacity"
-id="overlayOpacity"
-type="range"
-min="10"
-max="90"
-value="48"
+<div
+  class="weather-detail"
+  id="weatherDetail"
 >
 
-<div class="overlay-hint">
-ドラッグして位置調整できます
-</div>
+  <div class="weather-detail-title">
+    WEATHER / BMSG FES 2026
+  </div>
+
+  <div
+    class="weather-detail-grid"
+    id="weatherDetailGrid"
+  ></div>
+
+  <button
+    class="weather-close"
+    id="weatherClose"
+  >
+    CLOSE
+  </button>
 
 </div>
 
 
-<button class="edit-button" id="editButton">
-EDIT PINS
-</button>
+<!-- MAP DETAIL -->
+
+<div
+  class="sheet-backdrop"
+  id="sheetBackdrop"
+></div>
 
 
-<div class="edit-panel" id="editPanel">
-
-<div class="edit-title">
-📍 POSITION EDITOR
-</div>
-
-<div class="edit-text">
-MAIN STAGE と今回追加したピンだけ移動できます。<br>
-動かしたいものをタップ → ドラッグ、または地図をタップ。
-</div>
-
-<div class="edit-selected" id="editSelected">
-編集する場所を選択してください
-</div>
-
-<button class="copy-button" id="copyButton">
-編集した配置データをコピー
-</button>
-
-</div>
-
-
-<button
-class="location-button"
-id="locationButton"
-aria-label="現在地"
+<div
+  class="bottom-sheet"
+  id="bottomSheet"
 >
-<span class="location-symbol"></span>
-</button>
+
+  <div class="sheet-handle"></div>
+
+  <div
+    class="sheet-category"
+    id="sheetCategory"
+  ></div>
+
+  <div
+    class="sheet-title"
+    id="sheetTitle"
+  ></div>
+
+  <div
+    class="sheet-desc"
+    id="sheetDesc"
+  ></div>
+
+
+  <div class="sheet-actions">
+
+    <button
+      class="sheet-btn"
+      id="saveSpotButton"
+    >
+      ♡ 行きたい
+    </button>
+
+    <button
+      class="sheet-btn navigate"
+      id="navigateButton"
+    >
+      ↗ ここへ行く
+    </button>
+
+  </div>
 
 </div>
 
 
-<div class="sheet-backdrop" id="sheetBackdrop"></div>
-
-
-<div class="bottom-sheet" id="bottomSheet">
-
-<div class="sheet-handle"></div>
-
-<div class="sheet-category" id="sheetCategory"></div>
-
-<div class="sheet-title" id="sheetTitle"></div>
-
-<div class="sheet-line"></div>
-
-<div class="sheet-description" id="sheetDescription"></div>
-
-<div class="sheet-arrow-wrap" id="sheetArrowWrap">
-
-<div class="sheet-arrow" id="sheetArrow">
-↑
-</div>
-
-<div class="sheet-arrow-note">
-GATE DIRECTION
-</div>
-
-</div>
-
-<button class="sheet-close" id="sheetClose">
-CLOSE
-</button>
-
-</div>
-
-
-<div class="toast" id="toast"></div>
+<div
+  class="toast"
+  id="toast"
+></div>
 
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 <script>
+
+/* =========================================================
+   EVENT SETTINGS
+========================================================= */
+
+const EVENT_DAYS = [
+  "2026-10-10",
+  "2026-10-11",
+  "2026-10-12"
+];
+
+
+/*
+  会場付近。
+  天気取得用なのでユーザーの現在地は使用しません。
+*/
+
+const VENUE_WEATHER_LAT = 35.6234;
+const VENUE_WEATHER_LNG = 139.7750;
+
+
+/*
+  公開されたらURLを入れる。
+
+  空欄の場合、
+  STREAMING / 整理券は自動的に非表示。
+*/
+
+const OFFICIAL_LINKS = {
+
+  study:"",
+
+  streaming:"",
+
+  goodsTicket:""
+
+};
+
+
+/*
+  SUB STAGE
+
+  後で出演者をここへ追加可能。
+*/
+
+const SUB_STAGE = {
+
+  "2026-10-10":[
+    // "ARTIST NAME"
+  ],
+
+  "2026-10-11":[
+  ],
+
+  "2026-10-12":[
+  ]
+
+};
+
 
 /* =========================================================
    MAP
@@ -1359,11 +2017,29 @@ L.tileLayer(
 ).addTo(map);
 
 
+/*
+  フェスエリア中心へ収める
+*/
+
+const festivalBounds = L.latLngBounds(
+  [35.62165,139.77195],
+  [35.62505,139.77810]
+);
+
+
+map.fitBounds(
+  festivalBounds,
+  {
+    padding:[12,12]
+  }
+);
+
+
 /* =========================================================
-   ICONS
+   ICON SVG
 ========================================================= */
 
-const icons={
+const icons = {
 
 gate:`
 <svg viewBox="0 0 24 24">
@@ -1453,447 +2129,36 @@ smoking:`
 
 
 /* =========================================================
-   STAGES
-
-   ★ MAINだけ編集可能
+   FIXED STAGES
 ========================================================= */
 
-const stages=[
+const stages = [
 
 {
   id:"main",
   name:"MAIN STAGE",
-
   lat:35.6244039,
-  lng:139.7766349,
-
-  editable:true
+  lng:139.7766349
 },
 
 {
   id:"sub",
   name:"SUB STAGE",
-
   lat:35.6220921,
-  lng:139.7744679,
-
-  editable:false
+  lng:139.7744679
 }
 
 ];
 
 
-/* =========================================================
-   VENUES
-========================================================= */
+stages.forEach(stage => {
 
-const venues=[
-
-{
-id:"west",
-name:"WEST GATE",
-label:"WEST GATE",
-category:"gate",
-style:"west",
-lat:35.6240456,
-lng:139.77429,
-description:"一般指定・注釈付き指定",
-editable:false
-},
-
-{
-id:"east",
-name:"EAST GATE",
-label:"EAST GATE",
-category:"gate",
-style:"east",
-lat:35.6238603,
-lng:139.775506,
-description:"SS・S指定",
-editable:false
-},
-
-{
-id:"a",
-name:"A-GATE",
-label:"A-GATE",
-category:"gate",
-style:"gate",
-lat:35.6239875,
-lng:139.7764993,
-description:"A-GATE",
-arrow:0,
-editable:false
-},
-
-{
-id:"b",
-name:"B-GATE",
-label:"B-GATE",
-category:"gate",
-style:"gate",
-lat:35.6223569,
-lng:139.7761837,
-description:"B-GATE",
-arrow:180,
-editable:false
-},
-
-{
-id:"c",
-name:"C-GATE",
-label:"C-GATE",
-category:"gate",
-style:"gate",
-lat:35.6222686,
-lng:139.7753053,
-description:"C-GATE",
-arrow:180,
-editable:false
-},
-
-{
-id:"info",
-name:"インフォメーション",
-label:"INFO",
-category:"info",
-style:"info",
-lat:35.6245086,
-lng:139.7752889,
-description:"インフォメーション",
-editable:false
-},
-
-{
-id:"fc",
-name:"ファンクラブブース・CD販売ブース",
-label:"FC・CD",
-category:"goods",
-style:"goods",
-lat:35.6237055,
-lng:139.7726431,
-description:"ファンクラブブース・CD販売ブース",
-editable:false
-},
-
-{
-id:"capsule",
-name:"MEGA CAPSULE",
-label:"MEGA CAPSULE",
-category:"goods",
-style:"goods",
-lat:35.6239039,
-lng:139.7728989,
-description:"MEGA CAPSULE",
-editable:false
-},
-
-{
-id:"goods",
-name:"グッズ",
-label:"GOODS",
-category:"goods",
-style:"goods",
-lat:35.6241717,
-lng:139.7732538,
-description:"オフィシャルグッズ",
-editable:false
-},
-
-{
-id:"penlight",
-name:"ペンライトブース①",
-label:"PENLIGHT",
-category:"penlight",
-style:"penlight",
-lat:35.6241597,
-lng:139.7735247,
-description:"ペンライトブース",
-editable:false
-},
-
-{
-id:"penlight2",
-name:"ペンライトブース②",
-label:"PENLIGHT",
-category:"penlight",
-style:"penlight",
-lat:35.62410,
-lng:139.77370,
-description:"ペンライトブース",
-editable:true
-},
-
-{
-id:"food",
-name:"キッチンカー",
-label:"FOOD",
-category:"food",
-style:"food",
-lat:35.6233886,
-lng:139.7727889,
-description:"キッチンカー",
-editable:false
-},
-
-{
-id:"bar1",
-name:"オフィシャルバー①",
-label:"OFFICIAL BAR",
-category:"food",
-style:"food",
-iconType:"bar",
-lat:35.6230078,
-lng:139.7730473,
-description:"オフィシャルバー",
-editable:false
-},
-
-{
-id:"bar2",
-name:"オフィシャルバー②",
-label:"OFFICIAL BAR",
-category:"food",
-style:"food",
-iconType:"bar",
-lat:35.6241601,
-lng:139.7774193,
-description:"オフィシャルバー",
-editable:false
-},
-
-{
-id:"bar3",
-name:"オフィシャルバー③",
-label:"OFFICIAL BAR",
-category:"food",
-style:"food",
-iconType:"bar",
-lat:35.62330,
-lng:139.77325,
-description:"オフィシャルバー",
-editable:true
-},
-
-{
-id:"drink",
-name:"ドリンク",
-label:"DRINK",
-category:"food",
-style:"food",
-iconType:"drink",
-lat:35.62345,
-lng:139.77305,
-description:"ドリンク販売",
-editable:true
-},
-
-{
-id:"rest",
-name:"休憩テント",
-label:"休憩テント",
-category:"other",
-style:"other",
-lat:35.6239264,
-lng:139.773412,
-description:"休憩テント",
-editable:false
-},
-
-{
-id:"eco",
-name:"エコステーション",
-label:"ECO",
-category:"other",
-style:"other",
-lat:35.6239115,
-lng:139.7737049,
-description:"エコステーション",
-editable:false
-},
-
-{
-id:"suntory",
-name:"サントリー生ビール",
-label:"SUNTORY",
-category:"booth",
-style:"booth",
-lat:35.6233861,
-lng:139.774265,
-description:"サントリー生ビール",
-editable:false
-},
-
-{
-id:"toyota",
-name:"TOYOTA 給電ラッピングカー",
-label:"TOYOTA",
-category:"booth",
-style:"booth",
-lat:35.6236633,
-lng:139.77448,
-description:"TOYOTA 給電ラッピングカー",
-editable:false
-},
-
-{
-id:"umajo",
-name:"UMAJO",
-label:"UMAJO",
-category:"booth",
-style:"booth",
-lat:35.6231266,
-lng:139.7746901,
-description:"UMAJO",
-editable:false
-},
-
-{
-id:"photo1",
-name:"フォトスポット①",
-label:"PHOTO",
-category:"photo",
-style:"photo",
-lat:35.6235071,
-lng:139.774729,
-description:"フォトスポット",
-editable:false
-},
-
-{
-id:"photo2",
-name:"フォトスポット②",
-label:"PHOTO",
-category:"photo",
-style:"photo",
-lat:35.6225914,
-lng:139.7750294,
-description:"フォトスポット",
-editable:false
-},
-
-{
-id:"flower",
-name:"フラワーディスプレイ",
-label:"FLOWER",
-category:"photo",
-style:"photo",
-lat:35.6224736,
-lng:139.7751608,
-description:"フラワーディスプレイ",
-editable:false
-},
-
-{
-id:"wc1",
-name:"トイレ①",
-label:"WC",
-category:"wc",
-style:"wc",
-lat:35.6226513,
-lng:139.773784,
-description:"トイレ",
-editable:false
-},
-
-{
-id:"wc2",
-name:"トイレ②",
-label:"WC",
-category:"wc",
-style:"wc",
-lat:35.6227654,
-lng:139.7737075,
-description:"トイレ",
-editable:false
-},
-
-{
-id:"wc3",
-name:"トイレ③",
-label:"WC",
-category:"wc",
-style:"wc",
-lat:35.6225191,
-lng:139.7739266,
-description:"トイレ",
-editable:false
-},
-
-{
-id:"wc4",
-name:"トイレ④",
-label:"WC",
-category:"wc",
-style:"wc",
-lat:35.6242767,
-lng:139.7760214,
-description:"トイレ",
-editable:false
-},
-
-{
-id:"wc5",
-name:"トイレ⑤",
-label:"WC",
-category:"wc",
-style:"wc",
-lat:35.6238661,
-lng:139.7750866,
-description:"トイレ",
-editable:false
-},
-
-{
-id:"wcPremium",
-name:"アップグレード専用トイレ",
-label:"アプグレ WC",
-category:"wc",
-style:"upgrade",
-lat:35.6220957,
-lng:139.7754264,
-description:"アップグレード席専用トイレ",
-editable:false
-},
-
-{
-id:"smoking",
-name:"喫煙所",
-label:"喫煙所",
-category:"smoking",
-style:"smoking",
-lat:35.62310,
-lng:139.77415,
-description:"喫煙所",
-editable:true
-}
-
-];
-
-
-/* =========================================================
-   STAGE MARKERS
-========================================================= */
-
-const stageMarkers=[];
-
-let editMode=false;
-let selectedItem=null;
-
-
-stages.forEach(stage=>{
-
-  const icon=L.divIcon({
+  const icon = L.divIcon({
 
     className:"",
 
     html:`
-      <div
-        class="
-          stage-fixed
-          ${stage.editable ? "stage-editable" : ""}
-        "
-      >
+      <div class="stage-fixed">
 
         <div class="stage-plate">
 
@@ -1914,590 +2179,530 @@ stages.forEach(stage=>{
       </div>
     `,
 
-    iconSize:[164,60],
+    iconSize:[146,50],
 
-    iconAnchor:[82,30]
+    iconAnchor:[73,25]
 
   });
 
 
-  const marker=L.marker(
-
+  L.marker(
     [stage.lat,stage.lng],
-
     {
       icon,
-      interactive:true,
-      draggable:false,
+      interactive:false,
       zIndexOffset:2000
     }
-
   ).addTo(map);
-
-
-  const item={
-    type:"stage",
-    data:stage,
-    marker
-  };
-
-
-  stageMarkers.push(item);
-
-
-  marker.on("click",e=>{
-
-    L.DomEvent.stopPropagation(e);
-
-
-    if(
-      editMode &&
-      stage.editable
-    ){
-
-      selectItem(item);
-
-    }
-
-  });
-
-
-  marker.on("drag",()=>{
-
-    if(
-      editMode &&
-      stage.editable
-    ){
-
-      updateSelectedPosition(item);
-
-    }
-
-  });
-
-
-  marker.on("dragend",()=>{
-
-    if(
-      editMode &&
-      stage.editable
-    ){
-
-      updateSelectedPosition(item);
-
-      showToast(
-        `${stage.name} を移動しました`
-      );
-
-    }
-
-  });
 
 });
 
 
 /* =========================================================
-   VENUE ICON
+   VENUES
+========================================================= */
+
+const venues = [
+
+{
+id:"west",
+name:"WEST GATE",
+label:"WEST GATE",
+category:"gate",
+style:"west",
+lat:35.6240456,
+lng:139.77429,
+description:"一般指定・注釈付き指定"
+},
+
+{
+id:"east",
+name:"EAST GATE",
+label:"EAST GATE",
+category:"gate",
+style:"east",
+lat:35.6238603,
+lng:139.775506,
+description:"SS・S指定"
+},
+
+{
+id:"a",
+name:"A-GATE",
+label:"A-GATE",
+category:"gate",
+style:"gate",
+lat:35.6239875,
+lng:139.7764993,
+description:"A-GATE"
+},
+
+{
+id:"b",
+name:"B-GATE",
+label:"B-GATE",
+category:"gate",
+style:"gate",
+lat:35.6223569,
+lng:139.7761837,
+description:"B-GATE"
+},
+
+{
+id:"c",
+name:"C-GATE",
+label:"C-GATE",
+category:"gate",
+style:"gate",
+lat:35.6222686,
+lng:139.7753053,
+description:"C-GATE"
+},
+
+{
+id:"info",
+name:"インフォメーション",
+label:"INFO",
+category:"info",
+style:"info",
+lat:35.6245086,
+lng:139.7752889,
+description:"インフォメーション"
+},
+
+{
+id:"fc",
+name:"ファンクラブブース・CD販売ブース",
+label:"FC・CD",
+category:"goods",
+style:"goods",
+lat:35.6237055,
+lng:139.7726431,
+description:"ファンクラブブース・CD販売ブース"
+},
+
+{
+id:"capsule",
+name:"MEGA CAPSULE",
+label:"MEGA CAPSULE",
+category:"goods",
+style:"goods",
+lat:35.6239039,
+lng:139.7728989,
+description:"MEGA CAPSULE"
+},
+
+{
+id:"goods",
+name:"グッズ",
+label:"GOODS",
+category:"goods",
+style:"goods",
+lat:35.6241717,
+lng:139.7732538,
+description:"オフィシャルグッズ"
+},
+
+{
+id:"penlight",
+name:"ペンライトブース①",
+label:"PENLIGHT",
+category:"penlight",
+style:"penlight",
+lat:35.6241597,
+lng:139.7735247,
+description:"ペンライトブース"
+},
+
+{
+id:"penlight2",
+name:"ペンライトブース②",
+label:"PENLIGHT",
+category:"penlight",
+style:"penlight",
+lat:35.6241,
+lng:139.7737,
+description:"ペンライトブース"
+},
+
+{
+id:"food",
+name:"キッチンカー",
+label:"FOOD",
+category:"food",
+style:"food",
+lat:35.6233886,
+lng:139.7727889,
+description:"キッチンカー"
+},
+
+{
+id:"bar1",
+name:"オフィシャルバー①",
+label:"OFFICIAL BAR",
+category:"food",
+style:"food",
+iconType:"bar",
+lat:35.6230078,
+lng:139.7730473,
+description:"オフィシャルバー"
+},
+
+{
+id:"bar2",
+name:"オフィシャルバー②",
+label:"OFFICIAL BAR",
+category:"food",
+style:"food",
+iconType:"bar",
+lat:35.6241601,
+lng:139.7774193,
+description:"オフィシャルバー"
+},
+
+{
+id:"bar3",
+name:"オフィシャルバー③",
+label:"OFFICIAL BAR",
+category:"food",
+style:"food",
+iconType:"bar",
+lat:35.6233,
+lng:139.77325,
+description:"オフィシャルバー"
+},
+
+{
+id:"drink",
+name:"ドリンク",
+label:"DRINK",
+category:"food",
+style:"food",
+iconType:"drink",
+lat:35.62345,
+lng:139.77305,
+description:"ドリンク販売"
+},
+
+{
+id:"rest",
+name:"休憩テント",
+label:"休憩テント",
+category:"other",
+style:"other",
+lat:35.6239264,
+lng:139.773412,
+description:"休憩テント"
+},
+
+{
+id:"eco",
+name:"エコステーション",
+label:"ECO",
+category:"other",
+style:"other",
+lat:35.6239115,
+lng:139.7737049,
+description:"エコステーション"
+},
+
+{
+id:"suntory",
+name:"サントリー生ビール",
+label:"SUNTORY",
+category:"booth",
+style:"booth",
+lat:35.6233861,
+lng:139.774265,
+description:"サントリー生ビール"
+},
+
+{
+id:"toyota",
+name:"TOYOTA 給電ラッピングカー",
+label:"TOYOTA",
+category:"booth",
+style:"booth",
+lat:35.6236633,
+lng:139.77448,
+description:"TOYOTA 給電ラッピングカー"
+},
+
+{
+id:"umajo",
+name:"UMAJO",
+label:"UMAJO",
+category:"booth",
+style:"booth",
+lat:35.6231266,
+lng:139.7746901,
+description:"UMAJO"
+},
+
+{
+id:"photo1",
+name:"フォトスポット①",
+label:"PHOTO",
+category:"photo",
+style:"photo",
+lat:35.6235071,
+lng:139.774729,
+description:"フォトスポット"
+},
+
+{
+id:"photo2",
+name:"フォトスポット②",
+label:"PHOTO",
+category:"photo",
+style:"photo",
+lat:35.6225914,
+lng:139.7750294,
+description:"フォトスポット"
+},
+
+{
+id:"flower",
+name:"フラワーディスプレイ",
+label:"FLOWER",
+category:"photo",
+style:"photo",
+lat:35.6224736,
+lng:139.7751608,
+description:"フラワーディスプレイ"
+},
+
+{
+id:"wc1",
+name:"トイレ①",
+label:"WC",
+category:"wc",
+style:"wc",
+lat:35.6226513,
+lng:139.773784,
+description:"トイレ"
+},
+
+{
+id:"wc2",
+name:"トイレ②",
+label:"WC",
+category:"wc",
+style:"wc",
+lat:35.6227654,
+lng:139.7737075,
+description:"トイレ"
+},
+
+{
+id:"wc3",
+name:"トイレ③",
+label:"WC",
+category:"wc",
+style:"wc",
+lat:35.6225191,
+lng:139.7739266,
+description:"トイレ"
+},
+
+{
+id:"wc4",
+name:"トイレ④",
+label:"WC",
+category:"wc",
+style:"wc",
+lat:35.6242767,
+lng:139.7760214,
+description:"トイレ"
+},
+
+{
+id:"wc5",
+name:"トイレ⑤",
+label:"WC",
+category:"wc",
+style:"wc",
+lat:35.6238661,
+lng:139.7750866,
+description:"トイレ"
+},
+
+{
+id:"wcPremium",
+name:"アップグレード専用トイレ",
+label:"アプグレ WC",
+category:"wc",
+style:"upgrade",
+lat:35.6220957,
+lng:139.7754264,
+description:"アップグレード席専用トイレ"
+},
+
+{
+id:"smoking",
+name:"喫煙所",
+label:"喫煙所",
+category:"smoking",
+style:"smoking",
+lat:35.6231,
+lng:139.77415,
+description:"喫煙所"
+}
+
+];
+
+
+/* =========================================================
+   CREATE MARKERS
 ========================================================= */
 
 function createVenueIcon(v){
 
-  const iconType=
-    v.iconType || v.category;
+  const iconType =
+    v.iconType ||
+    v.category;
 
 
   return L.divIcon({
 
-    className:"venue-leaflet-icon",
+    className:"",
 
     html:`
-
       <div
         class="
           venue-marker
           marker-${v.style}
-          ${v.editable ? "editable-marker" : ""}
         "
       >
 
-        <div class="marker-hit">
+        <div class="marker-pin">
 
-          <div class="marker-pin">
+          <div class="marker-inner">
 
-            <div class="marker-inner">
-
-              ${icons[iconType] || icons.other}
-
-            </div>
+            ${icons[iconType] || icons.other}
 
           </div>
 
         </div>
 
         <div class="marker-label">
-
           ${v.label}
-
         </div>
 
       </div>
     `,
 
-    iconSize:[140,72],
+    iconSize:[110,62],
 
-    iconAnchor:[70,46]
+    iconAnchor:[55,42]
 
   });
 
 }
 
 
-/* =========================================================
-   VENUE MARKERS
-========================================================= */
-
-const venueMarkers=[];
+const venueMarkers = [];
 
 
-venues.forEach(v=>{
+venues.forEach(v => {
 
-  const marker=L.marker(
+  const marker = L.marker(
 
     [v.lat,v.lng],
 
     {
       icon:createVenueIcon(v),
-      draggable:false,
-      autoPan:true,
       riseOnHover:true
     }
 
   ).addTo(map);
 
 
-  const item={
-    type:"venue",
-    data:v,
+  marker.on(
+    "click",
+    () => openVenue(v)
+  );
+
+
+  venueMarkers.push({
+    venue:v,
     marker
-  };
-
-
-  venueMarkers.push(item);
-
-
-  marker.on("click",e=>{
-
-    L.DomEvent.stopPropagation(e);
-
-
-    if(editMode){
-
-      if(v.editable){
-
-        selectItem(item);
-
-      }
-
-      else{
-
-        showToast(
-          "このピンは位置確定済みです"
-        );
-
-      }
-
-      return;
-
-    }
-
-
-    openVenue(v);
-
-  });
-
-
-  marker.on("drag",()=>{
-
-    if(
-      editMode &&
-      v.editable
-    ){
-
-      updateSelectedPosition(item);
-
-    }
-
-  });
-
-
-  marker.on("dragend",()=>{
-
-    if(
-      editMode &&
-      v.editable
-    ){
-
-      updateSelectedPosition(item);
-
-      showToast(
-        `${v.name} を移動しました`
-      );
-
-    }
-
   });
 
 });
 
 
 /* =========================================================
-   SELECT ITEM
+   STATION DIRECTION LABELS
+
+   会場外方向を示す案内表示。
 ========================================================= */
 
-function selectItem(item){
+function stationIcon(
+  text,
+  rotation
+){
 
-  selectedItem=item;
+  return L.divIcon({
 
+    className:"",
 
-  document
-  .querySelectorAll(".venue-marker")
-  .forEach(el=>{
-    el.classList.remove("selected");
+    html:`
+      <div class="station-direction">
+
+        <span
+          class="station-arrow"
+          style="
+            transform:rotate(${rotation}deg)
+          "
+        >
+          ↑
+        </span>
+
+        ${text}
+
+      </div>
+    `,
+
+    iconSize:[140,48],
+
+    iconAnchor:[70,24]
+
   });
-
-
-  document
-  .querySelectorAll(".stage-fixed")
-  .forEach(el=>{
-    el.classList.remove("stage-selected");
-  });
-
-
-  const element=
-    item.marker.getElement();
-
-
-  if(element){
-
-    if(item.type==="stage"){
-
-      const visual=
-        element.querySelector(".stage-fixed");
-
-      if(visual){
-        visual.classList.add("stage-selected");
-      }
-
-    }
-
-    else{
-
-      const visual=
-        element.querySelector(".venue-marker");
-
-      if(visual){
-        visual.classList.add("selected");
-      }
-
-    }
-
-  }
-
-
-  updateSelectedPosition(item);
 
 }
 
 
-/* =========================================================
-   UPDATE POSITION
-========================================================= */
+/*
+  台場駅方向
+*/
 
-function updateSelectedPosition(item){
-
-  const p=
-    item.marker.getLatLng();
-
-
-  item.data.lat=p.lat;
-  item.data.lng=p.lng;
-
-
-  document.getElementById(
-    "editSelected"
-  ).innerHTML=`
-
-    <strong>
-      ${item.data.name}
-    </strong>
-
-    <br>
-
-    LAT：${p.lat.toFixed(7)}
-
-    <br>
-
-    LNG：${p.lng.toFixed(7)}
-
-  `;
-
-}
-
-
-/* =========================================================
-   EDIT MODE
-========================================================= */
-
-const editButton=
-  document.getElementById("editButton");
-
-const editPanel=
-  document.getElementById("editPanel");
-
-
-editButton.addEventListener("click",()=>{
-
-  editMode=!editMode;
-
-
-  document.body.classList.toggle(
-    "editing",
-    editMode
-  );
-
-
-  editButton.classList.toggle(
-    "active",
-    editMode
-  );
-
-
-  editPanel.classList.toggle(
-    "show",
-    editMode
-  );
-
-
-  editButton.textContent=
-    editMode
-    ? "EDITING"
-    : "EDIT PINS";
-
-
-  /*
-   ★ MAIN
-  */
-
-  stageMarkers.forEach(item=>{
-
-    if(
-      editMode &&
-      item.data.editable
-    ){
-
-      item.marker.dragging.enable();
-
-    }
-
-    else{
-
-      item.marker.dragging.disable();
-
-    }
-
-  });
-
-
-  /*
-   ★ NEW PINS
-  */
-
-  venueMarkers.forEach(item=>{
-
-    if(
-      editMode &&
-      item.data.editable
-    ){
-
-      item.marker.dragging.enable();
-
-    }
-
-    else{
-
-      item.marker.dragging.disable();
-
-    }
-
-  });
-
-
-  if(!editMode){
-
-    selectedItem=null;
-
-
-    document
-    .querySelectorAll(".venue-marker")
-    .forEach(el=>{
-      el.classList.remove("selected");
-    });
-
-
-    document
-    .querySelectorAll(".stage-fixed")
-    .forEach(el=>{
-      el.classList.remove("stage-selected");
-    });
-
-
-    document.getElementById(
-      "editSelected"
-    ).textContent=
-      "編集する場所を選択してください";
-
+L.marker(
+  [35.62478,139.77695],
+  {
+    icon:stationIcon(
+      "台場駅",
+      0
+    ),
+    interactive:false
   }
+).addTo(map);
 
 
-  showToast(
-    editMode
-    ? "MAIN STAGEも移動できます"
-    : "編集モードを終了しました"
-  );
+/*
+  東京テレポート駅方向
+*/
 
-});
-
-
-/* =========================================================
-   MAP TAP MOVE
-
-   MAINを選択してから地図をタップしても移動できる
-========================================================= */
-
-map.on("click",event=>{
-
-  if(
-    !editMode ||
-    !selectedItem
-  ){
-    return;
+L.marker(
+  [35.62202,139.77335],
+  {
+    icon:stationIcon(
+      "東京テレポート駅",
+      180
+    ),
+    interactive:false
   }
-
-
-  selectedItem.marker.setLatLng(
-    event.latlng
-  );
-
-
-  updateSelectedPosition(
-    selectedItem
-  );
-
-
-  showToast(
-    `${selectedItem.data.name} を移動しました`
-  );
-
-});
-
-
-/* =========================================================
-   COPY
-
-   ★ MAIN + 追加4ピン
-========================================================= */
-
-document
-.getElementById("copyButton")
-.addEventListener("click",async()=>{
-
-  const output=[];
-
-
-  stageMarkers
-  .filter(item=>item.data.editable)
-  .forEach(item=>{
-
-    const p=
-      item.marker.getLatLng();
-
-
-    output.push({
-
-      id:item.data.id,
-
-      name:item.data.name,
-
-      lat:Number(
-        p.lat.toFixed(7)
-      ),
-
-      lng:Number(
-        p.lng.toFixed(7)
-      )
-
-    });
-
-  });
-
-
-  venueMarkers
-  .filter(item=>item.data.editable)
-  .forEach(item=>{
-
-    const p=
-      item.marker.getLatLng();
-
-
-    output.push({
-
-      id:item.data.id,
-
-      name:item.data.name,
-
-      lat:Number(
-        p.lat.toFixed(7)
-      ),
-
-      lng:Number(
-        p.lng.toFixed(7)
-      )
-
-    });
-
-  });
-
-
-  const text=
-    JSON.stringify(
-      output,
-      null,
-      2
-    );
-
-
-  try{
-
-    await navigator.clipboard.writeText(
-      text
-    );
-
-    showToast(
-      "MAIN＋追加ピンをコピーしました"
-    );
-
-  }
-
-  catch(e){
-
-    window.prompt(
-      "コピーしてください",
-      text
-    );
-
-  }
-
-});
+).addTo(map);
 
 
 /* =========================================================
@@ -2506,404 +2711,139 @@ document
 
 document
 .querySelectorAll(".filter")
-.forEach(button=>{
+.forEach(button => {
 
-  button.addEventListener("click",()=>{
+  button.addEventListener(
+    "click",
+    () => {
 
-    document
-    .querySelectorAll(".filter")
-    .forEach(b=>
-      b.classList.remove("active")
-    );
-
-
-    button.classList.add("active");
-
-
-    const category=
-      button.dataset.filter;
+      document
+      .querySelectorAll(".filter")
+      .forEach(b =>
+        b.classList.remove("active")
+      );
 
 
-    venueMarkers.forEach(item=>{
-
-      const visible=
-        category==="all"
-        ||
-        item.data.category===category;
+      button.classList.add("active");
 
 
-      if(visible){
+      const category =
+        button.dataset.filter;
 
-        if(!map.hasLayer(item.marker)){
-          item.marker.addTo(map);
+
+      venueMarkers.forEach(item => {
+
+        const visible =
+          category === "all" ||
+          item.venue.category === category;
+
+
+        if(visible){
+
+          if(!map.hasLayer(item.marker)){
+            item.marker.addTo(map);
+          }
+
         }
 
-      }
+        else{
 
-      else{
+          if(map.hasLayer(item.marker)){
+            map.removeLayer(item.marker);
+          }
 
-        if(map.hasLayer(item.marker)){
-          map.removeLayer(item.marker);
         }
 
-      }
+      });
 
-    });
-
-
-    /*
-     STAGESは常時表示
-    */
-
-    stageMarkers.forEach(item=>{
-
-      if(!map.hasLayer(item.marker)){
-        item.marker.addTo(map);
-      }
-
-    });
-
-  });
+    }
+  );
 
 });
-
-
-/* =========================================================
-   DETAIL
-========================================================= */
-
-const bottomSheet=
-  document.getElementById("bottomSheet");
-
-const sheetBackdrop=
-  document.getElementById("sheetBackdrop");
-
-const sheetCategory=
-  document.getElementById("sheetCategory");
-
-const sheetTitle=
-  document.getElementById("sheetTitle");
-
-const sheetDescription=
-  document.getElementById("sheetDescription");
-
-const sheetArrowWrap=
-  document.getElementById("sheetArrowWrap");
-
-const sheetArrow=
-  document.getElementById("sheetArrow");
-
-
-function openVenue(v){
-
-  sheetCategory.textContent=
-    v.category.toUpperCase();
-
-  sheetTitle.textContent=
-    v.name;
-
-  sheetDescription.textContent=
-    v.description;
-
-
-  if(typeof v.arrow==="number"){
-
-    sheetArrowWrap.classList.add("show");
-
-    sheetArrow.style.transform=
-      `rotate(${v.arrow}deg)`;
-
-  }
-
-  else{
-
-    sheetArrowWrap.classList.remove("show");
-
-  }
-
-
-  bottomSheet.classList.add("show");
-
-  sheetBackdrop.classList.add("show");
-
-}
-
-
-function closeVenue(){
-
-  bottomSheet.classList.remove("show");
-
-  sheetBackdrop.classList.remove("show");
-
-}
-
-
-document
-.getElementById("sheetClose")
-.addEventListener("click",closeVenue);
-
-
-sheetBackdrop.addEventListener(
-  "click",
-  closeVenue
-);
 
 
 /* =========================================================
    REAL / OFFICIAL
 ========================================================= */
 
-const officialMap=
+const officialMap =
   document.getElementById("officialMap");
-
-const filtersWrap=
-  document.querySelector(".filters-wrap");
-
-const locationButton=
-  document.getElementById("locationButton");
-
-const overlayButton=
-  document.getElementById("overlayButton");
-
-const overlayPanel=
-  document.getElementById("overlayPanel");
 
 
 document
-.querySelectorAll(".mode-button")
-.forEach(button=>{
+.querySelectorAll(".map-mode-btn")
+.forEach(button => {
 
-  button.addEventListener("click",()=>{
+  button.addEventListener(
+    "click",
+    () => {
 
-    document
-    .querySelectorAll(".mode-button")
-    .forEach(b=>
-      b.classList.remove("active")
-    );
-
-
-    button.classList.add("active");
-
-
-    if(button.dataset.mode==="official"){
-
-      officialMap.classList.add("show");
-
-      filtersWrap.style.display="none";
-
-      locationButton.style.display="none";
-
-      editButton.style.display="none";
-
-      editPanel.classList.remove("show");
-
-      overlayButton.style.display="none";
-
-      overlayPanel.classList.remove("show");
-
-    }
-
-    else{
-
-      officialMap.classList.remove("show");
-
-      filtersWrap.style.display="";
-
-      locationButton.style.display="";
-
-      editButton.style.display="";
-
-      overlayButton.style.display="";
-
-
-      if(editMode){
-        editPanel.classList.add("show");
-      }
-
-
-      setTimeout(
-        ()=>map.invalidateSize(),
-        100
+      document
+      .querySelectorAll(".map-mode-btn")
+      .forEach(b =>
+        b.classList.remove("active")
       );
 
+
+      button.classList.add("active");
+
+
+      const official =
+        button.dataset.mapmode === "official";
+
+
+      officialMap.classList.toggle(
+        "show",
+        official
+      );
+
+
+      document.getElementById(
+        "locateButton"
+      ).style.display =
+        official
+        ? "none"
+        : "";
+
     }
-
-  });
+  );
 
 });
 
 
 /* =========================================================
-   OVERLAY
+   CURRENT LOCATION
+
+   現在地は保存しない。
 ========================================================= */
 
-const freeOverlay=
-  document.getElementById("freeOverlay");
-
-const overlayImage=
-  document.getElementById("overlayImage");
-
-const overlayOpacity=
-  document.getElementById("overlayOpacity");
+let locationMarker = null;
+let accuracyCircle = null;
 
 
-let overlayVisible=false;
-
-
-overlayButton.addEventListener("click",()=>{
-
-  overlayVisible=!overlayVisible;
-
-
-  freeOverlay.classList.toggle(
-    "show",
-    overlayVisible
-  );
-
-
-  overlayPanel.classList.toggle(
-    "show",
-    overlayVisible
-  );
-
-
-  overlayButton.classList.toggle(
-    "active",
-    overlayVisible
-  );
-
-
-  overlayButton.textContent=
-    overlayVisible
-    ? "OVERLAY ON"
-    : "OVERLAY";
-
-});
-
-
-overlayOpacity.addEventListener("input",()=>{
-
-  overlayImage.style.opacity=
-    Number(
-      overlayOpacity.value
-    )/100;
-
-});
-
-
-overlayImage.style.opacity=
-  Number(
-    overlayOpacity.value
-  )/100;
-
-
-/* =========================================================
-   OVERLAY DRAG
-========================================================= */
-
-let overlayDragging=false;
-let overlayStartX=0;
-let overlayStartY=0;
-
-let overlayLeft=50;
-let overlayTop=52;
-
-
-freeOverlay.addEventListener("pointerdown",event=>{
-
-  overlayDragging=true;
-
-  overlayStartX=event.clientX;
-  overlayStartY=event.clientY;
-
-  freeOverlay.setPointerCapture(
-    event.pointerId
-  );
-
-});
-
-
-freeOverlay.addEventListener("pointermove",event=>{
-
-  if(!overlayDragging){
-    return;
-  }
-
-
-  const dx=
-    event.clientX-overlayStartX;
-
-  const dy=
-    event.clientY-overlayStartY;
-
-
-  overlayLeft+=
-    dx/window.innerWidth*100;
-
-  overlayTop+=
-    dy/window.innerHeight*100;
-
-
-  freeOverlay.style.left=
-    overlayLeft+"%";
-
-  freeOverlay.style.top=
-    overlayTop+"%";
-
-
-  overlayStartX=event.clientX;
-  overlayStartY=event.clientY;
-
-});
-
-
-freeOverlay.addEventListener("pointerup",()=>{
-
-  overlayDragging=false;
-
-});
-
-
-/* =========================================================
-   GPS
-
-   ブラウザ上で現在地表示のみ。
-   サーバー送信・共有・DB保存なし。
-========================================================= */
-
-let locationMarker=null;
-let accuracyCircle=null;
-let watchId=null;
-let firstLocation=true;
-
-
-const userIcon=L.divIcon({
+const userIcon = L.divIcon({
 
   className:"",
 
   html:
     '<div class="user-location"></div>',
 
-  iconSize:[22,22],
+  iconSize:[21,21],
 
-  iconAnchor:[11,11]
+  iconAnchor:[10.5,10.5]
 
 });
 
 
-locationButton.addEventListener("click",()=>{
+document
+.getElementById("locateButton")
+.addEventListener(
+  "click",
+  locateUser
+);
 
-  if(locationMarker){
 
-    map.flyTo(
-      locationMarker.getLatLng(),
-      18
-    );
-
-    return;
-
-  }
-
+function locateUser(){
 
   if(!navigator.geolocation){
 
@@ -2921,162 +2861,1309 @@ locationButton.addEventListener("click",()=>{
   );
 
 
-  watchId=
-    navigator.geolocation.watchPosition(
+  navigator.geolocation.getCurrentPosition(
 
-      locationSuccess,
+    position => {
 
-      locationError,
+      const lat =
+        position.coords.latitude;
 
-      {
-        enableHighAccuracy:true,
-        maximumAge:2000,
-        timeout:15000
+      const lng =
+        position.coords.longitude;
+
+      const accuracy =
+        position.coords.accuracy;
+
+
+      if(!locationMarker){
+
+        locationMarker =
+          L.marker(
+            [lat,lng],
+            {
+              icon:userIcon,
+              zIndexOffset:10000
+            }
+          ).addTo(map);
+
       }
 
-    );
+      else{
 
-});
+        locationMarker.setLatLng(
+          [lat,lng]
+        );
 
-
-function locationSuccess(position){
-
-  const lat=
-    position.coords.latitude;
-
-  const lng=
-    position.coords.longitude;
-
-  const accuracy=
-    position.coords.accuracy;
-
-
-  if(!locationMarker){
-
-    locationMarker=L.marker(
-
-      [lat,lng],
-
-      {
-        icon:userIcon,
-        zIndexOffset:10000
       }
 
-    ).addTo(map);
 
-  }
+      if(!accuracyCircle){
 
-  else{
+        accuracyCircle =
+          L.circle(
+            [lat,lng],
+            {
+              radius:accuracy,
+              color:"#1976ff",
+              weight:1,
+              fillColor:"#1976ff",
+              fillOpacity:.07
+            }
+          ).addTo(map);
 
-    locationMarker.setLatLng(
-      [lat,lng]
-    );
-
-  }
-
-
-  if(!accuracyCircle){
-
-    accuracyCircle=L.circle(
-
-      [lat,lng],
-
-      {
-        radius:accuracy,
-        color:"#1976ff",
-        weight:1,
-        opacity:.5,
-        fillColor:"#1976ff",
-        fillOpacity:.08
       }
 
-    ).addTo(map);
+      else{
 
-  }
+        accuracyCircle.setLatLng(
+          [lat,lng]
+        );
 
-  else{
+        accuracyCircle.setRadius(
+          accuracy
+        );
 
-    accuracyCircle.setLatLng(
-      [lat,lng]
-    );
-
-    accuracyCircle.setRadius(
-      accuracy
-    );
-
-  }
+      }
 
 
-  if(firstLocation){
-
-    firstLocation=false;
-
-    map.flyTo(
-      [lat,lng],
-      18
-    );
-
-    showToast(
-      "現在地を表示しました"
-    );
-
-  }
-
-}
+      map.flyTo(
+        [lat,lng],
+        18
+      );
 
 
-function locationError(){
+      showToast(
+        "現在地を表示しました"
+      );
 
-  showToast(
-    "現在地を取得できませんでした"
+    },
+
+    () => {
+
+      showToast(
+        "現在地を取得できませんでした"
+      );
+
+    },
+
+    {
+      enableHighAccuracy:true,
+      timeout:15000,
+      maximumAge:3000
+    }
+
   );
 
 }
 
 
 /* =========================================================
-   TOAST
+   VENUE SHEET
 ========================================================= */
 
-const toast=
-  document.getElementById("toast");
+let activeVenue = null;
+
+
+const bottomSheet =
+  document.getElementById("bottomSheet");
+
+const sheetBackdrop =
+  document.getElementById("sheetBackdrop");
+
+const saveSpotButton =
+  document.getElementById("saveSpotButton");
+
+
+function openVenue(v){
+
+  activeVenue = v;
+
+
+  document.getElementById(
+    "sheetCategory"
+  ).textContent =
+    v.category.toUpperCase();
+
+
+  document.getElementById(
+    "sheetTitle"
+  ).textContent =
+    v.name;
+
+
+  document.getElementById(
+    "sheetDesc"
+  ).textContent =
+    v.description;
+
+
+  updateSaveButton();
+
+
+  bottomSheet.classList.add("show");
+
+  sheetBackdrop.classList.add("show");
+
+}
+
+
+function closeSheet(){
+
+  bottomSheet.classList.remove("show");
+
+  sheetBackdrop.classList.remove("show");
+
+}
+
+
+sheetBackdrop.addEventListener(
+  "click",
+  closeSheet
+);
+
+
+/* =========================================================
+   MY SPOTS
+========================================================= */
+
+let mySpots =
+  JSON.parse(
+    localStorage.getItem(
+      "bmsgfes_myspots"
+    ) || "[]"
+  );
+
+
+saveSpotButton.addEventListener(
+  "click",
+  () => {
+
+    if(!activeVenue){
+      return;
+    }
+
+
+    const exists =
+      mySpots.includes(
+        activeVenue.id
+      );
+
+
+    if(exists){
+
+      mySpots =
+        mySpots.filter(
+          id =>
+            id !== activeVenue.id
+        );
+
+      showToast(
+        "MY SPOTSから削除しました"
+      );
+
+    }
+
+    else{
+
+      mySpots.push(
+        activeVenue.id
+      );
+
+      showToast(
+        "行きたい場所に保存しました"
+      );
+
+    }
+
+
+    saveMySpots();
+
+    updateSaveButton();
+
+    renderMySpots();
+
+  }
+);
+
+
+function saveMySpots(){
+
+  localStorage.setItem(
+    "bmsgfes_myspots",
+    JSON.stringify(mySpots)
+  );
+
+}
+
+
+function updateSaveButton(){
+
+  if(!activeVenue){
+    return;
+  }
+
+
+  const saved =
+    mySpots.includes(
+      activeVenue.id
+    );
+
+
+  saveSpotButton.textContent =
+    saved
+    ? "♥ 保存済み"
+    : "♡ 行きたい";
+
+
+  saveSpotButton.classList.toggle(
+    "saved",
+    saved
+  );
+
+}
+
+
+function renderMySpots(){
+
+  const container =
+    document.getElementById(
+      "mySpots"
+    );
+
+
+  container.innerHTML = "";
+
+
+  if(mySpots.length === 0){
+
+    container.innerHTML =
+      '<div class="card-small">まだ保存されていません。</div>';
+
+    return;
+
+  }
+
+
+  mySpots.forEach(id => {
+
+    const venue =
+      venues.find(
+        v => v.id === id
+      );
+
+
+    if(!venue){
+      return;
+    }
+
+
+    const row =
+      document.createElement(
+        "div"
+      );
+
+
+    row.className =
+      "spot-row";
+
+
+    row.innerHTML = `
+      <div class="spot-name">
+        ${venue.name}
+      </div>
+
+      <button class="spot-go">
+        MAP
+      </button>
+    `;
+
+
+    row
+    .querySelector(".spot-go")
+    .addEventListener(
+      "click",
+      () => {
+
+        switchPage("map");
+
+        setTimeout(
+          () => {
+
+            map.flyTo(
+              [venue.lat,venue.lng],
+              19
+            );
+
+            openVenue(venue);
+
+          },
+          100
+        );
+
+      }
+    );
+
+
+    container.appendChild(row);
+
+  });
+
+}
+
+
+/* =========================================================
+   NAVIGATE TO VENUE
+
+   現在地を外部へ保存しない。
+   端末の地図アプリ/ブラウザへ徒歩目的地を渡す。
+========================================================= */
+
+document
+.getElementById("navigateButton")
+.addEventListener(
+  "click",
+  () => {
+
+    if(!activeVenue){
+      return;
+    }
+
+
+    const destination =
+      `${activeVenue.lat},${activeVenue.lng}`;
+
+
+    const url =
+      `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(destination)}&travelmode=walking`;
+
+
+    window.open(
+      url,
+      "_blank",
+      "noopener"
+    );
+
+  }
+);
+
+
+/* =========================================================
+   STATION ROUTE
+========================================================= */
+
+function stationRoute(type){
+
+  /*
+    目的地は会場中央付近。
+    後でWEST/EAST GATE等へ変更可能。
+  */
+
+  const destination =
+    "35.62395,139.77520";
+
+
+  let origin = "";
+
+
+  if(type === "daiba"){
+
+    origin =
+      "台場駅";
+
+  }
+
+  else{
+
+    origin =
+      "東京テレポート駅";
+
+  }
+
+
+  const url =
+    `https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(origin)}&destination=${encodeURIComponent(destination)}&travelmode=walking`;
+
+
+  window.open(
+    url,
+    "_blank",
+    "noopener"
+  );
+
+}
+
+
+/* =========================================================
+   CHECKLIST
+========================================================= */
+
+let checklist =
+  JSON.parse(
+    localStorage.getItem(
+      "bmsgfes_checklist"
+    ) || "[]"
+  );
+
+
+const checkInput =
+  document.getElementById(
+    "checkInput"
+  );
+
+
+document
+.getElementById("checkAdd")
+.addEventListener(
+  "click",
+  addChecklist
+);
+
+
+checkInput.addEventListener(
+  "keydown",
+  event => {
+
+    if(event.key === "Enter"){
+      addChecklist();
+    }
+
+  }
+);
+
+
+function addChecklist(){
+
+  const text =
+    checkInput.value.trim();
+
+
+  if(!text){
+    return;
+  }
+
+
+  checklist.push({
+
+    id:Date.now(),
+
+    text:text,
+
+    done:false
+
+  });
+
+
+  checkInput.value = "";
+
+
+  saveChecklist();
+
+  renderChecklist();
+
+}
+
+
+function saveChecklist(){
+
+  localStorage.setItem(
+    "bmsgfes_checklist",
+    JSON.stringify(checklist)
+  );
+
+}
+
+
+function renderChecklist(){
+
+  const container =
+    document.getElementById(
+      "checkList"
+    );
+
+
+  container.innerHTML = "";
+
+
+  checklist.forEach(item => {
+
+    const row =
+      document.createElement(
+        "div"
+      );
+
+
+    row.className =
+      "check-item";
+
+
+    row.innerHTML = `
+
+      <input
+        type="checkbox"
+        ${item.done ? "checked" : ""}
+      >
+
+      <div
+        class="
+          check-text
+          ${item.done ? "done" : ""}
+        "
+      >
+        ${escapeHtml(item.text)}
+      </div>
+
+      <button class="delete-btn">
+        ×
+      </button>
+
+    `;
+
+
+    row
+    .querySelector("input")
+    .addEventListener(
+      "change",
+      event => {
+
+        item.done =
+          event.target.checked;
+
+        saveChecklist();
+
+        renderChecklist();
+
+      }
+    );
+
+
+    row
+    .querySelector(".delete-btn")
+    .addEventListener(
+      "click",
+      () => {
+
+        checklist =
+          checklist.filter(
+            x => x.id !== item.id
+          );
+
+        saveChecklist();
+
+        renderChecklist();
+
+      }
+    );
+
+
+    container.appendChild(row);
+
+  });
+
+}
+
+
+/* =========================================================
+   TRADE MEMO
+========================================================= */
+
+let memoDay = 0;
+
+
+let tradeMemos =
+  JSON.parse(
+    localStorage.getItem(
+      "bmsgfes_trade_memos"
+    ) || "{}"
+  );
+
+
+const tradeMemo =
+  document.getElementById(
+    "tradeMemo"
+  );
+
+
+function loadMemo(){
+
+  const date =
+    EVENT_DAYS[memoDay];
+
+
+  tradeMemo.value =
+    tradeMemos[date] || "";
+
+}
+
+
+tradeMemo.addEventListener(
+  "input",
+  () => {
+
+    const date =
+      EVENT_DAYS[memoDay];
+
+
+    tradeMemos[date] =
+      tradeMemo.value;
+
+
+    localStorage.setItem(
+      "bmsgfes_trade_memos",
+      JSON.stringify(tradeMemos)
+    );
+
+  }
+);
+
+
+document
+.querySelectorAll("[data-memoday]")
+.forEach(button => {
+
+  button.addEventListener(
+    "click",
+    () => {
+
+      document
+      .querySelectorAll("[data-memoday]")
+      .forEach(b =>
+        b.classList.remove("active")
+      );
+
+
+      button.classList.add("active");
+
+
+      memoDay =
+        Number(
+          button.dataset.memoday
+        );
+
+
+      loadMemo();
+
+    }
+  );
+
+});
+
+
+/* =========================================================
+   SUB STAGE
+========================================================= */
+
+function renderSubStage(dayIndex){
+
+  const date =
+    EVENT_DAYS[dayIndex];
+
+
+  const artists =
+    SUB_STAGE[date] || [];
+
+
+  const content =
+    document.getElementById(
+      "subStageContent"
+    );
+
+
+  if(artists.length === 0){
+
+    content.textContent =
+      "出演アーティストは後から登録できます。";
+
+    return;
+
+  }
+
+
+  content.innerHTML =
+    artists
+    .map(
+      artist =>
+        `・${escapeHtml(artist)}`
+    )
+    .join("<br>");
+
+}
+
+
+document
+.querySelectorAll("[data-subday]")
+.forEach(button => {
+
+  button.addEventListener(
+    "click",
+    () => {
+
+      document
+      .querySelectorAll("[data-subday]")
+      .forEach(b =>
+        b.classList.remove("active")
+      );
+
+
+      button.classList.add("active");
+
+
+      renderSubStage(
+        Number(
+          button.dataset.subday
+        )
+      );
+
+    }
+  );
+
+});
+
+
+/* =========================================================
+   OFFICIAL LINKS
+========================================================= */
+
+function setupLinks(){
+
+  const studyButton =
+    document.getElementById(
+      "studyButton"
+    );
+
+
+  if(OFFICIAL_LINKS.study){
+
+    studyButton.disabled = false;
+
+    studyButton.addEventListener(
+      "click",
+      () => {
+
+        window.open(
+          OFFICIAL_LINKS.study,
+          "_blank",
+          "noopener"
+        );
+
+      }
+    );
+
+  }
+
+
+  if(OFFICIAL_LINKS.streaming){
+
+    document
+    .getElementById(
+      "streamCard"
+    )
+    .classList.remove(
+      "hidden"
+    );
+
+
+    document
+    .getElementById(
+      "streamButton"
+    )
+    .addEventListener(
+      "click",
+      () => {
+
+        window.open(
+          OFFICIAL_LINKS.streaming,
+          "_blank",
+          "noopener"
+        );
+
+      }
+    );
+
+  }
+
+
+  if(OFFICIAL_LINKS.goodsTicket){
+
+    document
+    .getElementById(
+      "ticketCard"
+    )
+    .classList.remove(
+      "hidden"
+    );
+
+
+    document
+    .getElementById(
+      "ticketButton"
+    )
+    .addEventListener(
+      "click",
+      () => {
+
+        window.open(
+          OFFICIAL_LINKS.goodsTicket,
+          "_blank",
+          "noopener"
+        );
+
+      }
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   WEATHER
+   Open-Meteo
+
+   APIキー不要。
+   最後に成功した結果は端末へキャッシュ。
+========================================================= */
+
+const weatherMini =
+  document.getElementById(
+    "weatherMini"
+  );
+
+
+const weatherDetail =
+  document.getElementById(
+    "weatherDetail"
+  );
+
+
+weatherMini.addEventListener(
+  "click",
+  () => {
+
+    weatherDetail.classList.add(
+      "show"
+    );
+
+  }
+);
+
+
+document
+.getElementById("weatherClose")
+.addEventListener(
+  "click",
+  () => {
+
+    weatherDetail.classList.remove(
+      "show"
+    );
+
+  }
+);
+
+
+function weatherEmoji(code){
+
+  if(code === 0){
+    return "☀️";
+  }
+
+  if(
+    code === 1 ||
+    code === 2
+  ){
+    return "🌤️";
+  }
+
+  if(code === 3){
+    return "☁️";
+  }
+
+  if(
+    code === 45 ||
+    code === 48
+  ){
+    return "🌫️";
+  }
+
+  if(
+    code >= 51 &&
+    code <= 67
+  ){
+    return "🌧️";
+  }
+
+  if(
+    code >= 71 &&
+    code <= 77
+  ){
+    return "🌨️";
+  }
+
+  if(
+    code >= 80 &&
+    code <= 82
+  ){
+    return "🌦️";
+  }
+
+  if(
+    code >= 95
+  ){
+    return "⛈️";
+  }
+
+  return "☁️";
+
+}
+
+
+async function loadWeather(){
+
+  /*
+    予報対象日がAPIの予報可能期間外の場合は、
+    キャッシュまたは「−」を表示。
+  */
+
+  const url =
+    `https://api.open-meteo.com/v1/forecast?latitude=${VENUE_WEATHER_LAT}&longitude=${VENUE_WEATHER_LNG}&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=Asia%2FTokyo&forecast_days=16`;
+
+
+  try{
+
+    const response =
+      await fetch(url);
+
+
+    if(!response.ok){
+      throw new Error();
+    }
+
+
+    const data =
+      await response.json();
+
+
+    localStorage.setItem(
+      "bmsgfes_weather_cache",
+      JSON.stringify({
+        savedAt:Date.now(),
+        data:data
+      })
+    );
+
+
+    renderWeather(data);
+
+  }
+
+  catch(error){
+
+    const cache =
+      localStorage.getItem(
+        "bmsgfes_weather_cache"
+      );
+
+
+    if(cache){
+
+      const parsed =
+        JSON.parse(cache);
+
+      renderWeather(
+        parsed.data
+      );
+
+    }
+
+    else{
+
+      renderWeather(null);
+
+    }
+
+  }
+
+}
+
+
+function renderWeather(data){
+
+  const grid =
+    document.getElementById(
+      "weatherDetailGrid"
+    );
+
+
+  grid.innerHTML = "";
+
+
+  EVENT_DAYS.forEach(
+    (date,index) => {
+
+      let dailyIndex = -1;
+
+
+      if(
+        data &&
+        data.daily &&
+        Array.isArray(data.daily.time)
+      ){
+
+        dailyIndex =
+          data.daily.time.indexOf(
+            date
+          );
+
+      }
+
+
+      let icon = "−";
+      let max = "−";
+      let min = "−";
+      let rain = "−";
+
+
+      if(dailyIndex !== -1){
+
+        icon =
+          weatherEmoji(
+            data.daily.weather_code[
+              dailyIndex
+            ]
+          );
+
+
+        max =
+          Math.round(
+            data.daily.temperature_2m_max[
+              dailyIndex
+            ]
+          );
+
+
+        min =
+          Math.round(
+            data.daily.temperature_2m_min[
+              dailyIndex
+            ]
+          );
+
+
+        rain =
+          data.daily.precipitation_probability_max[
+            dailyIndex
+          ];
+
+      }
+
+
+      const mini =
+        document.getElementById(
+          `weatherIcon${index}`
+        );
+
+
+      mini.textContent =
+        icon;
+
+
+      mini.classList.remove(
+        "weather-loading"
+      );
+
+
+      const dateLabel =
+        date.slice(5).replace("-","/");
+
+
+      const card =
+        document.createElement(
+          "div"
+        );
+
+
+      card.className =
+        "weather-card";
+
+
+      card.innerHTML = `
+
+        <div class="weather-card-date">
+          ${dateLabel}
+        </div>
+
+        <div class="weather-card-icon">
+          ${icon}
+        </div>
+
+        <div class="weather-card-temp">
+          HIGH ${max}℃<br>
+          LOW ${min}℃
+        </div>
+
+        <div class="weather-card-rain">
+          ☂ ${rain}%
+        </div>
+
+      `;
+
+
+      grid.appendChild(card);
+
+    }
+  );
+
+}
+
+
+/* =========================================================
+   PAGE NAV
+========================================================= */
+
+document
+.querySelectorAll(".nav-btn")
+.forEach(button => {
+
+  button.addEventListener(
+    "click",
+    () => {
+
+      switchPage(
+        button.dataset.page
+      );
+
+    }
+  );
+
+});
+
+
+function switchPage(page){
+
+  document
+  .querySelectorAll(".page")
+  .forEach(section =>
+    section.classList.remove(
+      "active"
+    )
+  );
+
+
+  document
+  .getElementById(
+    `page-${page}`
+  )
+  .classList.add(
+    "active"
+  );
+
+
+  document
+  .querySelectorAll(".nav-btn")
+  .forEach(button => {
+
+    button.classList.toggle(
+      "active",
+      button.dataset.page === page
+    );
+
+  });
+
+
+  window.scrollTo(
+    {
+      top:0,
+      behavior:"smooth"
+    }
+  );
+
+
+  if(page === "map"){
+
+    setTimeout(
+      () => map.invalidateSize(),
+      100
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   UTILS
+========================================================= */
+
+function escapeHtml(text){
+
+  const div =
+    document.createElement(
+      "div"
+    );
+
+  div.textContent =
+    text;
+
+  return div.innerHTML;
+
+}
+
+
+const toast =
+  document.getElementById(
+    "toast"
+  );
+
 
 let toastTimer;
 
 
 function showToast(message){
 
-  clearTimeout(toastTimer);
-
-  toast.textContent=message;
-
-  toast.classList.add("show");
+  clearTimeout(
+    toastTimer
+  );
 
 
-  toastTimer=setTimeout(()=>{
+  toast.textContent =
+    message;
 
-    toast.classList.remove("show");
 
-  },2300);
+  toast.classList.add(
+    "show"
+  );
+
+
+  toastTimer =
+    setTimeout(
+      () => {
+
+        toast.classList.remove(
+          "show"
+        );
+
+      },
+      2200
+    );
 
 }
 
 
 /* =========================================================
-   CLEANUP
+   START
 ========================================================= */
 
-window.addEventListener("pagehide",()=>{
+renderMySpots();
 
-  if(watchId!==null){
+renderChecklist();
 
-    navigator.geolocation.clearWatch(
-      watchId
-    );
+loadMemo();
 
-  }
+renderSubStage(0);
 
-});
+setupLinks();
+
+loadWeather();
 
 </script>
 
