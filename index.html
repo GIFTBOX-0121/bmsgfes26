@@ -6,6 +6,10 @@
 
 <title>BMSG FES 2026 | VENUE NAVIGATOR</title>
 <meta name="theme-color" content="#080808">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="BMSG FES 2026">
+<link rel="manifest" href="./manifest.webmanifest">
 
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 
@@ -1638,6 +1642,21 @@ const SUB_STAGE = {
   "2026-10-12":[]
 };
 
+/* =========================================================
+   PRIVATE DATA / OFFLINE SETTINGS
+========================================================= */
+
+const PRIVATE_API = "https://bmsgfes26.starsx0601.workers.dev";
+const CLOUD_SYNC_DELAY = 1800;
+const PRIVATE_LOCAL_KEY = "bmsgfes_private_session_v2";
+const PRIVATE_LAST_PAYLOAD_KEY = "bmsgfes_private_last_payload_v2";
+
+let privateSession = null;
+let cloudSyncTimer = null;
+let cloudSyncBusy = false;
+let cloudSyncQueued = false;
+
+
 
 /* =========================================================
    MAP
@@ -1917,46 +1936,6 @@ venues.forEach(v=>{
 });
 
 
-/* =========================================================
-   STATIONS
-========================================================= */
-
-function stationIcon(text,rotation){
-
-  return L.divIcon({
-    className:"",
-    html:`
-      <div class="station-direction">
-        <span
-          class="station-arrow"
-          style="transform:rotate(${rotation}deg)"
-        >↑</span>
-        ${text}
-      </div>
-    `,
-    iconSize:[140,48],
-    iconAnchor:[70,24]
-  });
-
-}
-
-L.marker(
-  [35.62478,139.77695],
-  {
-    icon:stationIcon("台場駅",0),
-    interactive:false
-  }
-).addTo(map);
-
-L.marker(
-  [35.62202,139.77335],
-  {
-    icon:stationIcon("東京テレポート駅",180),
-    interactive:false
-  }
-).addTo(map);
-
-
 /* FILTER */
 
 document.querySelectorAll(".filter").forEach(button=>{
@@ -2173,6 +2152,7 @@ saveSpotButton.addEventListener("click",()=>{
     "bmsgfes_myspots",
     JSON.stringify(mySpots)
   );
+  scheduleCloudSync();
 
   updateSaveButton();
   renderMySpots();
@@ -2324,6 +2304,7 @@ function saveChecklist(){
     "bmsgfes_checklist",
     JSON.stringify(checklist)
   );
+  scheduleCloudSync();
 
 }
 
@@ -2522,6 +2503,7 @@ function saveTrades(){
     "bmsgfes_trades",
     JSON.stringify(trades)
   );
+  scheduleCloudSync();
 
 }
 
@@ -2762,81 +2744,488 @@ function renderTrades(){
 
 
 /* =========================================================
-   PRIVATE KEYWORD
+   PRIVATE DATA — ENCRYPTED CLOUD SYNC
 ========================================================= */
 
-const keywordInput=
+const keywordInput =
   document.getElementById("keywordInput");
 
-const keywordState=
+const keywordState =
   document.getElementById("keywordState");
 
+const encoder = new TextEncoder();
+const decoder = new TextDecoder();
 
-function renderKeywordState(){
-
-  const exists=
-    !!localStorage.getItem(
-      "bmsgfes_private_keyword"
-    );
-
-  if(exists){
-
-    keywordState.innerHTML=
-      '<span class="keyword-ok">● キーワード登録済み</span><br>この端末でPRIVATE DATAを利用しています。';
-
-    document.getElementById("saveKeyword")
-      .textContent="キーワードを変更";
-
-  }else{
-
-    keywordState.textContent=
-      "キーワードはまだ登録されていません。";
-
-    document.getElementById("saveKeyword")
-      .textContent="キーワードを登録";
-
+function bytesToBase64(bytes){
+  let binary = "";
+  const chunk = 0x8000;
+  for(let i=0;i<bytes.length;i+=chunk){
+    binary += String.fromCharCode(...bytes.subarray(i, i+chunk));
   }
-
+  return btoa(binary);
 }
 
+function base64ToBytes(text){
+  const binary = atob(text);
+  const bytes = new Uint8Array(binary.length);
+  for(let i=0;i<binary.length;i++){
+    bytes[i] = binary.charCodeAt(i);
+  }
+  return bytes;
+}
 
-document.getElementById("saveKeyword")
-.addEventListener("click",()=>{
+async function sha256Hex(text){
+  const digest = await crypto.subtle.digest(
+    "SHA-256",
+    encoder.encode(text)
+  );
+  return [...new Uint8Array(digest)]
+    .map(b=>b.toString(16).padStart(2,"0"))
+    .join("");
+}
 
-  const keyword=
-    keywordInput.value.trim();
+async function deriveIdentity(keyword){
+  const normalized = keyword.normalize("NFKC");
+  const userId = await sha256Hex(
+    "BMSGFES26:user:v2:" + normalized
+  );
+  const authKey = await sha256Hex(
+    "BMSGFES26:auth:v2:" + normalized
+  );
+  return {userId, authKey};
+}
 
-  if(keyword.length<4){
+async function deriveAesKey(authKey, saltBytes){
+  const material = await crypto.subtle.importKey(
+    "raw",
+    encoder.encode(authKey),
+    "PBKDF2",
+    false,
+    ["deriveKey"]
+  );
 
-    showToast(
-      "4文字以上で登録してください"
+  return crypto.subtle.deriveKey(
+    {
+      name:"PBKDF2",
+      salt:saltBytes,
+      iterations:210000,
+      hash:"SHA-256"
+    },
+    material,
+    {
+      name:"AES-GCM",
+      length:256
+    },
+    false,
+    ["encrypt","decrypt"]
+  );
+}
+
+function getPrivatePayload(){
+  return {
+    version:2,
+    checklist,
+    trades,
+    mySpots,
+    savedAt:Date.now()
+  };
+}
+
+function applyPrivatePayload(data){
+  if(!data || typeof data!=="object") return;
+
+  if(Array.isArray(data.checklist)){
+    checklist = data.checklist;
+    localStorage.setItem(
+      "bmsgfes_checklist",
+      JSON.stringify(checklist)
     );
-
-    return;
-
   }
 
-  /*
-    現段階は端末保存のみ。
-    クラウド同期実装時は、
-    平文保存を廃止してWeb Cryptoへ変更する。
-  */
+  if(Array.isArray(data.trades)){
+    trades = data.trades;
+    localStorage.setItem(
+      "bmsgfes_trades",
+      JSON.stringify(trades)
+    );
+  }
 
+  if(Array.isArray(data.mySpots)){
+    mySpots = data.mySpots;
+    localStorage.setItem(
+      "bmsgfes_myspots",
+      JSON.stringify(mySpots)
+    );
+  }
+
+  renderChecklist();
+  renderTrades();
+  renderMySpots();
+}
+
+function savePrivateSession(session){
+  privateSession = session;
+
+  // キーワードそのものは保存しない。
+  // この端末で自動復号するための派生情報だけ保存。
   localStorage.setItem(
-    "bmsgfes_private_keyword",
-    keyword
+    PRIVATE_LOCAL_KEY,
+    JSON.stringify(session)
+  );
+}
+
+function clearPrivateSession(){
+  privateSession = null;
+  localStorage.removeItem(PRIVATE_LOCAL_KEY);
+  localStorage.removeItem(PRIVATE_LAST_PAYLOAD_KEY);
+}
+
+function restorePrivateSession(){
+  try{
+    const raw = localStorage.getItem(PRIVATE_LOCAL_KEY);
+    if(!raw) return;
+    const parsed = JSON.parse(raw);
+
+    if(
+      parsed &&
+      parsed.userId &&
+      parsed.authKey &&
+      parsed.salt
+    ){
+      privateSession = parsed;
+    }
+  }catch(error){
+    clearPrivateSession();
+  }
+}
+
+function renderKeywordState(message=""){
+  const button = document.getElementById("saveKeyword");
+
+  if(privateSession){
+    keywordState.innerHTML =
+      '<span class="keyword-ok">● PRIVATE DATA 接続済み</span><br>' +
+      (message || 'この端末では自動で開けます。変更内容は端末へ即保存し、通信可能時に暗号化同期します。');
+
+    button.textContent = "別のキーワードで接続";
+  }else{
+    keywordState.textContent =
+      message || "キーワードはまだ登録されていません。";
+
+    button.textContent = "キーワードを登録 / 復元";
+  }
+}
+
+async function fetchCloudRecord(userId){
+  const response = await fetch(
+    `${PRIVATE_API}/data/${encodeURIComponent(userId)}`,
+    {
+      method:"GET",
+      cache:"no-store"
+    }
   );
 
-  keywordInput.value="";
+  if(response.status===404){
+    return null;
+  }
 
-  renderKeywordState();
+  if(!response.ok){
+    throw new Error("load_failed");
+  }
 
-  showToast(
-    "キーワードを登録しました"
+  const result = await response.json();
+
+  if(!result.ok || !result.data){
+    throw new Error("load_failed");
+  }
+
+  return result.data;
+}
+
+async function decryptCloudRecord(record, authKey){
+  const salt = base64ToBytes(record.salt);
+  const iv = base64ToBytes(record.iv);
+  const encrypted = base64ToBytes(record.encrypted_data);
+  const key = await deriveAesKey(authKey, salt);
+
+  const plain = await crypto.subtle.decrypt(
+    {
+      name:"AES-GCM",
+      iv
+    },
+    key,
+    encrypted
   );
 
+  return JSON.parse(decoder.decode(plain));
+}
+
+async function encryptPayload(payload, authKey, saltBase64){
+  const salt = base64ToBytes(saltBase64);
+  const iv = crypto.getRandomValues(new Uint8Array(12));
+  const key = await deriveAesKey(authKey, salt);
+
+  const encrypted = await crypto.subtle.encrypt(
+    {
+      name:"AES-GCM",
+      iv
+    },
+    key,
+    encoder.encode(JSON.stringify(payload))
+  );
+
+  return {
+    encrypted_data:bytesToBase64(new Uint8Array(encrypted)),
+    salt:saltBase64,
+    iv:bytesToBase64(iv)
+  };
+}
+
+async function connectPrivateData(keyword){
+  const {userId, authKey} = await deriveIdentity(keyword);
+
+  let record = null;
+
+  try{
+    record = await fetchCloudRecord(userId);
+  }catch(error){
+    // 電波が悪い時、新規登録を勝手に進めない。
+    throw new Error("network");
+  }
+
+  if(record){
+    let restored;
+
+    try{
+      restored = await decryptCloudRecord(record, authKey);
+    }catch(error){
+      throw new Error("wrong_keyword");
+    }
+
+    savePrivateSession({
+      userId,
+      authKey,
+      salt:record.salt
+    });
+
+    applyPrivatePayload(restored);
+
+    localStorage.setItem(
+      PRIVATE_LAST_PAYLOAD_KEY,
+      JSON.stringify(getPrivatePayload())
+    );
+
+    renderKeywordState(
+      "クラウドのPRIVATE DATAをこの端末へ復元しました。"
+    );
+
+    return "restored";
+  }
+
+  const saltBytes =
+    crypto.getRandomValues(new Uint8Array(16));
+
+  const salt =
+    bytesToBase64(saltBytes);
+
+  savePrivateSession({
+    userId,
+    authKey,
+    salt
+  });
+
+  renderKeywordState(
+    "新しいPRIVATE DATAを作成しています…"
+  );
+
+  await syncPrivateData(true);
+
+  renderKeywordState(
+    "新しいPRIVATE DATAを作成しました。この端末では次回から自動で開けます。"
+  );
+
+  return "created";
+}
+
+function scheduleCloudSync(){
+  if(!privateSession) return;
+
+  clearTimeout(cloudSyncTimer);
+
+  cloudSyncTimer = setTimeout(()=>{
+    syncPrivateData(false);
+  }, CLOUD_SYNC_DELAY);
+}
+
+async function syncPrivateData(force=false){
+  if(!privateSession) return false;
+
+  if(!navigator.onLine){
+    cloudSyncQueued = true;
+    renderKeywordState(
+      "オフラインです。端末には保存済み。通信が戻ったら自動同期します。"
+    );
+    return false;
+  }
+
+  if(cloudSyncBusy){
+    cloudSyncQueued = true;
+    return false;
+  }
+
+  const payload = getPrivatePayload();
+  const comparable = JSON.stringify({
+    version:payload.version,
+    checklist:payload.checklist,
+    trades:payload.trades,
+    mySpots:payload.mySpots
+  });
+
+  const previous =
+    localStorage.getItem(PRIVATE_LAST_PAYLOAD_KEY);
+
+  if(!force && previous===comparable){
+    return true;
+  }
+
+  cloudSyncBusy = true;
+
+  try{
+    const encrypted =
+      await encryptPayload(
+        payload,
+        privateSession.authKey,
+        privateSession.salt
+      );
+
+    const response = await fetch(
+      `${PRIVATE_API}/data`,
+      {
+        method:"PUT",
+        headers:{
+          "Content-Type":"application/json",
+          "X-Auth-Key":privateSession.authKey
+        },
+        body:JSON.stringify({
+          user_id:privateSession.userId,
+          encrypted_data:encrypted.encrypted_data,
+          salt:encrypted.salt,
+          iv:encrypted.iv
+        })
+      }
+    );
+
+    if(!response.ok){
+      throw new Error("save_failed");
+    }
+
+    const result = await response.json();
+
+    if(!result.ok){
+      throw new Error("save_failed");
+    }
+
+    localStorage.setItem(
+      PRIVATE_LAST_PAYLOAD_KEY,
+      comparable
+    );
+
+    cloudSyncQueued = false;
+
+    renderKeywordState(
+      "同期済み。端末にも保存されています。"
+    );
+
+    return true;
+
+  }catch(error){
+    cloudSyncQueued = true;
+
+    renderKeywordState(
+      "端末には保存済み。クラウド同期は通信回復後に再試行します。"
+    );
+
+    return false;
+
+  }finally{
+    cloudSyncBusy = false;
+
+    if(cloudSyncQueued && navigator.onLine){
+      cloudSyncQueued = false;
+      clearTimeout(cloudSyncTimer);
+      cloudSyncTimer = setTimeout(
+        ()=>syncPrivateData(false),
+        2500
+      );
+    }
+  }
+}
+
+document.getElementById("saveKeyword")
+.addEventListener("click", async ()=>{
+
+  const keyword = keywordInput.value.trim();
+
+  if(keyword.length<8){
+    showToast("8文字以上のキーワードにしてください");
+    return;
+  }
+
+  const button =
+    document.getElementById("saveKeyword");
+
+  button.disabled = true;
+  button.textContent = "接続中…";
+
+  try{
+    const mode =
+      await connectPrivateData(keyword);
+
+    keywordInput.value = "";
+
+    showToast(
+      mode==="restored"
+        ? "PRIVATE DATAを復元しました"
+        : "PRIVATE DATAを作成しました"
+    );
+
+  }catch(error){
+
+    if(error.message==="wrong_keyword"){
+      showToast("キーワードが違うか、データを復号できません");
+    }else{
+      showToast("通信できません。電波のある場所で初回接続してください");
+    }
+
+    renderKeywordState();
+
+  }finally{
+    button.disabled = false;
+    renderKeywordState(
+      privateSession
+        ? keywordState.textContent.replace(/^●\s*/,"")
+        : ""
+    );
+  }
 });
 
+window.addEventListener("online",()=>{
+  showToast("通信が戻りました");
+  if(privateSession){
+    syncPrivateData(false);
+  }
+});
+
+window.addEventListener("offline",()=>{
+  if(privateSession){
+    renderKeywordState(
+      "オフラインです。端末保存で利用できます。通信復帰後に自動同期します。"
+    );
+  }
+});
+
+restorePrivateSession();
+renderKeywordState();
 
 /* =========================================================
    SUB STAGE
@@ -3243,6 +3632,14 @@ renderKeywordState();
 renderSubStage(0);
 setupLinks();
 loadWeather();
+
+/* PWA / OFFLINE */
+if("serviceWorker" in navigator){
+  window.addEventListener("load",()=>{
+    navigator.serviceWorker.register("./sw.js")
+      .catch(()=>{});
+  });
+}
 
 </script>
 
