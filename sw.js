@@ -1,10 +1,8 @@
-const CACHE_NAME = "bmsgfes26-v6";
+const CACHE_NAME = "bmsgfes26-v9";
 
 const APP_SHELL = [
   "./index.html",
   "./Map.JPG",
-  "./route-daiba.png",
-  "./route-teleport.png",
   "./manifest.webmanifest",
 
   "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css",
@@ -144,11 +142,7 @@ self.addEventListener(
           );
 
 
-        /*
-        -----------------------------------------
-        APP FILES
-        -----------------------------------------
-        */
+        /* APP FILES */
 
         for (
           const url of APP_SHELL
@@ -185,8 +179,8 @@ self.addEventListener(
           catch (error) {
 
             /*
-            1ファイル失敗しても
-            Service Worker全体は止めない
+              1ファイル取得できなくても
+              Service Worker全体は止めない
             */
 
           }
@@ -194,11 +188,7 @@ self.addEventListener(
         }
 
 
-        /*
-        -----------------------------------------
-        VENUE MAP TILES
-        -----------------------------------------
-        */
+        /* VENUE MAP TILES */
 
         const tiles =
           venueTileUrls();
@@ -235,7 +225,7 @@ self.addEventListener(
           catch (error) {
 
             /*
-            一部タイル取得失敗は無視
+              一部の地図タイル取得失敗は無視
             */
 
           }
@@ -248,7 +238,8 @@ self.addEventListener(
 
 
     /*
-    新しいSWをすぐ有効化
+      新しいService Workerを
+      すぐ待機解除
     */
 
     self.skipWaiting();
@@ -270,7 +261,7 @@ self.addEventListener(
       (async () => {
 
         /*
-        v5など古いキャッシュを削除
+          v8以前のキャッシュを削除
         */
 
         const keys =
@@ -295,8 +286,8 @@ self.addEventListener(
 
 
         /*
-        開いているページを
-        v6管理下へ
+          開いているページも
+          v9管理下へ
         */
 
         await self.clients.claim();
@@ -339,7 +330,7 @@ self.addEventListener(
     /* =====================================================
        PRIVATE DATA API / WEATHER
 
-       常にネットワーク側へ任せる
+       ここはService Workerでキャッシュしない
     ===================================================== */
 
     if (
@@ -360,19 +351,13 @@ self.addEventListener(
 
 
     /* =====================================================
-       PAGE NAVIGATION
-
-       ★ v6重要変更 ★
+       INDEX / PAGE
 
        オンライン
-       ↓
-       最新index.htmlを取得
+       → 必ず最新版を取得
 
        オフライン
-       ↓
-       保存済みindex.html
-
-       古いindex.htmlを先に表示しない
+       → 保存してある最新版を表示
     ===================================================== */
 
     if (
@@ -390,11 +375,7 @@ self.addEventListener(
 
 
           /*
-          -----------------------------------------
-          ONLINE
-
-          必ず最新版を先に取得
-          -----------------------------------------
+            ONLINE
           */
 
           try {
@@ -414,8 +395,8 @@ self.addEventListener(
             ) {
 
               /*
-              最新版を
-              オフライン用として保存
+                最新indexを
+                オフライン用にも保存
               */
 
               await cache.put(
@@ -433,18 +414,16 @@ self.addEventListener(
           catch (error) {
 
             /*
-            ネットワーク失敗
-            ↓
-            オフラインキャッシュへ
+              ネット接続失敗
+              ↓
+              オフラインキャッシュへ
             */
 
           }
 
 
           /*
-          -----------------------------------------
-          OFFLINE
-          -----------------------------------------
+            OFFLINE
           */
 
           const cached =
@@ -461,8 +440,8 @@ self.addEventListener(
 
 
           /*
-          初回アクセス前など
-          キャッシュも存在しない場合
+            一度もオンラインで
+            開いていない場合
           */
 
           return new Response(
@@ -606,7 +585,7 @@ self.addEventListener(
     /* =====================================================
        OPEN STREET MAP
 
-       会場周辺はキャッシュ優先
+       会場周辺は保存済み地図を優先
     ===================================================== */
 
     if (
@@ -626,7 +605,7 @@ self.addEventListener(
 
 
           /*
-          保存済み地図
+            保存済み地図
           */
 
           const cached =
@@ -643,8 +622,8 @@ self.addEventListener(
 
 
           /*
-          保存されていなければ
-          オンライン取得
+            保存されていなければ
+            オンライン取得
           */
 
           try {
@@ -694,14 +673,15 @@ self.addEventListener(
     /* =====================================================
        OTHER FILES
 
-       route-daiba.png
-       route-teleport.png
        Map.JPG
-       Leaflet
        manifest
+       Leafletなど
 
-       オンライン時：最新版
-       オフライン時：キャッシュ
+       オンライン
+       → 最新版
+
+       オフライン
+       → キャッシュ
     ===================================================== */
 
     event.respondWith(
@@ -715,9 +695,7 @@ self.addEventListener(
 
 
         /*
-        -----------------------------------------
-        ONLINE
-        -----------------------------------------
+          ONLINE
         */
 
         try {
@@ -754,9 +732,7 @@ self.addEventListener(
         catch (error) {
 
           /*
-          -----------------------------------------
-          OFFLINE
-          -----------------------------------------
+            OFFLINE
           */
 
           const cached =
