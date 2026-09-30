@@ -40,7 +40,8 @@ body {
     sans-serif;
 }
 
-button {
+button,
+input {
   font: inherit;
 }
 
@@ -52,14 +53,14 @@ button {
 
 
 /* =========================================================
-   MAP
+   REAL MAP
 ========================================================= */
 
 #map {
   position: absolute;
   inset: 0;
   z-index: 1;
-  background: #0a0a0a;
+  background: #d9d9d9;
 }
 
 .leaflet-control-zoom {
@@ -67,24 +68,28 @@ button {
 }
 
 .leaflet-control-attribution {
-  background: rgba(8,8,8,.76) !important;
-  color: #aaa !important;
+  background: rgba(8,8,8,.75) !important;
+  color: #ccc !important;
   font-size: 9px !important;
 }
 
 .leaflet-control-attribution a {
-  color: #eee !important;
+  color: #fff !important;
 }
 
 
-/* DARK / SILVER MAP */
+/*
+  完全モノクロを廃止。
+
+  元の地図の色を残しつつ、
+  少し落ち着かせる。
+*/
 
 .leaflet-tile-pane {
   filter:
-    grayscale(1)
-    invert(.91)
-    contrast(.82)
-    brightness(.68);
+    saturate(.78)
+    brightness(.93)
+    contrast(.96);
 }
 
 
@@ -101,17 +106,17 @@ button {
 
   z-index: 1000;
 
-  border: 1px solid rgba(255,255,255,.48);
+  border: 1px solid rgba(255,255,255,.55);
   border-radius: 19px;
 
   background:
     linear-gradient(
       125deg,
-      rgba(215,215,215,.32) 0%,
-      rgba(105,105,105,.32) 20%,
+      rgba(215,215,215,.38) 0%,
+      rgba(105,105,105,.42) 20%,
       rgba(30,30,30,.94) 48%,
-      rgba(80,80,80,.62) 75%,
-      rgba(190,190,190,.24) 100%
+      rgba(80,80,80,.72) 75%,
+      rgba(190,190,190,.32) 100%
     );
 
   backdrop-filter: blur(22px);
@@ -119,7 +124,7 @@ button {
 
   box-shadow:
     0 14px 45px rgba(0,0,0,.48),
-    inset 0 1px 0 rgba(255,255,255,.75),
+    inset 0 1px 0 rgba(255,255,255,.8),
     inset 0 -1px 0 rgba(255,255,255,.12);
 
   overflow: hidden;
@@ -198,12 +203,11 @@ button {
 .brand-sub {
   margin-top: 4px;
 
+  color: #ddd;
+
   font-size: 9px;
   font-weight: 600;
-
   letter-spacing: .34em;
-
-  color: #d0d0d0;
 }
 
 
@@ -270,7 +274,7 @@ button {
 
 
 /* =========================================================
-   FILTER
+   FILTER BAR
 ========================================================= */
 
 .filters-wrap {
@@ -304,7 +308,7 @@ button {
 .filter {
   flex: 0 0 auto;
 
-  border: 1px solid rgba(255,255,255,.38);
+  border: 1px solid rgba(255,255,255,.48);
   border-radius: 999px;
 
   padding: 8px 14px;
@@ -312,17 +316,17 @@ button {
   background:
     linear-gradient(
       145deg,
-      rgba(95,95,95,.88),
-      rgba(18,18,18,.92)
+      rgba(95,95,95,.94),
+      rgba(18,18,18,.94)
     );
 
-  color: #d0d0d0;
+  color: #ddd;
 
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
 
   box-shadow:
-    inset 0 1px 0 rgba(255,255,255,.23),
+    inset 0 1px 0 rgba(255,255,255,.25),
     0 5px 15px rgba(0,0,0,.28);
 
   font-size: 9px;
@@ -349,18 +353,8 @@ button {
 
 
 /* =========================================================
-   NEW VENUE MARKERS
+   MARKERS
 ========================================================= */
-
-/*
-  シルバー外枠
-       +
-  カテゴリーカラー
-       +
-  SVG
-       +
-  日本語ラベル
-*/
 
 .map-marker {
   position: relative;
@@ -374,9 +368,6 @@ button {
   transform: translateX(-50%);
 }
 
-
-/* PIN BODY */
-
 .marker-pin {
   position: relative;
 
@@ -389,28 +380,25 @@ button {
 
   border-radius: 50%;
 
-  border: 2px solid rgba(255,255,255,.92);
+  border: 2px solid rgba(255,255,255,.95);
 
   background:
     linear-gradient(
       145deg,
-      #fafafa 0%,
+      #fafafa,
       #969696 23%,
       #3c3c3c 50%,
       #d8d8d8 77%,
-      #707070 100%
+      #707070
     );
 
   box-shadow:
     0 7px 20px rgba(0,0,0,.7),
     0 0 0 2px rgba(0,0,0,.45),
-    inset 0 1px 1px rgba(255,255,255,1);
+    inset 0 1px 1px #fff;
 
   z-index: 2;
 }
-
-
-/* INNER COLOR */
 
 .marker-inner {
   width: 34px;
@@ -424,16 +412,13 @@ button {
 
   background: var(--marker-color);
 
-  border: 1px solid rgba(255,255,255,.6);
+  border: 1px solid rgba(255,255,255,.65);
 
   box-shadow:
     inset 0 1px 2px rgba(255,255,255,.35),
     inset 0 -4px 10px rgba(0,0,0,.25),
     0 0 10px var(--marker-glow);
 }
-
-
-/* SVG */
 
 .marker-inner svg {
   width: 19px;
@@ -446,13 +431,7 @@ button {
   stroke-linejoin: round;
 
   fill: none;
-
-  filter:
-    drop-shadow(0 1px 1px rgba(0,0,0,.5));
 }
-
-
-/* PIN POINT */
 
 .marker-pin::after {
   content: "";
@@ -474,17 +453,14 @@ button {
   z-index: -1;
 }
 
-
-/* LABEL */
-
 .marker-label {
   margin-top: 8px;
 
   padding: 4px 7px;
 
-  max-width: 125px;
+  max-width: 135px;
 
-  border: 1px solid rgba(255,255,255,.35);
+  border: 1px solid rgba(255,255,255,.48);
   border-radius: 6px;
 
   background: rgba(5,5,5,.88);
@@ -495,7 +471,6 @@ button {
     0 3px 10px rgba(0,0,0,.6);
 
   backdrop-filter: blur(7px);
-  -webkit-backdrop-filter: blur(7px);
 
   font-size: 9px;
   font-weight: 800;
@@ -505,65 +480,60 @@ button {
   white-space: nowrap;
 
   text-align: center;
-
-  text-shadow:
-    0 1px 2px #000;
 }
 
 
 /* =========================================================
-   CATEGORY COLORS
+   MARKER COLORS
 ========================================================= */
 
 .marker-stage {
-  --marker-color: #6c4cff;
-  --marker-glow: rgba(108,76,255,.75);
+  --marker-color: #684cff;
+  --marker-glow: rgba(104,76,255,.8);
 }
 
 .marker-food {
-  --marker-color: #ff7a20;
-  --marker-glow: rgba(255,122,32,.7);
+  --marker-color: #ff7418;
+  --marker-glow: rgba(255,116,24,.75);
 }
 
 .marker-goods {
   --marker-color: #00aeea;
-  --marker-glow: rgba(0,174,234,.7);
+  --marker-glow: rgba(0,174,234,.75);
 }
 
 .marker-wc {
   --marker-color: #1769ff;
-  --marker-glow: rgba(23,105,255,.7);
+  --marker-glow: rgba(23,105,255,.75);
 }
 
 .marker-photo {
   --marker-color: #e94bb7;
-  --marker-glow: rgba(233,75,183,.7);
+  --marker-glow: rgba(233,75,183,.75);
 }
 
 .marker-gate {
   --marker-color: #00a76f;
-  --marker-glow: rgba(0,167,111,.7);
+  --marker-glow: rgba(0,167,111,.75);
 }
 
 .marker-info {
   --marker-color: #d8a900;
-  --marker-glow: rgba(216,169,0,.7);
+  --marker-glow: rgba(216,169,0,.75);
 }
 
 .marker-bar {
   --marker-color: #e13b42;
-  --marker-glow: rgba(225,59,66,.7);
+  --marker-glow: rgba(225,59,66,.75);
 }
 
 .marker-station {
-  --marker-color: #5d6670;
-  --marker-glow: rgba(220,230,240,.5);
+  --marker-color: #58616b;
+  --marker-glow: rgba(220,230,240,.6);
 }
 
 
-/* =========================================================
-   BIG STAGE MARKER
-========================================================= */
+/* STAGE = BIG */
 
 .map-marker.stage-marker .marker-pin {
   width: 54px;
@@ -581,11 +551,86 @@ button {
 }
 
 .map-marker.stage-marker .marker-label {
-  font-size: 10px;
-
   padding: 5px 9px;
+  font-size: 10px;
+}
 
-  border-color: rgba(255,255,255,.55);
+
+/* =========================================================
+   MAP TOOL BUTTON
+========================================================= */
+
+.map-tools {
+  position: absolute;
+
+  right: 16px;
+
+  bottom:
+    calc(
+      100px +
+      env(safe-area-inset-bottom)
+    );
+
+  z-index: 1000;
+
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.tool-button {
+  width: 58px;
+  height: 58px;
+
+  border: 1px solid rgba(255,255,255,.88);
+  border-radius: 50%;
+
+  background:
+    radial-gradient(
+      circle at 30% 22%,
+      #fff 0%,
+      #d5d5d5 15%,
+      #858585 38%,
+      #3c3c3c 60%,
+      #101010 82%
+    );
+
+  color: #fff;
+
+  box-shadow:
+    0 12px 30px rgba(0,0,0,.55),
+    0 0 0 3px rgba(255,255,255,.09),
+    inset 0 2px 2px rgba(255,255,255,.8);
+
+  cursor: pointer;
+}
+
+.tool-button:active {
+  transform: scale(.94);
+}
+
+.layers-icon {
+  display: flex;
+  flex-direction: column;
+
+  align-items: center;
+  justify-content: center;
+
+  gap: 2px;
+}
+
+.layers-icon span {
+  display: block;
+
+  width: 22px;
+  height: 6px;
+
+  border: 1.5px solid #fff;
+
+  transform: skewX(-28deg);
+
+  box-shadow:
+    0 1px 2px #000;
 }
 
 
@@ -625,18 +670,13 @@ button {
   box-shadow:
     0 12px 30px rgba(0,0,0,.6),
     0 0 0 3px rgba(255,255,255,.09),
-    inset 0 2px 2px rgba(255,255,255,.8),
-    inset 0 -2px 5px rgba(0,0,0,.7);
+    inset 0 2px 2px rgba(255,255,255,.8);
 
   cursor: pointer;
 
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-.location-button:active {
-  transform: scale(.94);
 }
 
 .location-symbol {
@@ -647,9 +687,6 @@ button {
 
   border: 2px solid #fff;
   border-radius: 50%;
-
-  filter:
-    drop-shadow(0 1px 2px #000);
 }
 
 .location-symbol::before {
@@ -711,14 +748,14 @@ button {
       circle at 35% 30%,
       #fff,
       #d6d6d6 38%,
-      #727272 100%
+      #727272
     );
 
   border: 3px solid #fff;
 
   box-shadow:
     0 0 0 5px rgba(255,255,255,.18),
-    0 0 12px rgba(255,255,255,.9),
+    0 0 12px #fff,
     0 0 28px rgba(255,255,255,.65);
 }
 
@@ -731,10 +768,7 @@ button {
   border: 1px solid rgba(255,255,255,.58);
   border-radius: 50%;
 
-  animation:
-    locationPulse
-    2s
-    infinite;
+  animation: locationPulse 2s infinite;
 }
 
 @keyframes locationPulse {
@@ -753,7 +787,194 @@ button {
 
 
 /* =========================================================
-   SHEET
+   LAYER PANEL
+========================================================= */
+
+.layer-panel {
+  position: absolute;
+
+  right: 14px;
+
+  bottom:
+    calc(
+      172px +
+      env(safe-area-inset-bottom)
+    );
+
+  z-index: 1100;
+
+  width: 245px;
+
+  padding: 15px;
+
+  border: 1px solid rgba(255,255,255,.58);
+  border-radius: 18px;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(125,125,125,.96),
+      rgba(30,30,30,.97) 35%,
+      rgba(7,7,7,.98) 75%
+    );
+
+  backdrop-filter: blur(22px);
+  -webkit-backdrop-filter: blur(22px);
+
+  box-shadow:
+    0 16px 45px rgba(0,0,0,.55),
+    inset 0 1px 0 rgba(255,255,255,.6);
+
+  transform:
+    translateY(10px)
+    scale(.96);
+
+  opacity: 0;
+  pointer-events: none;
+
+  transition: .2s ease;
+}
+
+.layer-panel.show {
+  transform:
+    translateY(0)
+    scale(1);
+
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.layer-title {
+  color: #fff;
+
+  font-size: 10px;
+  font-weight: 900;
+
+  letter-spacing: .18em;
+}
+
+.layer-row {
+  display: flex;
+
+  align-items: center;
+  justify-content: space-between;
+
+  margin-top: 14px;
+}
+
+.layer-name {
+  font-size: 12px;
+  font-weight: 700;
+
+  color: #eee;
+}
+
+
+/* SWITCH */
+
+.switch {
+  position: relative;
+
+  width: 44px;
+  height: 25px;
+
+  border: 0;
+
+  border-radius: 99px;
+
+  background: #303030;
+
+  box-shadow:
+    inset 0 2px 5px rgba(0,0,0,.6),
+    0 0 0 1px rgba(255,255,255,.22);
+
+  cursor: pointer;
+}
+
+.switch::after {
+  content: "";
+
+  position: absolute;
+
+  width: 19px;
+  height: 19px;
+
+  top: 3px;
+  left: 3px;
+
+  border-radius: 50%;
+
+  background:
+    linear-gradient(
+      135deg,
+      #fff,
+      #aaa
+    );
+
+  box-shadow:
+    0 2px 5px rgba(0,0,0,.5);
+
+  transition: .2s ease;
+}
+
+.switch.active {
+  background:
+    linear-gradient(
+      90deg,
+      #777,
+      #d7d7d7
+    );
+}
+
+.switch.active::after {
+  left: 22px;
+}
+
+
+/* OPACITY */
+
+.opacity-area {
+  margin-top: 15px;
+
+  padding-top: 13px;
+
+  border-top: 1px solid rgba(255,255,255,.15);
+}
+
+.opacity-head {
+  display: flex;
+
+  align-items: center;
+  justify-content: space-between;
+
+  margin-bottom: 8px;
+}
+
+.opacity-label {
+  color: #aaa;
+
+  font-size: 9px;
+  font-weight: 700;
+
+  letter-spacing: .12em;
+}
+
+.opacity-value {
+  color: #fff;
+
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.opacity-slider {
+  width: 100%;
+
+  accent-color: #fff;
+}
+
+
+/* =========================================================
+   BOTTOM SHEET
 ========================================================= */
 
 .sheet-backdrop {
@@ -797,14 +1018,13 @@ button {
   background:
     linear-gradient(
       135deg,
-      rgba(110,110,110,.94),
+      rgba(110,110,110,.96),
       rgba(35,35,35,.98) 30%,
       rgba(8,8,8,.98) 65%,
       rgba(68,68,68,.97)
     );
 
   backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
 
   box-shadow:
     0 -12px 55px rgba(0,0,0,.6),
@@ -819,30 +1039,6 @@ button {
     transform
     .35s
     cubic-bezier(.22,.75,.25,1);
-
-  overflow: hidden;
-}
-
-.bottom-sheet::before {
-  content: "";
-
-  position: absolute;
-
-  top: 0;
-  left: 5%;
-  right: 5%;
-
-  height: 2px;
-
-  background:
-    linear-gradient(
-      90deg,
-      transparent,
-      #aaa,
-      #fff,
-      #aaa,
-      transparent
-    );
 }
 
 .bottom-sheet.show {
@@ -882,8 +1078,6 @@ button {
 
   font-size: 25px;
   font-weight: 850;
-
-  letter-spacing: .04em;
 }
 
 .sheet-line {
@@ -895,8 +1089,8 @@ button {
     linear-gradient(
       90deg,
       #fff,
-      #a3a3a3 35%,
-      rgba(255,255,255,.05)
+      #aaa 35%,
+      transparent
     );
 }
 
@@ -928,10 +1122,7 @@ button {
 
   font-size: 10px;
   font-weight: 800;
-
   letter-spacing: .18em;
-
-  cursor: pointer;
 }
 
 
@@ -950,63 +1141,48 @@ button {
   background:
     radial-gradient(
       circle at 50% 40%,
-      #2b2b2b,
-      #080808 60%
+      #303030,
+      #080808 65%
     );
 
   padding:
-    calc(150px + env(safe-area-inset-top))
-    14px
-    calc(20px + env(safe-area-inset-bottom));
+    calc(145px + env(safe-area-inset-top))
+    8px
+    calc(10px + env(safe-area-inset-bottom));
 }
 
 #officialMap.show {
   display: flex;
+}
+
+.official-map-container {
+  width: 100%;
+  height: 100%;
+
+  display: flex;
 
   align-items: center;
   justify-content: center;
+
+  overflow: auto;
+
+  -webkit-overflow-scrolling: touch;
 }
 
-.official-placeholder {
-  width: 100%;
-  max-width: 700px;
-
-  padding: 40px 20px;
-
-  border: 1px solid rgba(255,255,255,.48);
-  border-radius: 21px;
-
-  background:
-    linear-gradient(
-      135deg,
-      #787878,
-      #242424 35%,
-      #080808 70%,
-      #555
-    );
-
-  text-align: center;
-
-  box-shadow:
-    0 20px 50px rgba(0,0,0,.5),
-    inset 0 1px 0 rgba(255,255,255,.65);
-}
-
-.official-placeholder strong {
+.official-map-image {
   display: block;
 
-  margin-bottom: 9px;
+  width: 100%;
+  height: auto;
 
-  font-size: 15px;
+  max-width: 1100px;
 
-  letter-spacing: .15em;
-}
+  border: 1px solid rgba(255,255,255,.55);
+  border-radius: 15px;
 
-.official-placeholder span {
-  color: #bbb;
-
-  font-size: 11px;
-  line-height: 1.7;
+  box-shadow:
+    0 18px 50px rgba(0,0,0,.65),
+    0 0 0 1px rgba(255,255,255,.08);
 }
 
 
@@ -1078,7 +1254,7 @@ button {
   }
 
   .filters-wrap {
-    width: 700px;
+    width: 750px;
   }
 
   .bottom-sheet {
@@ -1100,23 +1276,20 @@ button {
 
 <div id="app">
 
+  <!-- REAL MAP -->
   <div id="map"></div>
 
 
   <!-- OFFICIAL MAP -->
-
   <div id="officialMap">
 
-    <div class="official-placeholder">
+    <div class="official-map-container">
 
-      <strong>
-        OFFICIAL VENUE MAP
-      </strong>
-
-      <span>
-        ここには後から公式会場MAP画像を入れます。<br>
-        PCで画像をGitHubに追加したら差し替え可能。
-      </span>
+      <img
+        src="./Map.JPG"
+        alt="BMSG FES 2026 OFFICIAL VENUE MAP"
+        class="official-map-image"
+      >
 
     </div>
 
@@ -1124,7 +1297,6 @@ button {
 
 
   <!-- HEADER -->
-
   <header class="header">
 
     <div class="brand">
@@ -1162,7 +1334,6 @@ button {
 
 
   <!-- FILTERS -->
-
   <div class="filters-wrap">
 
     <div class="filters">
@@ -1204,8 +1375,30 @@ button {
   </div>
 
 
-  <!-- CURRENT LOCATION -->
+  <!-- MAP TOOLS -->
+  <div
+    class="map-tools"
+    id="mapTools"
+  >
 
+    <button
+      class="tool-button"
+      id="layersButton"
+      aria-label="レイヤー"
+    >
+
+      <span class="layers-icon">
+        <span></span>
+        <span></span>
+        <span></span>
+      </span>
+
+    </button>
+
+  </div>
+
+
+  <!-- LOCATION -->
   <button
     class="location-button"
     id="locationButton"
@@ -1214,11 +1407,68 @@ button {
     <span class="location-symbol"></span>
   </button>
 
+
+  <!-- LAYER PANEL -->
+  <div
+    class="layer-panel"
+    id="layerPanel"
+  >
+
+    <div class="layer-title">
+      MAP LAYERS
+    </div>
+
+
+    <div class="layer-row">
+
+      <div class="layer-name">
+        VENUE OVERLAY
+      </div>
+
+      <button
+        class="switch"
+        id="overlaySwitch"
+        aria-label="会場マップを重ねる"
+      ></button>
+
+    </div>
+
+
+    <div class="opacity-area">
+
+      <div class="opacity-head">
+
+        <span class="opacity-label">
+          OPACITY
+        </span>
+
+        <span
+          class="opacity-value"
+          id="opacityValue"
+        >
+          55%
+        </span>
+
+      </div>
+
+
+      <input
+        class="opacity-slider"
+        id="opacitySlider"
+        type="range"
+        min="10"
+        max="90"
+        value="55"
+      >
+
+    </div>
+
+  </div>
+
 </div>
 
 
-<!-- SHEET BACKDROP -->
-
+<!-- BACKDROP -->
 <div
   class="sheet-backdrop"
   id="sheetBackdrop"
@@ -1226,7 +1476,6 @@ button {
 
 
 <!-- BOTTOM SHEET -->
-
 <div
   class="bottom-sheet"
   id="bottomSheet"
@@ -1273,13 +1522,44 @@ button {
 <script>
 
 /* =========================================================
-   MAP
+   ★★★ PCで後から調整する場所 ★★★
 ========================================================= */
 
 /*
-  現在は仮中心。
-  PCで本番位置へ合わせます。
+  REAL MAP上に重ねる
+  Map.JPG の四隅。
+
+  今は仮位置。
+
+  PCで送ってくれた重ね合わせ画像を参考に
+  ピッタリ合わせる。
+
+  SOUTH = 南
+  WEST  = 西
+  NORTH = 北
+  EAST  = 東
 */
+
+const OVERLAY_BOUNDS = [
+
+  /* SOUTH WEST */
+  [
+    35.6215,
+    139.7720
+  ],
+
+  /* NORTH EAST */
+  [
+    35.6282,
+    139.7800
+  ]
+
+];
+
+
+/* =========================================================
+   MAP
+========================================================= */
 
 const map = L.map(
   "map",
@@ -1305,13 +1585,34 @@ L.tileLayer(
 
 
 /* =========================================================
+   VENUE OVERLAY
+========================================================= */
+
+const venueOverlay =
+  L.imageOverlay(
+
+    "./Map.JPG",
+
+    OVERLAY_BOUNDS,
+
+    {
+      opacity: .55,
+
+      interactive: false,
+
+      zIndex: 300
+    }
+
+  );
+
+let overlayVisible = false;
+
+
+/* =========================================================
    SVG ICONS
 ========================================================= */
 
 const icons = {
-
-
-/* MICROPHONE / STAGE */
 
 stage: `
 <svg viewBox="0 0 24 24">
@@ -1321,9 +1622,6 @@ stage: `
   <path d="M9 21h6"></path>
 </svg>
 `,
-
-
-/* FOOD */
 
 food: `
 <svg viewBox="0 0 24 24">
@@ -1335,9 +1633,6 @@ food: `
 </svg>
 `,
 
-
-/* SHOPPING BAG */
-
 goods: `
 <svg viewBox="0 0 24 24">
   <path d="M5 8h14l-1 13H6L5 8z"></path>
@@ -1345,24 +1640,17 @@ goods: `
 </svg>
 `,
 
-
-/* WC */
-
 wc: `
 <svg viewBox="0 0 24 24">
   <circle cx="7" cy="5" r="2"></circle>
   <path d="M7 8v6"></path>
   <path d="M4 11h6"></path>
   <path d="M5 21l2-7 2 7"></path>
-
   <circle cx="17" cy="5" r="2"></circle>
   <path d="M17 8l-4 8h8l-4-8z"></path>
   <path d="M17 16v5"></path>
 </svg>
 `,
-
-
-/* CAMERA */
 
 photo: `
 <svg viewBox="0 0 24 24">
@@ -1370,9 +1658,6 @@ photo: `
   <circle cx="12" cy="13" r="4"></circle>
 </svg>
 `,
-
-
-/* GATE */
 
 gate: `
 <svg viewBox="0 0 24 24">
@@ -1382,9 +1667,6 @@ gate: `
 </svg>
 `,
 
-
-/* INFORMATION */
-
 info: `
 <svg viewBox="0 0 24 24">
   <circle cx="12" cy="12" r="9"></circle>
@@ -1393,9 +1675,6 @@ info: `
 </svg>
 `,
 
-
-/* BAR */
-
 bar: `
 <svg viewBox="0 0 24 24">
   <path d="M5 4h14l-7 8-7-8z"></path>
@@ -1403,9 +1682,6 @@ bar: `
   <path d="M8 20h8"></path>
 </svg>
 `,
-
-
-/* STATION */
 
 station: `
 <svg viewBox="0 0 24 24">
@@ -1422,29 +1698,21 @@ station: `
 
 
 /* =========================================================
-   VENUE DATA
+   VENUES
 ========================================================= */
 
 /*
-  ★★★★★★★★★★★★★★★★★★★★★★★
+  ★ 今は仮座標 ★
 
-  今は位置確認用の仮座標。
-
-  PCを開いたらここを
-  本物の位置へ変更する。
-
-  ★★★★★★★★★★★★★★★★★★★★★★★
+  PCで本番位置に変更。
 */
 
 const venues = [
 
   {
     id: 1,
-
     name: "MAIN STAGE",
-
     label: "MAIN STAGE",
-
     category: "stage",
 
     lat: 35.6260,
@@ -1454,14 +1722,10 @@ const venues = [
       "MAIN STAGE。正確な位置・詳細情報は後から設定します。"
   },
 
-
   {
     id: 2,
-
     name: "SUB STAGE",
-
     label: "SUB STAGE",
-
     category: "stage",
 
     lat: 35.6252,
@@ -1471,106 +1735,82 @@ const venues = [
       "SUB STAGE。正確な位置・詳細情報は後から設定します。"
   },
 
-
   {
     id: 3,
-
     name: "フードエリア",
-
     label: "フード",
-
     category: "food",
 
     lat: 35.6248,
     lng: 139.7749,
 
     description:
-      "キッチンカー・フードエリア。詳細は後から設定します。"
+      "キッチンカー・フードエリア。"
   },
-
 
   {
     id: 4,
-
     name: "グッズ",
-
     label: "グッズ",
-
     category: "goods",
 
     lat: 35.6256,
     lng: 139.7767,
 
     description:
-      "グッズ販売エリア。詳細は後から設定します。"
+      "グッズ販売エリア。"
   },
-
 
   {
     id: 5,
-
     name: "トイレ",
-
     label: "トイレ",
-
     category: "wc",
 
     lat: 35.6244,
     lng: 139.7758,
 
     description:
-      "トイレ。正確な位置は後から設定します。"
+      "トイレ。"
   },
-
 
   {
     id: 6,
-
     name: "フォトスポット",
-
     label: "フォト",
-
     category: "photo",
 
     lat: 35.6257,
     lng: 139.7739,
 
     description:
-      "フォトスポット。詳細は後から設定します。"
+      "フォトスポット。"
   },
-
 
   {
     id: 7,
-
     name: "GATE",
-
     label: "ゲート",
-
     category: "gate",
 
     lat: 35.6239,
     lng: 139.7748,
 
     description:
-      "入退場ゲート。正確なゲート名と位置は後から設定します。"
+      "入退場ゲート。"
   },
-
 
   {
     id: 8,
-
     name: "インフォメーション",
-
     label: "案内",
-
     category: "info",
 
     lat: 35.6249,
     lng: 139.7739,
 
     description:
-      "インフォメーション。詳細は後から設定します。"
+      "インフォメーション。"
   }
 
 ];
@@ -1585,54 +1825,52 @@ function createVenueIcon(venue) {
   const isStage =
     venue.category === "stage";
 
-
   const markerWidth =
-    isStage ? 150 : 115;
-
-
-  const html = `
-
-    <div
-      class="
-        map-marker
-        marker-${venue.category}
-        ${isStage ? "stage-marker" : ""}
-      "
-    >
-
-      <div class="marker-pin">
-
-        <div class="marker-inner">
-
-          ${icons[venue.category]}
-
-        </div>
-
-      </div>
-
-
-      <div class="marker-label">
-
-        ${venue.label}
-
-      </div>
-
-    </div>
-
-  `;
-
+    isStage ? 150 : 120;
 
   return L.divIcon({
 
     className: "",
 
-    html: html,
+    html: `
+
+      <div
+        class="
+          map-marker
+          marker-${venue.category}
+          ${isStage ? "stage-marker" : ""}
+        "
+      >
+
+        <div class="marker-pin">
+
+          <div class="marker-inner">
+
+            ${icons[venue.category]}
+
+          </div>
+
+        </div>
+
+        <div class="marker-label">
+          ${venue.label}
+        </div>
+
+      </div>
+
+    `,
 
     iconSize:
-      [markerWidth, 80],
+      [
+        markerWidth,
+        85
+      ],
 
     iconAnchor:
-      [0, isStage ? 55 : 45]
+      [
+        0,
+        isStage ? 55 : 45
+      ]
 
   });
 
@@ -1663,8 +1901,8 @@ venues.forEach(
               venue
             ),
 
-          keyboard:
-            true
+          zIndexOffset:
+            1000
         }
 
       ).addTo(map);
@@ -1683,11 +1921,122 @@ venues.forEach(
 
 
     venueMarkers.push({
-
       venue,
       marker
-
     });
+
+  }
+);
+
+
+/* =========================================================
+   LAYERS
+========================================================= */
+
+const layersButton =
+  document.getElementById(
+    "layersButton"
+  );
+
+const layerPanel =
+  document.getElementById(
+    "layerPanel"
+  );
+
+const overlaySwitch =
+  document.getElementById(
+    "overlaySwitch"
+  );
+
+const opacitySlider =
+  document.getElementById(
+    "opacitySlider"
+  );
+
+const opacityValue =
+  document.getElementById(
+    "opacityValue"
+  );
+
+
+layersButton.addEventListener(
+  "click",
+  () => {
+
+    layerPanel.classList.toggle(
+      "show"
+    );
+
+  }
+);
+
+
+overlaySwitch.addEventListener(
+  "click",
+  () => {
+
+    overlayVisible =
+      !overlayVisible;
+
+
+    if (
+      overlayVisible
+    ) {
+
+      venueOverlay.addTo(map);
+
+      overlaySwitch.classList.add(
+        "active"
+      );
+
+      showToast(
+        "会場MAPを重ねました"
+      );
+
+    }
+
+    else {
+
+      if (
+        map.hasLayer(
+          venueOverlay
+        )
+      ) {
+
+        map.removeLayer(
+          venueOverlay
+        );
+
+      }
+
+
+      overlaySwitch.classList.remove(
+        "active"
+      );
+
+    }
+
+  }
+);
+
+
+opacitySlider.addEventListener(
+  "input",
+  () => {
+
+    const value =
+      Number(
+        opacitySlider.value
+      );
+
+
+    opacityValue.textContent =
+      value + "%";
+
+
+    venueOverlay.setOpacity(
+      value / 100
+    );
 
   }
 );
@@ -1840,9 +2189,7 @@ filterButtons.forEach(
                 )
               ) {
 
-                marker.addTo(
-                  map
-                );
+                marker.addTo(map);
 
               }
 
@@ -1875,7 +2222,7 @@ filterButtons.forEach(
 
 
 /* =========================================================
-   MAP MODE
+   REAL / OFFICIAL MODE
 ========================================================= */
 
 const modeButtons =
@@ -1891,6 +2238,11 @@ const officialMap =
 const filtersWrap =
   document.querySelector(
     ".filters-wrap"
+  );
+
+const mapTools =
+  document.getElementById(
+    "mapTools"
   );
 
 const locationButton =
@@ -1931,11 +2283,19 @@ modeButtons.forEach(
             "show"
           );
 
+
           filtersWrap.style.display =
+            "none";
+
+          mapTools.style.display =
             "none";
 
           locationButton.style.display =
             "none";
+
+          layerPanel.classList.remove(
+            "show"
+          );
 
         }
 
@@ -1945,7 +2305,11 @@ modeButtons.forEach(
             "show"
           );
 
+
           filtersWrap.style.display =
+            "";
+
+          mapTools.style.display =
             "";
 
           locationButton.style.display =
@@ -1975,14 +2339,14 @@ modeButtons.forEach(
 ========================================================= */
 
 /*
-  現在地はこのブラウザ上だけ。
+  現在地：
 
-  サーバー送信なし
-  DB保存なし
-  KV保存なし
-  localStorage保存なし
-
-  ページを閉じれば追跡終了。
+  ・ブラウザ内のみ
+  ・サーバー送信なし
+  ・DB保存なし
+  ・KV保存なし
+  ・localStorage保存なし
+  ・ページ終了時にwatch終了
 */
 
 let locationMarker = null;
@@ -2015,10 +2379,6 @@ locationButton.addEventListener(
   "click",
   () => {
 
-    /*
-      取得済みなら現在地へ戻る
-    */
-
     if (
       locationMarker
     ) {
@@ -2030,8 +2390,7 @@ locationButton.addEventListener(
         18,
 
         {
-          duration:
-            .8
+          duration: .8
         }
 
       );
@@ -2131,10 +2490,6 @@ function locationSuccess(
   }
 
 
-  /*
-    GPS精度範囲
-  */
-
   if (
     !accuracyCircle
   ) {
@@ -2156,13 +2511,13 @@ function locationSuccess(
             1,
 
           opacity:
-            .35,
+            .55,
 
           fillColor:
             "#ffffff",
 
           fillOpacity:
-            .07
+            .10
 
         }
 
@@ -2184,8 +2539,19 @@ function locationSuccess(
 
 
   /*
-    最初だけ現在地へ移動
+    現在地を一番上へ
   */
+
+  if (
+    locationMarker
+  ) {
+
+    locationMarker.setZIndexOffset(
+      10000
+    );
+
+  }
+
 
   if (
     !hasCenteredLocation
@@ -2202,8 +2568,7 @@ function locationSuccess(
       18,
 
       {
-        duration:
-          1
+        duration: 1
       }
 
     );
