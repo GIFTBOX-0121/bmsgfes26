@@ -7,10 +7,7 @@
 <title>BMSG FES 2026 | VENUE NAVIGATOR</title>
 <meta name="theme-color" content="#090909">
 
-<link
-  rel="stylesheet"
-  href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-/>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 
 <style>
 *{
@@ -28,8 +25,11 @@ html,body{
   font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;
 }
 
-button{
+button,input{
   font:inherit;
+}
+
+button{
   cursor:pointer;
 }
 
@@ -65,8 +65,8 @@ button{
 
 .leaflet-tile-pane{
   filter:
-    saturate(.88)
-    brightness(.98)
+    saturate(.92)
+    brightness(.99)
     contrast(.96);
 }
 
@@ -77,9 +77,11 @@ button{
 
 .header{
   position:absolute;
+
   top:calc(10px + env(safe-area-inset-top));
   left:12px;
   right:12px;
+
   z-index:1000;
 
   overflow:hidden;
@@ -107,12 +109,24 @@ button{
 
 .header::before{
   content:"";
+
   position:absolute;
+
   left:6%;
   right:6%;
   top:0;
+
   height:1px;
-  background:linear-gradient(90deg,transparent,#fff,#999,#fff,transparent);
+
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      #fff,
+      #999,
+      #fff,
+      transparent
+    );
 }
 
 .brand{
@@ -127,19 +141,23 @@ button{
 
 .brand-sub{
   margin-top:3px;
+
   color:#ddd;
+
   font-size:8px;
   font-weight:700;
+
   letter-spacing:.30em;
 }
 
 
 /* =========================================================
-   MODE
+   MODE SWITCH
 ========================================================= */
 
 .mode-switch{
   display:flex;
+
   margin:0 9px 9px;
   padding:3px;
 
@@ -151,16 +169,19 @@ button{
 
 .mode-button{
   flex:1;
+
   padding:9px 5px;
 
   border:0;
   border-radius:8px;
 
   background:transparent;
+
   color:#aaa;
 
   font-size:9px;
   font-weight:900;
+
   letter-spacing:.12em;
 }
 
@@ -188,7 +209,9 @@ button{
 
 .filters-wrap{
   position:absolute;
+
   top:calc(130px + env(safe-area-inset-top));
+
   left:0;
   right:0;
 
@@ -254,10 +277,7 @@ button{
 
 
 /* =========================================================
-   MARKERS
-
-   ★ 前回から重要変更
-   Leafletのアイコン領域と見た目を一致させる
+   STANDARD MARKERS
 ========================================================= */
 
 .venue-marker{
@@ -267,15 +287,13 @@ button{
   top:0;
 
   width:140px;
-  height:70px;
+  height:72px;
 
   display:flex;
   flex-direction:column;
   align-items:center;
 
   pointer-events:auto;
-
-  cursor:pointer;
 }
 
 .marker-hit{
@@ -356,7 +374,7 @@ button{
 
   background:var(--marker-color);
 
-  border:1px solid rgba(255,255,255,.7);
+  border:1px solid rgba(255,255,255,.72);
 
   box-shadow:
     inset 0 1px 2px rgba(255,255,255,.4),
@@ -388,7 +406,7 @@ button{
   border:1px solid rgba(255,255,255,.48);
   border-radius:6px;
 
-  background:rgba(3,3,3,.88);
+  background:rgba(3,3,3,.90);
 
   color:#fff;
 
@@ -402,38 +420,51 @@ button{
 
   text-overflow:ellipsis;
   white-space:nowrap;
-
-  pointer-events:auto;
 }
 
 
 /* =========================================================
-   COLORS
+   MARKER COLORS
 ========================================================= */
-
-.marker-stage{
-  --marker-color:#704cff;
-  --marker-glow:rgba(112,76,255,.8);
-}
 
 .marker-gate{
   --marker-color:#00a875;
   --marker-glow:rgba(0,168,117,.8);
 }
 
+.marker-west{
+  --marker-color:#d99b00;
+  --marker-glow:rgba(217,155,0,.85);
+}
+
+.marker-east{
+  --marker-color:#8d56ff;
+  --marker-glow:rgba(141,86,255,.85);
+}
+
 .marker-food{
   --marker-color:#ff781e;
-  --marker-glow:rgba(255,120,30,.8);
+  --marker-glow:rgba(255,120,30,.85);
 }
 
 .marker-goods{
   --marker-color:#00aeea;
-  --marker-glow:rgba(0,174,234,.8);
+  --marker-glow:rgba(0,174,234,.85);
+}
+
+.marker-penlight{
+  --marker-color:#9d5cff;
+  --marker-glow:rgba(157,92,255,.9);
 }
 
 .marker-wc{
   --marker-color:#1769ff;
   --marker-glow:rgba(23,105,255,.8);
+}
+
+.marker-upgrade{
+  --marker-color:#ff3b88;
+  --marker-glow:rgba(255,59,136,.9);
 }
 
 .marker-photo{
@@ -446,83 +477,157 @@ button{
   --marker-glow:rgba(213,166,0,.8);
 }
 
-.marker-bar{
-  --marker-color:#e33e46;
-  --marker-glow:rgba(227,62,70,.8);
-}
-
 .marker-booth{
   --marker-color:#00a99d;
   --marker-glow:rgba(0,169,157,.8);
 }
 
-.marker-rest{
-  --marker-color:#76808b;
-  --marker-glow:rgba(180,190,200,.65);
+.marker-other{
+  --marker-color:#707984;
+  --marker-glow:rgba(180,190,200,.7);
 }
 
-
-/* STAGE */
-
-.stage-marker .marker-hit{
-  width:58px;
-  height:58px;
-}
-
-.stage-marker .marker-pin{
-  width:52px;
-  height:52px;
-}
-
-.stage-marker .marker-inner{
-  width:41px;
-  height:41px;
-}
-
-.stage-marker .marker-inner svg{
-  width:23px;
-  height:23px;
-}
-
-.stage-marker .marker-label{
-  font-size:10px;
+.marker-smoking{
+  --marker-color:#4d535a;
+  --marker-glow:rgba(200,210,220,.7);
 }
 
 
 /* =========================================================
-   EDIT SELECTED
+   STAGE - 常時固定表示
 ========================================================= */
 
-body.editing .marker-hit{
-  cursor:grab;
+.stage-fixed{
+  position:absolute;
+
+  left:0;
+  top:0;
+
+  width:164px;
+
+  transform:translate(-82px,-30px);
+
+  pointer-events:auto;
 }
 
-body.editing .marker-hit:active{
-  cursor:grabbing;
-}
+.stage-plate{
+  position:relative;
 
-body.editing .marker-pin{
+  min-width:164px;
+
+  padding:10px 15px;
+
+  overflow:hidden;
+
+  border:1px solid rgba(255,255,255,.92);
+  border-radius:11px;
+
+  background:
+    linear-gradient(
+      120deg,
+      #eeeeee 0%,
+      #858585 12%,
+      #151515 28%,
+      #050505 65%,
+      #686868 88%,
+      #d5d5d5 100%
+    );
+
   box-shadow:
-    0 0 0 3px rgba(255,255,255,.65),
-    0 0 20px rgba(255,255,255,.85),
+    0 7px 20px rgba(0,0,0,.7),
+    0 0 16px rgba(118,78,255,.55),
+    inset 0 1px 0 rgba(255,255,255,.75);
+}
+
+.stage-plate::before{
+  content:"";
+
+  position:absolute;
+
+  top:0;
+  left:10px;
+  right:10px;
+
+  height:1px;
+
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      #fff,
+      transparent
+    );
+}
+
+.stage-dot{
+  display:inline-block;
+
+  width:7px;
+  height:7px;
+
+  margin-right:7px;
+
+  border-radius:50%;
+
+  background:#8c61ff;
+
+  box-shadow:
+    0 0 9px #8c61ff;
+}
+
+.stage-name{
+  color:#fff;
+
+  font-size:11px;
+  font-weight:950;
+
+  letter-spacing:.08em;
+
+  white-space:nowrap;
+}
+
+.stage-sub{
+  margin-top:3px;
+
+  color:#bcbcbc;
+
+  font-size:7px;
+  font-weight:800;
+
+  letter-spacing:.15em;
+}
+
+
+/* =========================================================
+   SELECTED / EDITABLE
+========================================================= */
+
+body.editing .editable-marker .marker-pin{
+  box-shadow:
+    0 0 0 3px rgba(255,255,255,.70),
+    0 0 24px rgba(255,255,255,.9),
     0 6px 17px rgba(0,0,0,.65);
+}
+
+body.editing .editable-marker .marker-label::after{
+  content:"  ✥";
 }
 
 .venue-marker.selected .marker-pin{
   box-shadow:
     0 0 0 4px #fff,
-    0 0 0 8px rgba(255,255,255,.22),
-    0 0 28px rgba(255,255,255,1);
+    0 0 0 8px rgba(255,255,255,.20),
+    0 0 30px #fff;
 }
 
 .venue-marker.selected .marker-label{
-  background:#fff;
   color:#050505;
+  background:#fff;
 }
 
 
 /* =========================================================
-   CURRENT LOCATION
+   USER LOCATION
 ========================================================= */
 
 .user-location{
@@ -638,6 +743,154 @@ body.editing .marker-pin{
 
 
 /* =========================================================
+   OVERLAY BUTTON
+========================================================= */
+
+.overlay-button{
+  position:absolute;
+
+  top:calc(190px + env(safe-area-inset-top));
+  right:12px;
+
+  z-index:950;
+
+  padding:9px 12px;
+
+  border:1px solid rgba(255,255,255,.62);
+  border-radius:999px;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(150,150,150,.94),
+      rgba(15,15,15,.97)
+    );
+
+  color:#fff;
+
+  box-shadow:
+    0 7px 20px rgba(0,0,0,.4),
+    inset 0 1px 0 rgba(255,255,255,.55);
+
+  font-size:9px;
+  font-weight:900;
+
+  letter-spacing:.10em;
+}
+
+.overlay-button.active{
+  color:#050505;
+
+  background:
+    linear-gradient(
+      135deg,
+      #fff,
+      #aaa
+    );
+}
+
+
+/* =========================================================
+   FREE OVERLAY
+========================================================= */
+
+.free-overlay{
+  position:absolute;
+
+  z-index:600;
+
+  display:none;
+
+  left:50%;
+  top:52%;
+
+  width:min(86vw,720px);
+
+  transform:translate(-50%,-50%);
+
+  touch-action:none;
+
+  user-select:none;
+  -webkit-user-select:none;
+
+  cursor:move;
+}
+
+.free-overlay.show{
+  display:block;
+}
+
+.free-overlay img{
+  display:block;
+
+  width:100%;
+  height:auto;
+
+  pointer-events:none;
+
+  border:1px solid rgba(255,255,255,.75);
+  border-radius:12px;
+
+  box-shadow:
+    0 12px 35px rgba(0,0,0,.55);
+}
+
+.overlay-panel{
+  position:absolute;
+
+  top:calc(232px + env(safe-area-inset-top));
+  right:12px;
+
+  z-index:960;
+
+  display:none;
+
+  width:185px;
+
+  padding:10px;
+
+  border:1px solid rgba(255,255,255,.5);
+  border-radius:13px;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(115,115,115,.95),
+      rgba(10,10,10,.96)
+    );
+
+  backdrop-filter:blur(15px);
+
+  box-shadow:
+    0 10px 30px rgba(0,0,0,.45);
+}
+
+.overlay-panel.show{
+  display:block;
+}
+
+.overlay-title{
+  font-size:8px;
+  font-weight:900;
+  letter-spacing:.12em;
+}
+
+.overlay-opacity{
+  width:100%;
+  margin-top:8px;
+}
+
+.overlay-hint{
+  margin-top:4px;
+
+  color:#aaa;
+
+  font-size:7px;
+  line-height:1.4;
+}
+
+
+/* =========================================================
    OFFICIAL MAP
 ========================================================= */
 
@@ -696,7 +949,7 @@ body.editing .marker-pin{
 
 
 /* =========================================================
-   EDIT MODE BUTTON
+   EDIT
 ========================================================= */
 
 .edit-button{
@@ -746,11 +999,6 @@ body.editing .marker-pin{
       #aaa
     );
 }
-
-
-/* =========================================================
-   EDIT PANEL
-========================================================= */
 
 .edit-panel{
   position:absolute;
@@ -804,7 +1052,7 @@ body.editing .marker-pin{
   color:#ccc;
 
   font-size:10px;
-  line-height:1.5;
+  line-height:1.55;
 }
 
 .edit-selected{
@@ -818,15 +1066,6 @@ body.editing .marker-pin{
   background:rgba(0,0,0,.3);
 
   font-size:10px;
-  line-height:1.5;
-}
-
-.edit-help{
-  margin-top:8px;
-
-  color:#aaa;
-
-  font-size:9px;
   line-height:1.5;
 }
 
@@ -854,7 +1093,7 @@ body.editing .marker-pin{
 
 
 /* =========================================================
-   DETAIL
+   DETAIL SHEET
 ========================================================= */
 
 .sheet-backdrop{
@@ -913,7 +1152,7 @@ body.editing .marker-pin{
 
   transform:
     translateY(
-      calc(100% + 60px)
+      calc(100% + 80px)
     );
 
   transition:
@@ -955,7 +1194,7 @@ body.editing .marker-pin{
 }
 
 .sheet-title{
-  font-size:23px;
+  font-size:22px;
   font-weight:900;
 }
 
@@ -979,6 +1218,51 @@ body.editing .marker-pin{
   font-size:13px;
 
   line-height:1.65;
+}
+
+.sheet-arrow-wrap{
+  display:none;
+
+  margin:10px 0 5px;
+
+  text-align:center;
+}
+
+.sheet-arrow-wrap.show{
+  display:block;
+}
+
+.sheet-arrow{
+  display:inline-flex;
+
+  width:76px;
+  height:76px;
+
+  align-items:center;
+  justify-content:center;
+
+  color:#fff;
+
+  font-size:58px;
+  font-weight:300;
+
+  line-height:1;
+
+  text-shadow:
+    0 0 12px rgba(255,255,255,.8);
+
+  transition:transform .2s;
+}
+
+.sheet-arrow-note{
+  margin-top:2px;
+
+  color:#aaa;
+
+  font-size:9px;
+  font-weight:800;
+
+  letter-spacing:.10em;
 }
 
 .sheet-close{
@@ -1066,11 +1350,11 @@ body.editing .marker-pin{
   }
 
   .filters-wrap{
-    width:850px;
+    width:1000px;
   }
 
   .bottom-sheet{
-    width:390px;
+    width:410px;
 
     left:20px;
     right:auto;
@@ -1094,7 +1378,25 @@ body.editing .marker-pin{
   <div id="map"></div>
 
 
-  <!-- OFFICIAL MAP -->
+  <!-- =====================================================
+       FREE OFFICIAL MAP OVERLAY
+  ====================================================== -->
+
+  <div
+    class="free-overlay"
+    id="freeOverlay"
+  >
+    <img
+      src="./Map.JPG"
+      id="overlayImage"
+      alt=""
+    >
+  </div>
+
+
+  <!-- =====================================================
+       OFFICIAL MAP
+  ====================================================== -->
 
   <div id="officialMap">
 
@@ -1110,7 +1412,9 @@ body.editing .marker-pin{
   </div>
 
 
-  <!-- HEADER -->
+  <!-- =====================================================
+       HEADER
+  ====================================================== -->
 
   <header class="header">
 
@@ -1148,46 +1452,89 @@ body.editing .marker-pin{
   </header>
 
 
-  <!-- FILTER -->
+  <!-- =====================================================
+       FILTER
+  ====================================================== -->
 
   <div class="filters-wrap">
 
     <div class="filters">
 
-      <button class="filter active" data-filter="all">
+      <button
+        class="filter active"
+        data-filter="all"
+      >
         ALL
       </button>
 
-      <button class="filter" data-filter="stage">
-        STAGE
-      </button>
-
-      <button class="filter" data-filter="gate">
-        GATE
-      </button>
-
-      <button class="filter" data-filter="food">
-        FOOD
-      </button>
-
-      <button class="filter" data-filter="goods">
-        GOODS
-      </button>
-
-      <button class="filter" data-filter="wc">
-        WC
-      </button>
-
-      <button class="filter" data-filter="photo">
-        PHOTO
-      </button>
-
-      <button class="filter" data-filter="info">
+      <button
+        class="filter"
+        data-filter="info"
+      >
         INFO
       </button>
 
-      <button class="filter" data-filter="booth">
+      <button
+        class="filter"
+        data-filter="gate"
+      >
+        GATE
+      </button>
+
+      <button
+        class="filter"
+        data-filter="food"
+      >
+        FOOD
+      </button>
+
+      <button
+        class="filter"
+        data-filter="goods"
+      >
+        GOODS
+      </button>
+
+      <button
+        class="filter"
+        data-filter="penlight"
+      >
+        PENLIGHT
+      </button>
+
+      <button
+        class="filter"
+        data-filter="wc"
+      >
+        WC
+      </button>
+
+      <button
+        class="filter"
+        data-filter="photo"
+      >
+        PHOTO
+      </button>
+
+      <button
+        class="filter"
+        data-filter="booth"
+      >
         BOOTH
+      </button>
+
+      <button
+        class="filter"
+        data-filter="smoking"
+      >
+        SMOKING
+      </button>
+
+      <button
+        class="filter"
+        data-filter="other"
+      >
+        OTHER
       </button>
 
     </div>
@@ -1195,13 +1542,52 @@ body.editing .marker-pin{
   </div>
 
 
-  <!-- EDIT -->
+  <!-- =====================================================
+       OVERLAY
+  ====================================================== -->
+
+  <button
+    class="overlay-button"
+    id="overlayButton"
+  >
+    OVERLAY
+  </button>
+
+
+  <div
+    class="overlay-panel"
+    id="overlayPanel"
+  >
+
+    <div class="overlay-title">
+      OFFICIAL MAP OPACITY
+    </div>
+
+    <input
+      class="overlay-opacity"
+      id="overlayOpacity"
+      type="range"
+      min="10"
+      max="90"
+      value="48"
+    >
+
+    <div class="overlay-hint">
+      マップをドラッグして自由に位置調整できます
+    </div>
+
+  </div>
+
+
+  <!-- =====================================================
+       EDIT
+  ====================================================== -->
 
   <button
     class="edit-button"
     id="editButton"
   >
-    EDIT MODE
+    EDIT NEW PINS
   </button>
 
 
@@ -1211,36 +1597,34 @@ body.editing .marker-pin{
   >
 
     <div class="edit-title">
-      📍 PIN POSITION EDITOR
+      📍 NEW PIN EDITOR
     </div>
 
     <div class="edit-text">
-      全ピンをドラッグできます。
+      今回追加した4地点だけ編集できます。<br>
+      既存の確定済みピンは動きません。
     </div>
 
     <div
       class="edit-selected"
       id="editSelected"
     >
-      ピンを選択してください
-    </div>
-
-    <div class="edit-help">
-      PC：ピンをドラッグ<br>
-      スマホ：ピンをタップ → 地図上の移動先をタップでもOK
+      新規ピンを選択してください
     </div>
 
     <button
       class="copy-button"
       id="copyButton"
     >
-      配置データをコピー
+      追加分の配置データをコピー
     </button>
 
   </div>
 
 
-  <!-- LOCATION -->
+  <!-- =====================================================
+       CURRENT LOCATION
+  ====================================================== -->
 
   <button
     class="location-button"
@@ -1253,7 +1637,9 @@ body.editing .marker-pin{
 </div>
 
 
-<!-- DETAIL -->
+<!-- =======================================================
+     DETAIL SHEET
+======================================================== -->
 
 <div
   class="sheet-backdrop"
@@ -1285,6 +1671,26 @@ body.editing .marker-pin{
     id="sheetDescription"
   ></div>
 
+
+  <div
+    class="sheet-arrow-wrap"
+    id="sheetArrowWrap"
+  >
+
+    <div
+      class="sheet-arrow"
+      id="sheetArrow"
+    >
+      ↑
+    </div>
+
+    <div class="sheet-arrow-note">
+      GATE DIRECTION
+    </div>
+
+  </div>
+
+
   <button
     class="sheet-close"
     id="sheetClose"
@@ -1301,9 +1707,7 @@ body.editing .marker-pin{
 ></div>
 
 
-<script
-  src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 <script>
 
@@ -1319,10 +1723,10 @@ const map = L.map(
   }
 ).setView(
   [
-    35.6249,
-    139.7758
+    35.62345,
+    139.77505
   ],
-  16
+  17
 );
 
 
@@ -1331,35 +1735,23 @@ L.tileLayer(
   "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
 
   {
-
     maxZoom:20,
 
     attribution:
       "&copy; OpenStreetMap contributors"
-
   }
 
 ).addTo(map);
 
 
 /* =========================================================
-   ICON SVG
+   SVG ICONS
 ========================================================= */
 
 const icons = {
 
 
-stage: `
-<svg viewBox="0 0 24 24">
-  <rect x="9" y="3" width="6" height="11" rx="3"></rect>
-  <path d="M6 11a6 6 0 0 0 12 0"></path>
-  <path d="M12 17v4"></path>
-  <path d="M9 21h6"></path>
-</svg>
-`,
-
-
-gate: `
+gate:`
 <svg viewBox="0 0 24 24">
   <path d="M4 21V5h16v16"></path>
   <path d="M8 21V9h8v12"></path>
@@ -1368,7 +1760,7 @@ gate: `
 `,
 
 
-food: `
+food:`
 <svg viewBox="0 0 24 24">
   <path d="M7 3v8"></path>
   <path d="M4 3v5a3 3 0 0 0 6 0V3"></path>
@@ -1379,45 +1771,16 @@ food: `
 `,
 
 
-goods: `
+drink:`
 <svg viewBox="0 0 24 24">
-  <path d="M5 8h14l-1 13H6L5 8z"></path>
-  <path d="M9 8V6a3 3 0 0 1 6 0v2"></path>
+  <path d="M6 3h12l-1.5 18h-9L6 3z"></path>
+  <path d="M8 8h8"></path>
+  <path d="M15 3l2-2"></path>
 </svg>
 `,
 
 
-wc: `
-<svg viewBox="0 0 24 24">
-  <circle cx="7" cy="5" r="2"></circle>
-  <path d="M7 8v6"></path>
-  <path d="M4 11h6"></path>
-  <path d="M5 21l2-7 2 7"></path>
-  <circle cx="17" cy="5" r="2"></circle>
-  <path d="M17 8l-4 8h8l-4-8z"></path>
-  <path d="M17 16v5"></path>
-</svg>
-`,
-
-
-photo: `
-<svg viewBox="0 0 24 24">
-  <path d="M4 7h4l2-3h4l2 3h4v13H4V7z"></path>
-  <circle cx="12" cy="13" r="4"></circle>
-</svg>
-`,
-
-
-info: `
-<svg viewBox="0 0 24 24">
-  <circle cx="12" cy="12" r="9"></circle>
-  <path d="M12 11v6"></path>
-  <path d="M12 7h.01"></path>
-</svg>
-`,
-
-
-bar: `
+bar:`
 <svg viewBox="0 0 24 24">
   <path d="M5 4h14l-7 8-7-8z"></path>
   <path d="M12 12v7"></path>
@@ -1426,7 +1789,55 @@ bar: `
 `,
 
 
-booth: `
+goods:`
+<svg viewBox="0 0 24 24">
+  <path d="M5 8h14l-1 13H6L5 8z"></path>
+  <path d="M9 8V6a3 3 0 0 1 6 0v2"></path>
+</svg>
+`,
+
+
+penlight:`
+<svg viewBox="0 0 24 24">
+  <path d="M9 3h6v10H9z"></path>
+  <path d="M10 13h4v8h-4z"></path>
+  <path d="M8 3h8"></path>
+</svg>
+`,
+
+
+wc:`
+<svg viewBox="0 0 24 24">
+  <circle cx="7" cy="5" r="2"></circle>
+  <path d="M7 8v6"></path>
+  <path d="M4 11h6"></path>
+  <path d="M5 21l2-7 2 7"></path>
+
+  <circle cx="17" cy="5" r="2"></circle>
+  <path d="M17 8l-4 8h8l-4-8z"></path>
+  <path d="M17 16v5"></path>
+</svg>
+`,
+
+
+photo:`
+<svg viewBox="0 0 24 24">
+  <path d="M4 7h4l2-3h4l2 3h4v13H4V7z"></path>
+  <circle cx="12" cy="13" r="4"></circle>
+</svg>
+`,
+
+
+info:`
+<svg viewBox="0 0 24 24">
+  <circle cx="12" cy="12" r="9"></circle>
+  <path d="M12 11v6"></path>
+  <path d="M12 7h.01"></path>
+</svg>
+`,
+
+
+booth:`
 <svg viewBox="0 0 24 24">
   <path d="M4 10h16"></path>
   <path d="M5 10l1-6h12l1 6"></path>
@@ -1437,12 +1848,22 @@ booth: `
 `,
 
 
-rest: `
+other:`
 <svg viewBox="0 0 24 24">
-  <path d="M4 12h16"></path>
-  <path d="M6 12v7"></path>
-  <path d="M18 12v7"></path>
-  <path d="M7 8h10"></path>
+  <circle cx="12" cy="12" r="2"></circle>
+  <circle cx="5" cy="12" r="2"></circle>
+  <circle cx="19" cy="12" r="2"></circle>
+</svg>
+`,
+
+
+smoking:`
+<svg viewBox="0 0 24 24">
+  <path d="M3 15h13v4H3z"></path>
+  <path d="M18 15v4"></path>
+  <path d="M21 15v4"></path>
+  <path d="M14 11c0-2 3-2 3-4"></path>
+  <path d="M17 11c0-2 3-2 3-4"></path>
 </svg>
 `
 
@@ -1450,321 +1871,724 @@ rest: `
 
 
 /* =========================================================
-   VENUES
+   VENUE DATA
+
+   editable:true
+   = 今回追加したピンだけ
 ========================================================= */
 
 const venues = [
 
-{
-  id:"main",
-  name:"MAIN STAGE",
-  label:"MAIN STAGE",
-  category:"stage",
-  lat:35.62380,
-  lng:139.77755,
-  description:"第二臨時駐車場側 MAIN STAGE"
-},
 
-{
-  id:"sub",
-  name:"SUB STAGE",
-  label:"SUB STAGE",
-  category:"stage",
-  lat:35.62510,
-  lng:139.77355,
-  description:"臨時駐車場側 SUB STAGE"
-},
+/* -------------------------
+   GATE
+------------------------- */
 
 {
   id:"west",
   name:"WEST GATE",
   label:"WEST GATE",
   category:"gate",
-  lat:35.62555,
-  lng:139.77460,
-  description:"WEST GATE"
+  style:"west",
+
+  lat:35.6240456,
+  lng:139.77429,
+
+  description:
+    "一般指定・注釈付き指定",
+
+  editable:false
 },
+
 
 {
   id:"east",
   name:"EAST GATE",
   label:"EAST GATE",
   category:"gate",
-  lat:35.62485,
-  lng:139.77630,
-  description:"EAST GATE"
+  style:"east",
+
+  lat:35.6238603,
+  lng:139.775506,
+
+  description:
+    "SS・S指定",
+
+  editable:false
 },
+
 
 {
   id:"a",
   name:"A-GATE",
   label:"A-GATE",
   category:"gate",
-  lat:35.62415,
-  lng:139.77720,
-  description:"A-GATE"
+  style:"gate",
+
+  lat:35.6239875,
+  lng:139.7764993,
+
+  description:
+    "A-GATE",
+
+  arrow:0,
+
+  editable:false
 },
+
 
 {
   id:"b",
   name:"B-GATE",
   label:"B-GATE",
   category:"gate",
-  lat:35.62365,
-  lng:139.77580,
-  description:"B-GATE"
+  style:"gate",
+
+  lat:35.6223569,
+  lng:139.7761837,
+
+  description:
+    "B-GATE",
+
+  arrow:180,
+
+  editable:false
 },
+
 
 {
   id:"c",
   name:"C-GATE",
   label:"C-GATE",
   category:"gate",
-  lat:35.62435,
-  lng:139.77420,
-  description:"C-GATE"
+  style:"gate",
+
+  lat:35.6222686,
+  lng:139.7753053,
+
+  description:
+    "C-GATE",
+
+  arrow:180,
+
+  editable:false
 },
+
+
+/* -------------------------
+   INFO
+------------------------- */
 
 {
   id:"info",
   name:"インフォメーション",
   label:"INFO",
   category:"info",
-  lat:35.62540,
-  lng:139.77565,
-  description:"インフォメーション"
+  style:"info",
+
+  lat:35.6245086,
+  lng:139.7752889,
+
+  description:
+    "インフォメーション",
+
+  editable:false
 },
+
+
+/* -------------------------
+   GOODS
+------------------------- */
 
 {
   id:"fc",
-  name:"ファンクラブ＆CD販売",
+  name:"ファンクラブブース・CD販売ブース",
   label:"FC・CD",
   category:"goods",
-  lat:35.62625,
-  lng:139.77365,
-  description:"ファンクラブ＆CD販売ブース"
+  style:"goods",
+
+  lat:35.6237055,
+  lng:139.7726431,
+
+  description:
+    "ファンクラブブース・CD販売ブース",
+
+  editable:false
 },
+
 
 {
   id:"capsule",
   name:"MEGA CAPSULE",
-  label:"CAPSULE",
+  label:"MEGA CAPSULE",
   category:"goods",
-  lat:35.62615,
-  lng:139.77415,
-  description:"MEGA CAPSULE"
+  style:"goods",
+
+  lat:35.6239039,
+  lng:139.7728989,
+
+  description:
+    "MEGA CAPSULE",
+
+  editable:false
 },
+
 
 {
   id:"goods",
   name:"グッズ",
   label:"GOODS",
   category:"goods",
-  lat:35.62605,
-  lng:139.77470,
-  description:"オフィシャルグッズ"
+  style:"goods",
+
+  lat:35.6241717,
+  lng:139.7732538,
+
+  description:
+    "オフィシャルグッズ",
+
+  editable:false
 },
+
+
+/* -------------------------
+   PENLIGHT
+------------------------- */
 
 {
   id:"penlight",
-  name:"ペンライト",
+  name:"ペンライトブース①",
   label:"PENLIGHT",
-  category:"goods",
-  lat:35.62590,
-  lng:139.77505,
-  description:"ペンライトブース"
+  category:"penlight",
+  style:"penlight",
+
+  lat:35.6241597,
+  lng:139.7735247,
+
+  description:
+    "ペンライトブース",
+
+  editable:false
 },
+
+
+/*
+  ★ NEW
+  とりあえず既存ペンライト付近へ配置。
+  EDIT MODEでこのピンだけ動かせる。
+*/
+
+{
+  id:"penlight2",
+  name:"ペンライトブース②",
+  label:"PENLIGHT",
+  category:"penlight",
+  style:"penlight",
+
+  lat:35.62410,
+  lng:139.77370,
+
+  description:
+    "ペンライトブース",
+
+  editable:true
+},
+
+
+/* -------------------------
+   FOOD
+------------------------- */
 
 {
   id:"food",
   name:"キッチンカー",
   label:"FOOD",
   category:"food",
-  lat:35.62585,
-  lng:139.77340,
-  description:"キッチンカー"
+  style:"food",
+
+  lat:35.6233886,
+  lng:139.7727889,
+
+  description:
+    "キッチンカー",
+
+  editable:false
 },
+
 
 {
   id:"bar1",
   name:"オフィシャルバー①",
-  label:"BAR",
-  category:"bar",
-  lat:35.62540,
-  lng:139.77335,
-  description:"オフィシャルバー"
+  label:"OFFICIAL BAR",
+  category:"food",
+  style:"food",
+
+  iconType:"bar",
+
+  lat:35.6230078,
+  lng:139.7730473,
+
+  description:
+    "オフィシャルバー",
+
+  editable:false
 },
+
 
 {
   id:"bar2",
   name:"オフィシャルバー②",
-  label:"BAR",
-  category:"bar",
-  lat:35.62415,
-  lng:139.77800,
-  description:"オフィシャルバー"
+  label:"OFFICIAL BAR",
+  category:"food",
+  style:"food",
+
+  iconType:"bar",
+
+  lat:35.6241601,
+  lng:139.7774193,
+
+  description:
+    "オフィシャルバー",
+
+  editable:false
 },
+
+
+/*
+  ★ NEW BAR
+*/
+
+{
+  id:"bar3",
+  name:"オフィシャルバー③",
+  label:"OFFICIAL BAR",
+  category:"food",
+  style:"food",
+
+  iconType:"bar",
+
+  lat:35.62330,
+  lng:139.77325,
+
+  description:
+    "オフィシャルバー",
+
+  editable:true
+},
+
+
+/*
+  ★ NEW DRINK
+*/
+
+{
+  id:"drink",
+  name:"ドリンク",
+  label:"DRINK",
+  category:"food",
+  style:"food",
+
+  iconType:"drink",
+
+  lat:35.62345,
+  lng:139.77305,
+
+  description:
+    "ドリンク販売",
+
+  editable:true
+},
+
+
+/* -------------------------
+   OTHER
+------------------------- */
 
 {
   id:"rest",
   name:"休憩テント",
   label:"休憩テント",
-  category:"rest",
-  lat:35.62585,
-  lng:139.77425,
-  description:"休憩テント"
+  category:"other",
+  style:"other",
+
+  lat:35.6239264,
+  lng:139.773412,
+
+  description:
+    "休憩テント",
+
+  editable:false
 },
+
 
 {
   id:"eco",
   name:"エコステーション",
   label:"ECO",
-  category:"rest",
-  lat:35.62570,
-  lng:139.77485,
-  description:"エコステーション"
+  category:"other",
+  style:"other",
+
+  lat:35.6239115,
+  lng:139.7737049,
+
+  description:
+    "エコステーション",
+
+  editable:false
 },
+
+
+/* -------------------------
+   BOOTH
+------------------------- */
 
 {
   id:"suntory",
   name:"サントリー生ビール",
   label:"SUNTORY",
   category:"booth",
-  lat:35.62515,
-  lng:139.77475,
-  description:"サントリー生ビールブース"
+  style:"booth",
+
+  lat:35.6233861,
+  lng:139.774265,
+
+  description:
+    "サントリー生ビール",
+
+  editable:false
 },
+
 
 {
   id:"toyota",
   name:"TOYOTA 給電ラッピングカー",
   label:"TOYOTA",
   category:"booth",
-  lat:35.62525,
-  lng:139.77520,
-  description:"TOYOTA 給電ラッピングカー"
+  style:"booth",
+
+  lat:35.6236633,
+  lng:139.77448,
+
+  description:
+    "TOYOTA 給電ラッピングカー",
+
+  editable:false
 },
+
 
 {
   id:"umajo",
   name:"UMAJO",
   label:"UMAJO",
   category:"booth",
-  lat:35.62490,
-  lng:139.77475,
-  description:"UMAJOブース"
+  style:"booth",
+
+  lat:35.6231266,
+  lng:139.7746901,
+
+  description:
+    "UMAJO",
+
+  editable:false
 },
+
+
+/* -------------------------
+   PHOTO
+------------------------- */
 
 {
   id:"photo1",
   name:"フォトスポット①",
   label:"PHOTO",
   category:"photo",
-  lat:35.62510,
-  lng:139.77535,
-  description:"フォトスポット"
+  style:"photo",
+
+  lat:35.6235071,
+  lng:139.774729,
+
+  description:
+    "フォトスポット",
+
+  editable:false
 },
+
 
 {
   id:"photo2",
   name:"フォトスポット②",
   label:"PHOTO",
   category:"photo",
-  lat:35.62455,
-  lng:139.77455,
-  description:"フォトスポット"
+  style:"photo",
+
+  lat:35.6225914,
+  lng:139.7750294,
+
+  description:
+    "フォトスポット",
+
+  editable:false
 },
+
 
 {
   id:"flower",
   name:"フラワーディスプレイ",
   label:"FLOWER",
   category:"photo",
-  lat:35.62440,
-  lng:139.77455,
-  description:"フラワーディスプレイ"
+  style:"photo",
+
+  lat:35.6224736,
+  lng:139.7751608,
+
+  description:
+    "フラワーディスプレイ",
+
+  editable:false
 },
+
+
+/* -------------------------
+   WC
+------------------------- */
 
 {
   id:"wc1",
   name:"トイレ①",
   label:"WC",
   category:"wc",
-  lat:35.62530,
-  lng:139.77355,
-  description:"トイレ"
+  style:"wc",
+
+  lat:35.6226513,
+  lng:139.773784,
+
+  description:
+    "トイレ",
+
+  editable:false
 },
+
 
 {
   id:"wc2",
   name:"トイレ②",
   label:"WC",
   category:"wc",
-  lat:35.62505,
-  lng:139.77355,
-  description:"トイレ"
+  style:"wc",
+
+  lat:35.6227654,
+  lng:139.7737075,
+
+  description:
+    "トイレ",
+
+  editable:false
 },
+
 
 {
   id:"wc3",
   name:"トイレ③",
   label:"WC",
   category:"wc",
-  lat:35.62480,
-  lng:139.77355,
-  description:"トイレ"
+  style:"wc",
+
+  lat:35.6225191,
+  lng:139.7739266,
+
+  description:
+    "トイレ",
+
+  editable:false
 },
+
 
 {
   id:"wc4",
   name:"トイレ④",
   label:"WC",
   category:"wc",
-  lat:35.62510,
-  lng:139.77585,
-  description:"トイレ"
+  style:"wc",
+
+  lat:35.6242767,
+  lng:139.7760214,
+
+  description:
+    "トイレ",
+
+  editable:false
 },
+
 
 {
   id:"wc5",
   name:"トイレ⑤",
   label:"WC",
   category:"wc",
-  lat:35.62505,
-  lng:139.77685,
-  description:"トイレ"
+  style:"wc",
+
+  lat:35.6238661,
+  lng:139.7750866,
+
+  description:
+    "トイレ",
+
+  editable:false
 },
+
 
 {
   id:"wcPremium",
-  name:"SS/S席専用トイレ",
-  label:"SS/S WC",
+  name:"アップグレード専用トイレ",
+  label:"アプグレ WC",
   category:"wc",
-  lat:35.62395,
-  lng:139.77455,
-  description:"SS/S席専用トイレ"
+  style:"upgrade",
+
+  lat:35.6220957,
+  lng:139.7754264,
+
+  description:
+    "アップグレード席専用トイレ",
+
+  editable:false
+},
+
+
+/* -------------------------
+   SMOKING
+   ★ NEW
+------------------------- */
+
+{
+  id:"smoking",
+  name:"喫煙所",
+  label:"喫煙所",
+  category:"smoking",
+  style:"smoking",
+
+  lat:35.62310,
+  lng:139.77415,
+
+  description:
+    "喫煙所",
+
+  editable:true
 }
 
 ];
 
 
 /* =========================================================
-   CREATE ICON
+   STAGES
+   ピンではなく常時固定プレート
+========================================================= */
+
+const stages = [
+
+{
+  id:"main",
+
+  name:"MAIN STAGE",
+
+  lat:35.6244039,
+  lng:139.7766349
+},
+
+{
+  id:"sub",
+
+  name:"SUB STAGE",
+
+  lat:35.6220921,
+  lng:139.7744679
+}
+
+];
+
+
+const stageMarkers = [];
+
+
+stages.forEach(stage => {
+
+  const icon =
+    L.divIcon({
+
+      className:"",
+
+      html:`
+        <div class="stage-fixed">
+
+          <div class="stage-plate">
+
+            <div class="stage-name">
+
+              <span class="stage-dot"></span>
+
+              ${stage.name}
+
+            </div>
+
+            <div class="stage-sub">
+              BMSG FES 2026
+            </div>
+
+          </div>
+
+        </div>
+      `,
+
+      iconSize:[1,1],
+
+      iconAnchor:[0,0]
+
+    });
+
+
+  const marker =
+    L.marker(
+      [
+        stage.lat,
+        stage.lng
+      ],
+      {
+        icon:icon,
+
+        interactive:false,
+
+        zIndexOffset:2000
+      }
+    ).addTo(map);
+
+
+  stageMarkers.push(
+    marker
+  );
+
+});
+
+
+/* =========================================================
+   CREATE VENUE ICON
 ========================================================= */
 
 function createVenueIcon(v){
-
-  const stage =
-    v.category === "stage";
 
   const width =
     140;
 
   const height =
-    stage ? 86 : 72;
+    72;
 
-  const pinHeight =
-    stage ? 58 : 46;
+
+  const iconType =
+    v.iconType ||
+    v.category;
+
+
+  const svg =
+    icons[iconType] ||
+    icons.other;
 
 
   return L.divIcon({
@@ -1772,12 +2596,13 @@ function createVenueIcon(v){
     className:
       "venue-leaflet-icon",
 
-    html: `
+    html:`
+
       <div
         class="
           venue-marker
-          marker-${v.category}
-          ${stage ? "stage-marker" : ""}
+          marker-${v.style}
+          ${v.editable ? "editable-marker" : ""}
         "
         data-id="${v.id}"
       >
@@ -1787,15 +2612,20 @@ function createVenueIcon(v){
           <div class="marker-pin">
 
             <div class="marker-inner">
-              ${icons[v.category]}
+
+              ${svg}
+
             </div>
 
           </div>
 
         </div>
 
+
         <div class="marker-label">
+
           ${v.label}
+
         </div>
 
       </div>
@@ -1807,14 +2637,10 @@ function createVenueIcon(v){
         height
       ],
 
-    /*
-      ★ ピン先端が緯度経度になる
-    */
-
     iconAnchor:
       [
         width / 2,
-        pinHeight
+        46
       ]
 
   });
@@ -1823,14 +2649,18 @@ function createVenueIcon(v){
 
 
 /* =========================================================
-   CREATE MARKERS
+   CREATE VENUE MARKERS
 ========================================================= */
 
 const venueMarkers = [];
 
-let editMode = false;
 
-let selectedItem = null;
+let editMode =
+  false;
+
+
+let selectedItem =
+  null;
 
 
 venues.forEach(v => {
@@ -1848,14 +2678,11 @@ venues.forEach(v => {
         icon:
           createVenueIcon(v),
 
-        draggable:
-          false,
+        draggable:false,
 
-        autoPan:
-          true,
+        autoPan:true,
 
-        riseOnHover:
-          true
+        riseOnHover:true
 
       }
 
@@ -1863,17 +2690,18 @@ venues.forEach(v => {
 
 
   const item = {
+
     venue:v,
+
     marker:marker
+
   };
 
 
-  venueMarkers.push(item);
+  venueMarkers.push(
+    item
+  );
 
-
-  /*
-    CLICK
-  */
 
   marker.on(
     "click",
@@ -1884,59 +2712,72 @@ venues.forEach(v => {
       );
 
 
+      /*
+        EDIT MODE中
+      */
+
       if(editMode){
 
-        selectMarker(
-          item
-        );
+        if(v.editable){
+
+          selectMarker(
+            item
+          );
+
+        }
+
+        else{
+
+          showToast(
+            "このピンは位置確定済みです"
+          );
+
+        }
+
+        return;
 
       }
 
-      else{
 
-        openVenue(
-          v
-        );
-
-      }
+      openVenue(
+        v
+      );
 
     }
   );
 
-
-  /*
-    DRAG START
-  */
 
   marker.on(
     "dragstart",
     () => {
 
-      if(!editMode){
+      if(
+        !editMode ||
+        !v.editable
+      ){
         return;
       }
+
 
       selectMarker(
         item
       );
 
-      map.dragging.disable();
-
     }
   );
 
-
-  /*
-    DRAG
-  */
 
   marker.on(
     "drag",
     () => {
 
-      if(!editMode){
+      if(
+        !editMode ||
+        !v.editable
+      ){
         return;
       }
+
 
       updateVenuePosition(
         item
@@ -1946,23 +2787,22 @@ venues.forEach(v => {
   );
 
 
-  /*
-    DRAG END
-  */
-
   marker.on(
     "dragend",
     () => {
 
-      if(!editMode){
+      if(
+        !editMode ||
+        !v.editable
+      ){
         return;
       }
+
 
       updateVenuePosition(
         item
       );
 
-      map.dragging.enable();
 
       showToast(
         `${v.name} を移動しました`
@@ -1975,7 +2815,7 @@ venues.forEach(v => {
 
 
 /* =========================================================
-   SELECT MARKER
+   SELECT EDITABLE PIN
 ========================================================= */
 
 function selectMarker(item){
@@ -1997,14 +2837,14 @@ function selectMarker(item){
     });
 
 
-  const markerElement =
+  const element =
     item.marker.getElement();
 
 
-  if(markerElement){
+  if(element){
 
     const visual =
-      markerElement.querySelector(
+      element.querySelector(
         ".venue-marker"
       );
 
@@ -2112,14 +2952,17 @@ editButton.addEventListener(
 
     editButton.textContent =
       editMode
-        ? "EDITING"
-        : "EDIT MODE";
+        ? "EDITING NEW PINS"
+        : "EDIT NEW PINS";
 
 
     venueMarkers.forEach(
       item => {
 
-        if(editMode){
+        if(
+          editMode &&
+          item.venue.editable
+        ){
 
           item.marker.dragging.enable();
 
@@ -2157,14 +3000,14 @@ editButton.addEventListener(
       document.getElementById(
         "editSelected"
       ).textContent =
-        "ピンを選択してください";
+        "新規ピンを選択してください";
 
     }
 
 
     showToast(
       editMode
-        ? "全ピンを移動できます"
+        ? "追加した4ピンだけ移動できます"
         : "編集モードを終了しました"
     );
 
@@ -2173,9 +3016,7 @@ editButton.addEventListener(
 
 
 /* =========================================================
-   MAP TAP TO MOVE SELECTED PIN
-
-   スマホ用。
+   TAP MAP TO MOVE SELECTED NEW PIN
 ========================================================= */
 
 map.on(
@@ -2184,7 +3025,8 @@ map.on(
 
     if(
       !editMode ||
-      !selectedItem
+      !selectedItem ||
+      !selectedItem.venue.editable
     ){
       return;
     }
@@ -2209,7 +3051,7 @@ map.on(
 
 
 /* =========================================================
-   COPY
+   COPY NEW POSITIONS ONLY
 ========================================================= */
 
 document.getElementById(
@@ -2219,7 +3061,14 @@ document.getElementById(
   async () => {
 
     const output =
-      venueMarkers.map(
+      venueMarkers
+
+      .filter(
+        item =>
+          item.venue.editable
+      )
+
+      .map(
         item => {
 
           const p =
@@ -2266,68 +3115,17 @@ document.getElementById(
 
 
       showToast(
-        "配置データをコピーしました"
+        "追加4地点をコピーしました"
       );
 
     }
 
     catch(error){
 
-      /*
-        clipboard APIが使えない場合
-      */
-
-      const textarea =
-        document.createElement(
-          "textarea"
-        );
-
-
-      textarea.value =
-        text;
-
-
-      textarea.style.position =
-        "fixed";
-
-
-      textarea.style.opacity =
-        "0";
-
-
-      document.body.appendChild(
-        textarea
+      window.prompt(
+        "この配置データをコピーしてください",
+        text
       );
-
-
-      textarea.focus();
-      textarea.select();
-
-
-      try{
-
-        document.execCommand(
-          "copy"
-        );
-
-
-        showToast(
-          "配置データをコピーしました"
-        );
-
-      }
-
-      catch(error2){
-
-        window.prompt(
-          "この配置データをコピーしてください",
-          text
-        );
-
-      }
-
-
-      textarea.remove();
 
     }
 
@@ -2417,6 +3215,30 @@ filterButtons.forEach(
           }
         );
 
+
+        /*
+          MAIN / SUBは常時表示。
+          フィルターで消さない。
+        */
+
+        stageMarkers.forEach(
+          marker => {
+
+            if(
+              !map.hasLayer(
+                marker
+              )
+            ){
+
+              marker.addTo(
+                map
+              );
+
+            }
+
+          }
+        );
+
       }
     );
 
@@ -2425,7 +3247,7 @@ filterButtons.forEach(
 
 
 /* =========================================================
-   DETAILS
+   DETAIL
 ========================================================= */
 
 const bottomSheet =
@@ -2433,24 +3255,40 @@ const bottomSheet =
     "bottomSheet"
   );
 
+
 const sheetBackdrop =
   document.getElementById(
     "sheetBackdrop"
   );
+
 
 const sheetCategory =
   document.getElementById(
     "sheetCategory"
   );
 
+
 const sheetTitle =
   document.getElementById(
     "sheetTitle"
   );
 
+
 const sheetDescription =
   document.getElementById(
     "sheetDescription"
+  );
+
+
+const sheetArrowWrap =
+  document.getElementById(
+    "sheetArrowWrap"
+  );
+
+
+const sheetArrow =
+  document.getElementById(
+    "sheetArrow"
   );
 
 
@@ -2466,6 +3304,39 @@ function openVenue(v){
 
   sheetDescription.textContent =
     v.description;
+
+
+  /*
+    A / B / C GATEだけ
+    矢印表示
+  */
+
+  if(
+    typeof v.arrow ===
+    "number"
+  ){
+
+    sheetArrowWrap.classList.add(
+      "show"
+    );
+
+
+    sheetArrow.style.transform =
+      `rotate(${v.arrow}deg)`;
+
+  }
+
+  else{
+
+    sheetArrowWrap.classList.remove(
+      "show"
+    );
+
+
+    sheetArrow.style.transform =
+      "rotate(0deg)";
+
+  }
 
 
   bottomSheet.classList.add(
@@ -2494,14 +3365,12 @@ function closeVenue(){
 }
 
 
-document
-  .getElementById(
-    "sheetClose"
-  )
-  .addEventListener(
-    "click",
-    closeVenue
-  );
+document.getElementById(
+  "sheetClose"
+).addEventListener(
+  "click",
+  closeVenue
+);
 
 
 sheetBackdrop.addEventListener(
@@ -2529,6 +3398,18 @@ const filtersWrap =
 const locationButton =
   document.getElementById(
     "locationButton"
+  );
+
+
+const overlayButton =
+  document.getElementById(
+    "overlayButton"
+  );
+
+
+const overlayPanel =
+  document.getElementById(
+    "overlayPanel"
   );
 
 
@@ -2585,8 +3466,18 @@ document
               "none";
 
 
-            editPanel.style.display =
+            editPanel.classList.remove(
+              "show"
+            );
+
+
+            overlayButton.style.display =
               "none";
+
+
+            overlayPanel.classList.remove(
+              "show"
+            );
 
           }
 
@@ -2609,13 +3500,13 @@ document
               "";
 
 
-            editPanel.style.display =
+            overlayButton.style.display =
               "";
 
 
-            if(!editMode){
+            if(editMode){
 
-              editPanel.classList.remove(
+              editPanel.classList.add(
                 "show"
               );
 
@@ -2641,20 +3532,247 @@ document
 
 
 /* =========================================================
-   GPS
+   FREE OVERLAY
+========================================================= */
 
-   現在地はサーバーへ送信しない。
-   localStorageにも保存しない。
+const freeOverlay =
+  document.getElementById(
+    "freeOverlay"
+  );
+
+
+const overlayImage =
+  document.getElementById(
+    "overlayImage"
+  );
+
+
+const overlayOpacity =
+  document.getElementById(
+    "overlayOpacity"
+  );
+
+
+let overlayVisible =
+  false;
+
+
+overlayButton.addEventListener(
+  "click",
+  () => {
+
+    overlayVisible =
+      !overlayVisible;
+
+
+    freeOverlay.classList.toggle(
+      "show",
+      overlayVisible
+    );
+
+
+    overlayPanel.classList.toggle(
+      "show",
+      overlayVisible
+    );
+
+
+    overlayButton.classList.toggle(
+      "active",
+      overlayVisible
+    );
+
+
+    overlayButton.textContent =
+      overlayVisible
+        ? "OVERLAY ON"
+        : "OVERLAY";
+
+  }
+);
+
+
+overlayOpacity.addEventListener(
+  "input",
+  () => {
+
+    overlayImage.style.opacity =
+      Number(
+        overlayOpacity.value
+      ) / 100;
+
+  }
+);
+
+
+/*
+  初期透明度
+*/
+
+overlayImage.style.opacity =
+  Number(
+    overlayOpacity.value
+  ) / 100;
+
+
+/* =========================================================
+   DRAG FREE OVERLAY
+========================================================= */
+
+let overlayDragging =
+  false;
+
+
+let overlayStartX =
+  0;
+
+
+let overlayStartY =
+  0;
+
+
+let overlayLeft =
+  50;
+
+
+let overlayTop =
+  52;
+
+
+freeOverlay.addEventListener(
+  "pointerdown",
+  event => {
+
+    overlayDragging =
+      true;
+
+
+    overlayStartX =
+      event.clientX;
+
+
+    overlayStartY =
+      event.clientY;
+
+
+    freeOverlay.setPointerCapture(
+      event.pointerId
+    );
+
+  }
+);
+
+
+freeOverlay.addEventListener(
+  "pointermove",
+  event => {
+
+    if(!overlayDragging){
+      return;
+    }
+
+
+    const dx =
+      event.clientX -
+      overlayStartX;
+
+
+    const dy =
+      event.clientY -
+      overlayStartY;
+
+
+    const rect =
+      document.body.getBoundingClientRect();
+
+
+    overlayLeft +=
+      dx /
+      rect.width *
+      100;
+
+
+    overlayTop +=
+      dy /
+      rect.height *
+      100;
+
+
+    overlayLeft =
+      Math.max(
+        5,
+        Math.min(
+          95,
+          overlayLeft
+        )
+      );
+
+
+    overlayTop =
+      Math.max(
+        10,
+        Math.min(
+          95,
+          overlayTop
+        )
+      );
+
+
+    freeOverlay.style.left =
+      overlayLeft + "%";
+
+
+    freeOverlay.style.top =
+      overlayTop + "%";
+
+
+    overlayStartX =
+      event.clientX;
+
+
+    overlayStartY =
+      event.clientY;
+
+  }
+);
+
+
+function stopOverlayDrag(){
+
+  overlayDragging =
+    false;
+
+}
+
+
+freeOverlay.addEventListener(
+  "pointerup",
+  stopOverlayDrag
+);
+
+
+freeOverlay.addEventListener(
+  "pointercancel",
+  stopOverlayDrag
+);
+
+
+/* =========================================================
+   GPS
+   端末上のみ。保存・送信なし。
 ========================================================= */
 
 let locationMarker =
   null;
 
+
 let accuracyCircle =
   null;
 
+
 let watchId =
   null;
+
 
 let firstLocation =
   true;
@@ -2700,7 +3818,9 @@ locationButton.addEventListener(
     }
 
 
-    if(!navigator.geolocation){
+    if(
+      !navigator.geolocation
+    ){
 
       showToast(
         "位置情報を利用できません"
@@ -2749,8 +3869,10 @@ function locationSuccess(
   const lat =
     position.coords.latitude;
 
+
   const lng =
     position.coords.longitude;
+
 
   const accuracy =
     position.coords.accuracy;
@@ -2888,7 +4010,9 @@ function locationError(
     "現在地を取得できませんでした";
 
 
-  if(error.code === 1){
+  if(
+    error.code === 1
+  ){
 
     message =
       "位置情報が許可されていません";
@@ -2896,7 +4020,9 @@ function locationError(
   }
 
 
-  if(error.code === 2){
+  else if(
+    error.code === 2
+  ){
 
     message =
       "現在地を確認できませんでした";
@@ -2904,7 +4030,9 @@ function locationError(
   }
 
 
-  if(error.code === 3){
+  else if(
+    error.code === 3
+  ){
 
     message =
       "現在地取得がタイムアウトしました";
@@ -2927,6 +4055,7 @@ const toast =
   document.getElementById(
     "toast"
   );
+
 
 let toastTimer;
 
@@ -2958,7 +4087,6 @@ function showToast(
         );
 
       },
-
       2300
     );
 
