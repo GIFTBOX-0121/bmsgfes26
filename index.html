@@ -1123,6 +1123,32 @@ button:active{transform:scale(.98);}
 .pin-editing-marker{filter:drop-shadow(0 0 7px #fff)}
 </style>
 
+
+<style id="pin-export-v2-style">
+.pin-export-backdrop{
+  position:fixed;inset:0;z-index:300000;background:rgba(0,0,0,.82);
+  display:none;align-items:center;justify-content:center;padding:18px;
+}
+.pin-export-backdrop.on{display:flex}
+.pin-export-box{
+  width:min(520px,100%);max-height:82vh;overflow:auto;
+  background:#111;border:1px solid #555;border-radius:16px;padding:14px;
+}
+.pin-export-title{font-size:14px;font-weight:900;margin-bottom:8px}
+.pin-export-help{font-size:10px;color:#aaa;line-height:1.55;margin-bottom:9px}
+.pin-export-text{
+  width:100%;height:260px;resize:none;box-sizing:border-box;
+  border:1px solid #444;border-radius:10px;background:#050505;color:#fff;
+  padding:10px;font:11px/1.5 ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+.pin-export-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:9px}
+.pin-export-actions button{
+  border:0;border-radius:10px;padding:11px;font-size:11px;font-weight:900;
+}
+#pinExportCopy{background:#fff;color:#000}
+#pinExportClose{background:#2b2b2b;color:#fff}
+</style>
+
 </head>
 
 <body>
@@ -1678,6 +1704,22 @@ button:active{transform:scale(.98);}
 
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<div class="pin-export-backdrop" id="pinExportBackdrop">
+  <div class="pin-export-box">
+    <div class="pin-export-title">📍 現在のピン座標</div>
+    <div class="pin-export-help">
+      下に現在の全ピン座標を表示します。MAIN STAGE / SUB STAGEは含みません。<br>
+      「コピー」を押して、このチャットにそのまま貼り付けてください。
+    </div>
+    <textarea class="pin-export-text" id="pinExportText" readonly></textarea>
+    <div class="pin-export-actions">
+      <button id="pinExportCopy" type="button">コピー</button>
+      <button id="pinExportClose" type="button">閉じる</button>
+    </div>
+  </div>
+</div>
+
 <script>
 if(!window.L){
   document.write('<script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"><\/script>');
@@ -2124,32 +2166,49 @@ document.getElementById("pinEditDone")
 document.getElementById("pinEditCancel")
   ?.addEventListener("click",stopPinEditMode);
 
-async function copyCurrentPinPositions(){
+function buildCurrentPinPositionText(){
 
   const current=loadSavedPinPositions();
 
   const rows=venueMarkers.map(item=>{
+
     const saved=current[item.venue.id];
-    const pos=saved
+    const point=saved
       ? {lat:Number(saved.lat),lng:Number(saved.lng)}
       : item.marker.getLatLng();
 
     return {
       id:item.venue.id,
       name:item.venue.name,
-      lat:Number(pos.lat.toFixed(7)),
-      lng:Number(pos.lng.toFixed(7))
+      lat:Number(Number(point.lat).toFixed(7)),
+      lng:Number(Number(point.lng).toFixed(7))
     };
   });
 
-  const text=JSON.stringify(rows,null,2);
+  return JSON.stringify(rows,null,2);
+}
 
-  try{
-    await navigator.clipboard.writeText(text);
-    showToast("現在のピン座標をコピーしました");
-  }catch(e){
-    window.prompt("この座標をコピーしてください",text);
+function copyCurrentPinPositions(){
+
+  const text=buildCurrentPinPositionText();
+  const area=document.getElementById("pinExportText");
+  const modal=document.getElementById("pinExportBackdrop");
+
+  if(area){
+    area.value=text;
   }
+
+  modal?.classList.add("on");
+
+  /*
+    iPhoneではClipboard APIが失敗する場合があるため、
+    まず必ず座標そのものを画面に表示する。
+  */
+  requestAnimationFrame(()=>{
+    area?.focus();
+    area?.select();
+    area?.setSelectionRange(0,area.value.length);
+  });
 }
 
 document.getElementById("pinEditCopy")
@@ -2157,6 +2216,44 @@ document.getElementById("pinEditCopy")
 
 document.getElementById("pinCopyAlways")
   ?.addEventListener("click",copyCurrentPinPositions);
+
+document.getElementById("pinExportClose")
+  ?.addEventListener("click",()=>{
+    document.getElementById("pinExportBackdrop")?.classList.remove("on");
+  });
+
+document.getElementById("pinExportCopy")
+  ?.addEventListener("click",async()=>{
+
+    const area=document.getElementById("pinExportText");
+    if(!area) return;
+
+    area.focus();
+    area.select();
+    area.setSelectionRange(0,area.value.length);
+
+    let copied=false;
+
+    try{
+      if(navigator.clipboard && window.isSecureContext){
+        await navigator.clipboard.writeText(area.value);
+        copied=true;
+      }
+    }catch(e){}
+
+    if(!copied){
+      try{
+        copied=document.execCommand("copy");
+      }catch(e){}
+    }
+
+    if(copied){
+      showToast("座標をコピーしました");
+    }else{
+      showToast("座標を選択しました。長押し→コピーしてください");
+    }
+  });
+
 
 document.getElementById("pinEditReset")
   ?.addEventListener("click",()=>{
@@ -3986,7 +4083,7 @@ loadWeather();
 /* PWA / OFFLINE */
 if("serviceWorker" in navigator){
   window.addEventListener("load",()=>{
-    navigator.serviceWorker.register("./sw.js?v=13-leaflet-fix")
+    navigator.serviceWorker.register("./sw.js?v=14-pin-copy")
       .catch(()=>{});
   });
 }
