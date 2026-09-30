@@ -23,9 +23,7 @@
   --line:rgba(255,255,255,.24);
 }
 
-html{
-  background:#050505;
-}
+html{background:#050505;}
 
 body{
   margin:0;
@@ -35,46 +33,23 @@ body{
   font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;
 }
 
-button,input,textarea{
-  font:inherit;
-}
-
-button{
-  cursor:pointer;
-}
-
-button:active{
-  transform:scale(.98);
-}
-
-.hidden{
-  display:none!important;
-}
-
-
-/* =========================================================
-   APP
-========================================================= */
+button,input,textarea,select{font:inherit;}
+button{cursor:pointer;}
+button:active{transform:scale(.98);}
+.hidden{display:none!important;}
 
 #app{
   min-height:100vh;
   padding-bottom:calc(86px + env(safe-area-inset-bottom));
 }
 
-
-/* =========================================================
-   HEADER
-========================================================= */
+/* HEADER */
 
 .header{
   position:sticky;
   top:0;
   z-index:3000;
-
-  padding:
-    calc(10px + env(safe-area-inset-top))
-    12px
-    9px;
+  padding:calc(9px + env(safe-area-inset-top)) 10px 8px;
 
   background:
     linear-gradient(
@@ -87,7 +62,6 @@ button:active{
     );
 
   border-bottom:1px solid rgba(255,255,255,.38);
-
   backdrop-filter:blur(22px);
   -webkit-backdrop-filter:blur(22px);
 
@@ -99,8 +73,7 @@ button:active{
 .header-row{
   display:flex;
   align-items:center;
-  justify-content:space-between;
-  gap:10px;
+  gap:7px;
 }
 
 .brand{
@@ -109,112 +82,86 @@ button:active{
 }
 
 .brand-title{
-  font-size:17px;
+  font-size:15px;
   font-weight:950;
-  letter-spacing:.10em;
+  letter-spacing:.07em;
   white-space:nowrap;
 }
 
 .brand-sub{
   margin-top:3px;
-
   color:#c8c8c8;
-
-  font-size:7px;
+  font-size:6px;
   font-weight:800;
-  letter-spacing:.28em;
+  letter-spacing:.23em;
 }
 
+.official-header{
+  flex:0 0 auto;
+  padding:7px 7px;
+  border:1px solid rgba(255,255,255,.48);
+  border-radius:9px;
+  background:linear-gradient(145deg,#aaa,#333 45%,#080808);
+  color:#fff;
+  text-decoration:none;
+  font-size:6px;
+  font-weight:950;
+  letter-spacing:.05em;
+  white-space:nowrap;
+}
 
-/* =========================================================
-   WEATHER COMPACT
-========================================================= */
+/* WEATHER */
 
 .weather-mini{
   flex:0 0 auto;
-
   display:grid;
   grid-template-columns:repeat(3,1fr);
-
-  min-width:145px;
-
-  padding:5px 7px;
-
+  min-width:128px;
+  padding:4px 5px;
   border:1px solid rgba(255,255,255,.27);
-  border-radius:11px;
-
+  border-radius:10px;
   background:rgba(0,0,0,.24);
-
   cursor:pointer;
 }
 
 .weather-day{
-  min-width:42px;
+  min-width:37px;
   text-align:center;
 }
 
 .weather-date{
-  color:#d7d7d7;
-
-  font-size:7px;
+  color:#ddd;
+  font-size:6px;
   font-weight:900;
-  letter-spacing:.02em;
 }
 
 .weather-icon{
-  height:21px;
-
+  height:19px;
   margin-top:1px;
-
-  font-size:16px;
-  line-height:21px;
+  font-size:14px;
+  line-height:19px;
 }
 
-.weather-loading{
-  opacity:.5;
-}
-
-
-/* =========================================================
-   WEATHER DETAIL
-========================================================= */
+.weather-loading{opacity:.5;}
 
 .weather-detail{
   position:fixed;
-
   top:calc(76px + env(safe-area-inset-top));
   left:12px;
   right:12px;
-
   z-index:5000;
-
   display:none;
-
   padding:14px;
-
   border:1px solid rgba(255,255,255,.48);
   border-radius:18px;
-
-  background:
-    linear-gradient(
-      135deg,
-      rgba(125,125,125,.97),
-      rgba(20,20,20,.99) 36%,
-      rgba(5,5,5,.99)
-    );
-
+  background:linear-gradient(135deg,rgba(125,125,125,.97),rgba(20,20,20,.99) 36%,rgba(5,5,5,.99));
   box-shadow:0 18px 50px rgba(0,0,0,.65);
-
-  backdrop-filter:blur(20px);
 }
 
-.weather-detail.show{
-  display:block;
-}
+.weather-detail.show{display:block;}
 
 .weather-detail-title{
   margin-bottom:11px;
-
   font-size:11px;
   font-weight:950;
   letter-spacing:.14em;
@@ -227,575 +174,34 @@ button:active{
 }
 
 .weather-card{
-  padding:10px 6px;
-
+  padding:10px 5px;
   border:1px solid rgba(255,255,255,.18);
   border-radius:12px;
-
   background:rgba(255,255,255,.06);
-
   text-align:center;
 }
 
-.weather-card-date{
-  font-size:9px;
-  font-weight:900;
-}
-
-.weather-card-icon{
-  margin:7px 0;
-  font-size:25px;
-}
-
-.weather-card-temp{
-  font-size:9px;
-  line-height:1.55;
-}
-
-.weather-card-rain{
-  margin-top:4px;
-  color:#a9cfff;
-  font-size:8px;
-}
+.weather-card-date{font-size:9px;font-weight:900;}
+.weather-card-icon{margin:7px 0;font-size:25px;}
+.weather-card-temp{font-size:8px;line-height:1.55;}
+.weather-card-rain{margin-top:4px;color:#a9cfff;font-size:8px;}
 
 .weather-close{
   width:100%;
-
   margin-top:10px;
   padding:9px;
-
   border:1px solid rgba(255,255,255,.3);
   border-radius:9px;
-
   background:rgba(255,255,255,.08);
-
   color:#fff;
-
   font-size:9px;
   font-weight:900;
 }
 
+/* PAGES */
 
-/* =========================================================
-   MAIN CONTENT
-========================================================= */
-
-.page{
-  display:none;
-}
-
-.page.active{
-  display:block;
-}
-
-
-/* =========================================================
-   MAP
-========================================================= */
-
-.map-section{
-  padding:10px 10px 0;
-}
-
-.map-shell{
-  position:relative;
-
-  overflow:hidden;
-
-  height:57vh;
-  min-height:430px;
-  max-height:620px;
-
-  border:1px solid rgba(255,255,255,.48);
-  border-radius:20px;
-
-  background:#ddd;
-
-  box-shadow:
-    0 15px 38px rgba(0,0,0,.48),
-    inset 0 1px 0 rgba(255,255,255,.7);
-}
-
-#map{
-  position:absolute;
-  inset:0;
-}
-
-.leaflet-control-zoom{
-  display:none;
-}
-
-.leaflet-control-attribution{
-  background:rgba(0,0,0,.68)!important;
-  color:#ddd!important;
-  font-size:7px!important;
-}
-
-.leaflet-control-attribution a{
-  color:#fff!important;
-}
-
-.leaflet-tile-pane{
-  filter:saturate(.95) contrast(.96) brightness(1.01);
-}
-
-
-/* =========================================================
-   MAP TOP
-========================================================= */
-
-.map-toolbar{
-  position:absolute;
-
-  top:10px;
-  left:10px;
-  right:10px;
-
-  z-index:800;
-
-  display:flex;
-  justify-content:space-between;
-  gap:7px;
-
-  pointer-events:none;
-}
-
-.map-toolbar > *{
-  pointer-events:auto;
-}
-
-.map-mode{
-  display:flex;
-  gap:3px;
-
-  padding:3px;
-
-  border:1px solid rgba(255,255,255,.52);
-  border-radius:10px;
-
-  background:rgba(5,5,5,.82);
-
-  backdrop-filter:blur(12px);
-}
-
-.map-mode button{
-  padding:7px 9px;
-
-  border:0;
-  border-radius:7px;
-
-  background:transparent;
-
-  color:#aaa;
-
-  font-size:8px;
-  font-weight:900;
-}
-
-.map-mode button.active{
-  color:#050505;
-
-  background:linear-gradient(135deg,#fff,#aaa);
-}
-
-.locate-btn{
-  width:38px;
-  height:38px;
-
-  border:1px solid rgba(255,255,255,.8);
-  border-radius:50%;
-
-  background:
-    radial-gradient(circle at 30% 20%,#fff,#aaa 30%,#222 70%);
-
-  color:#fff;
-
-  box-shadow:0 5px 16px rgba(0,0,0,.45);
-
-  font-size:17px;
-}
-
-
-/* =========================================================
-   FILTER
-========================================================= */
-
-.filters{
-  display:flex;
-  gap:6px;
-
-  overflow-x:auto;
-
-  padding:9px 1px 4px;
-
-  scrollbar-width:none;
-}
-
-.filters::-webkit-scrollbar{
-  display:none;
-}
-
-.filter{
-  flex:0 0 auto;
-
-  padding:7px 11px;
-
-  border:1px solid rgba(255,255,255,.32);
-  border-radius:999px;
-
-  background:
-    linear-gradient(145deg,#626262,#111 65%);
-
-  color:#ddd;
-
-  font-size:8px;
-  font-weight:900;
-}
-
-.filter.active{
-  color:#050505;
-
-  background:linear-gradient(135deg,#fff,#aaa);
-}
-
-
-/* =========================================================
-   OFFICIAL MAP
-========================================================= */
-
-.official-map{
-  position:absolute;
-  inset:0;
-
-  z-index:700;
-
-  display:none;
-
-  overflow:auto;
-
-  padding:10px;
-
-  background:#090909;
-}
-
-.official-map.show{
-  display:flex;
-  align-items:center;
-  justify-content:center;
-}
-
-.official-map img{
-  display:block;
-
-  width:100%;
-  height:auto;
-
-  max-width:900px;
-
-  border-radius:12px;
-}
-
-
-/* =========================================================
-   STAGES
-========================================================= */
-
-.stage-fixed{
-  width:146px;
-  height:50px;
-
-  display:flex;
-  align-items:center;
-  justify-content:center;
-
-  pointer-events:none;
-}
-
-.stage-plate{
-  width:146px;
-
-  padding:8px 11px;
-
-  border:1px solid rgba(255,255,255,.92);
-  border-radius:9px;
-
-  background:
-    linear-gradient(
-      120deg,
-      #d8d8d8,
-      #696969 11%,
-      #101010 29%,
-      #050505 67%,
-      #666 89%,
-      #ddd
-    );
-
-  box-shadow:
-    0 5px 15px rgba(0,0,0,.65),
-    0 0 12px rgba(135,91,255,.55);
-}
-
-.stage-name{
-  font-size:10px;
-  font-weight:950;
-  white-space:nowrap;
-}
-
-.stage-dot{
-  display:inline-block;
-
-  width:6px;
-  height:6px;
-
-  margin-right:5px;
-
-  border-radius:50%;
-
-  background:#9567ff;
-
-  box-shadow:0 0 7px #9567ff;
-}
-
-.stage-sub{
-  margin-top:2px;
-
-  color:#aaa;
-
-  font-size:6px;
-  letter-spacing:.12em;
-}
-
-
-/* =========================================================
-   PINS
-========================================================= */
-
-.venue-marker{
-  width:110px;
-  height:62px;
-
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-}
-
-.marker-pin{
-  position:relative;
-
-  width:36px;
-  height:36px;
-
-  display:flex;
-  align-items:center;
-  justify-content:center;
-
-  border:2px solid #fff;
-  border-radius:50%;
-
-  background:linear-gradient(145deg,#fff,#777 30%,#222 65%,#bbb);
-
-  box-shadow:
-    0 5px 14px rgba(0,0,0,.6);
-}
-
-.marker-pin::after{
-  content:"";
-
-  position:absolute;
-
-  left:50%;
-  bottom:-5px;
-
-  width:8px;
-  height:8px;
-
-  transform:translateX(-50%) rotate(45deg);
-
-  background:#888;
-
-  border-right:1px solid #fff;
-  border-bottom:1px solid #fff;
-
-  z-index:-1;
-}
-
-.marker-inner{
-  width:27px;
-  height:27px;
-
-  display:flex;
-  align-items:center;
-  justify-content:center;
-
-  border-radius:50%;
-
-  background:var(--marker-color);
-
-  box-shadow:0 0 8px var(--marker-glow);
-}
-
-.marker-inner svg{
-  width:16px;
-  height:16px;
-
-  fill:none;
-  stroke:#fff;
-
-  stroke-width:2;
-  stroke-linecap:round;
-  stroke-linejoin:round;
-}
-
-.marker-label{
-  max-width:108px;
-
-  margin-top:4px;
-  padding:3px 6px;
-
-  overflow:hidden;
-
-  border:1px solid rgba(255,255,255,.42);
-  border-radius:5px;
-
-  background:rgba(0,0,0,.86);
-
-  color:#fff;
-
-  font-size:7px;
-  font-weight:900;
-
-  text-overflow:ellipsis;
-  white-space:nowrap;
-}
-
-.marker-gate{
-  --marker-color:#00a875;
-  --marker-glow:rgba(0,168,117,.8);
-}
-
-.marker-west{
-  --marker-color:#d99b00;
-  --marker-glow:rgba(217,155,0,.85);
-}
-
-.marker-east{
-  --marker-color:#8d56ff;
-  --marker-glow:rgba(141,86,255,.85);
-}
-
-.marker-food{
-  --marker-color:#ff781e;
-  --marker-glow:rgba(255,120,30,.85);
-}
-
-.marker-goods{
-  --marker-color:#00aeea;
-  --marker-glow:rgba(0,174,234,.85);
-}
-
-.marker-penlight{
-  --marker-color:#9d5cff;
-  --marker-glow:rgba(157,92,255,.9);
-}
-
-.marker-wc{
-  --marker-color:#1769ff;
-  --marker-glow:rgba(23,105,255,.8);
-}
-
-.marker-upgrade{
-  --marker-color:#ff3b88;
-  --marker-glow:rgba(255,59,136,.9);
-}
-
-.marker-photo{
-  --marker-color:#e64eb5;
-  --marker-glow:rgba(230,78,181,.8);
-}
-
-.marker-info{
-  --marker-color:#d5a600;
-  --marker-glow:rgba(213,166,0,.8);
-}
-
-.marker-booth{
-  --marker-color:#00a99d;
-  --marker-glow:rgba(0,169,157,.8);
-}
-
-.marker-other{
-  --marker-color:#707984;
-  --marker-glow:rgba(180,190,200,.7);
-}
-
-.marker-smoking{
-  --marker-color:#4d535a;
-  --marker-glow:rgba(200,210,220,.7);
-}
-
-
-/* =========================================================
-   STATION DIRECTION
-========================================================= */
-
-.station-direction{
-  min-width:130px;
-
-  padding:7px 9px;
-
-  border:1px solid rgba(255,255,255,.7);
-  border-radius:9px;
-
-  background:
-    linear-gradient(135deg,rgba(220,220,220,.94),rgba(35,35,35,.96));
-
-  color:#050505;
-
-  box-shadow:0 5px 16px rgba(0,0,0,.5);
-
-  text-align:center;
-
-  font-size:9px;
-  font-weight:950;
-
-  white-space:nowrap;
-}
-
-.station-arrow{
-  display:block;
-
-  margin-bottom:1px;
-
-  color:#fff;
-
-  font-size:17px;
-
-  text-shadow:0 1px 4px #000;
-}
-
-
-/* =========================================================
-   CURRENT LOCATION
-========================================================= */
-
-.user-location{
-  width:21px;
-  height:21px;
-
-  border:3px solid #fff;
-  border-radius:50%;
-
-  background:#1976ff;
-
-  box-shadow:
-    0 0 0 5px rgba(25,118,255,.17),
-    0 0 14px #1976ff;
-}
-
-
-/* =========================================================
-   GENERIC CONTENT
-========================================================= */
+.page{display:none;}
+.page.active{display:block;}
 
 .content{
   padding:13px 12px 25px;
@@ -803,7 +209,6 @@ button:active{
 
 .section-title{
   margin:8px 0 11px;
-
   font-size:16px;
   font-weight:950;
   letter-spacing:.08em;
@@ -812,9 +217,7 @@ button:active{
 .section-sub{
   margin-top:-7px;
   margin-bottom:14px;
-
   color:#999;
-
   font-size:9px;
   line-height:1.5;
 }
@@ -822,10 +225,8 @@ button:active{
 .card{
   margin-bottom:10px;
   padding:14px;
-
   border:1px solid rgba(255,255,255,.23);
   border-radius:16px;
-
   background:
     linear-gradient(
       135deg,
@@ -833,7 +234,6 @@ button:active{
       rgba(20,20,20,.96) 34%,
       rgba(5,5,5,.98)
     );
-
   box-shadow:
     0 8px 22px rgba(0,0,0,.3),
     inset 0 1px 0 rgba(255,255,255,.16);
@@ -846,77 +246,346 @@ button:active{
 
 .card-small{
   margin-top:5px;
-
   color:#aaa;
-
   font-size:9px;
-  line-height:1.5;
+  line-height:1.55;
 }
 
 .action{
   width:100%;
-
   margin-top:9px;
   padding:11px;
-
   border:1px solid rgba(255,255,255,.45);
   border-radius:10px;
-
   background:linear-gradient(135deg,#777,#111);
-
   color:#fff;
-
   font-size:10px;
   font-weight:900;
 }
 
 .action.primary{
   color:#050505;
-
   background:linear-gradient(135deg,#fff,#a8a8a8);
 }
 
-.action:disabled{
-  opacity:.35;
+.action:disabled{opacity:.35;}
+
+/* MAP */
+
+.map-section{
+  padding:10px 10px 0;
 }
 
+.map-shell{
+  position:relative;
+  overflow:hidden;
+  height:57vh;
+  min-height:430px;
+  max-height:620px;
+  border:1px solid rgba(255,255,255,.48);
+  border-radius:20px;
+  background:#ddd;
+  box-shadow:0 15px 38px rgba(0,0,0,.48);
+}
 
-/* =========================================================
-   DAY TABS
-========================================================= */
+#map{
+  position:absolute;
+  inset:0;
+}
+
+.leaflet-control-zoom{display:none;}
+
+.leaflet-control-attribution{
+  background:rgba(0,0,0,.68)!important;
+  color:#ddd!important;
+  font-size:7px!important;
+}
+
+.leaflet-control-attribution a{color:#fff!important;}
+
+.map-toolbar{
+  position:absolute;
+  top:10px;
+  left:10px;
+  right:10px;
+  z-index:800;
+  display:flex;
+  justify-content:space-between;
+  gap:7px;
+  pointer-events:none;
+}
+
+.map-toolbar>*{pointer-events:auto;}
+
+.map-mode{
+  display:flex;
+  gap:3px;
+  padding:3px;
+  border:1px solid rgba(255,255,255,.52);
+  border-radius:10px;
+  background:rgba(5,5,5,.82);
+}
+
+.map-mode button{
+  padding:7px 9px;
+  border:0;
+  border-radius:7px;
+  background:transparent;
+  color:#aaa;
+  font-size:8px;
+  font-weight:900;
+}
+
+.map-mode button.active{
+  color:#050505;
+  background:linear-gradient(135deg,#fff,#aaa);
+}
+
+.locate-btn{
+  width:38px;
+  height:38px;
+  border:1px solid rgba(255,255,255,.8);
+  border-radius:50%;
+  background:radial-gradient(circle at 30% 20%,#fff,#aaa 30%,#222 70%);
+  color:#fff;
+  font-size:17px;
+}
+
+.official-map{
+  position:absolute;
+  inset:0;
+  z-index:700;
+  display:none;
+  overflow:auto;
+  padding:10px;
+  background:#090909;
+}
+
+.official-map.show{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.official-map img{
+  width:100%;
+  height:auto;
+  max-width:900px;
+  border-radius:12px;
+}
+
+.filters{
+  display:flex;
+  gap:6px;
+  overflow-x:auto;
+  padding:9px 1px 4px;
+  scrollbar-width:none;
+}
+
+.filters::-webkit-scrollbar{display:none;}
+
+.filter{
+  flex:0 0 auto;
+  padding:7px 11px;
+  border:1px solid rgba(255,255,255,.32);
+  border-radius:999px;
+  background:linear-gradient(145deg,#626262,#111 65%);
+  color:#ddd;
+  font-size:8px;
+  font-weight:900;
+}
+
+.filter.active{
+  color:#050505;
+  background:linear-gradient(135deg,#fff,#aaa);
+}
+
+/* STAGE */
+
+.stage-fixed{
+  width:146px;
+  height:50px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  pointer-events:none;
+}
+
+.stage-plate{
+  width:146px;
+  padding:8px 11px;
+  border:1px solid rgba(255,255,255,.92);
+  border-radius:9px;
+  background:linear-gradient(120deg,#d8d8d8,#696969 11%,#101010 29%,#050505 67%,#666 89%,#ddd);
+  box-shadow:0 5px 15px rgba(0,0,0,.65),0 0 12px rgba(135,91,255,.55);
+}
+
+.stage-name{
+  font-size:10px;
+  font-weight:950;
+  white-space:nowrap;
+}
+
+.stage-dot{
+  display:inline-block;
+  width:6px;
+  height:6px;
+  margin-right:5px;
+  border-radius:50%;
+  background:#9567ff;
+  box-shadow:0 0 7px #9567ff;
+}
+
+.stage-sub{
+  margin-top:2px;
+  color:#aaa;
+  font-size:6px;
+  letter-spacing:.12em;
+}
+
+/* MARKERS */
+
+.venue-marker{
+  width:110px;
+  height:62px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+}
+
+.marker-pin{
+  position:relative;
+  width:36px;
+  height:36px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border:2px solid #fff;
+  border-radius:50%;
+  background:linear-gradient(145deg,#fff,#777 30%,#222 65%,#bbb);
+  box-shadow:0 5px 14px rgba(0,0,0,.6);
+}
+
+.marker-pin::after{
+  content:"";
+  position:absolute;
+  left:50%;
+  bottom:-5px;
+  width:8px;
+  height:8px;
+  transform:translateX(-50%) rotate(45deg);
+  background:#888;
+  border-right:1px solid #fff;
+  border-bottom:1px solid #fff;
+  z-index:-1;
+}
+
+.marker-inner{
+  width:27px;
+  height:27px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:50%;
+  background:var(--marker-color);
+  box-shadow:0 0 8px var(--marker-glow);
+}
+
+.marker-inner svg{
+  width:16px;
+  height:16px;
+  fill:none;
+  stroke:#fff;
+  stroke-width:2;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+}
+
+.marker-label{
+  max-width:108px;
+  margin-top:4px;
+  padding:3px 6px;
+  overflow:hidden;
+  border:1px solid rgba(255,255,255,.42);
+  border-radius:5px;
+  background:rgba(0,0,0,.86);
+  color:#fff;
+  font-size:7px;
+  font-weight:900;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+
+.marker-gate{--marker-color:#00a875;--marker-glow:rgba(0,168,117,.8);}
+.marker-west{--marker-color:#d99b00;--marker-glow:rgba(217,155,0,.85);}
+.marker-east{--marker-color:#8d56ff;--marker-glow:rgba(141,86,255,.85);}
+.marker-food{--marker-color:#ff781e;--marker-glow:rgba(255,120,30,.85);}
+.marker-goods{--marker-color:#00aeea;--marker-glow:rgba(0,174,234,.85);}
+.marker-penlight{--marker-color:#9d5cff;--marker-glow:rgba(157,92,255,.9);}
+.marker-wc{--marker-color:#1769ff;--marker-glow:rgba(23,105,255,.8);}
+.marker-upgrade{--marker-color:#ff3b88;--marker-glow:rgba(255,59,136,.9);}
+.marker-photo{--marker-color:#e64eb5;--marker-glow:rgba(230,78,181,.8);}
+.marker-info{--marker-color:#d5a600;--marker-glow:rgba(213,166,0,.8);}
+.marker-booth{--marker-color:#00a99d;--marker-glow:rgba(0,169,157,.8);}
+.marker-other{--marker-color:#707984;--marker-glow:rgba(180,190,200,.7);}
+.marker-smoking{--marker-color:#4d535a;--marker-glow:rgba(200,210,220,.7);}
+
+.station-direction{
+  min-width:130px;
+  padding:7px 9px;
+  border:1px solid rgba(255,255,255,.7);
+  border-radius:9px;
+  background:linear-gradient(135deg,rgba(220,220,220,.94),rgba(35,35,35,.96));
+  color:#050505;
+  box-shadow:0 5px 16px rgba(0,0,0,.5);
+  text-align:center;
+  font-size:9px;
+  font-weight:950;
+  white-space:nowrap;
+}
+
+.station-arrow{
+  display:block;
+  margin-bottom:1px;
+  color:#fff;
+  font-size:17px;
+  text-shadow:0 1px 4px #000;
+}
+
+.user-location{
+  width:21px;
+  height:21px;
+  border:3px solid #fff;
+  border-radius:50%;
+  background:#1976ff;
+  box-shadow:0 0 0 5px rgba(25,118,255,.17),0 0 14px #1976ff;
+}
+
+/* DAY */
 
 .day-tabs{
   display:grid;
   grid-template-columns:repeat(3,1fr);
   gap:5px;
-
   margin:10px 0;
 }
 
 .day-tab{
   padding:9px 4px;
-
   border:1px solid rgba(255,255,255,.25);
   border-radius:9px;
-
   background:#111;
-
   color:#aaa;
-
   font-size:8px;
   font-weight:900;
 }
 
 .day-tab.active{
   color:#050505;
-
   background:linear-gradient(135deg,#fff,#aaa);
 }
 
-
-/* =========================================================
-   GOODS
-========================================================= */
+/* GOODS */
 
 .goods-grid{
   display:grid;
@@ -926,39 +595,249 @@ button:active{
 
 .goods-item{
   overflow:hidden;
-
   border:1px solid rgba(255,255,255,.18);
   border-radius:12px;
-
   background:#0b0b0b;
 }
 
 .goods-placeholder{
   aspect-ratio:1;
-
   display:flex;
   align-items:center;
   justify-content:center;
-
-  background:
-    radial-gradient(circle,#444,#151515 70%);
-
+  background:radial-gradient(circle,#444,#151515 70%);
   color:#777;
-
   font-size:25px;
 }
 
 .goods-name{
   padding:9px;
-
   font-size:9px;
   font-weight:900;
 }
 
+/* FORMS */
 
-/* =========================================================
-   MY
-========================================================= */
+.text-input,
+.form-input,
+.form-select,
+.form-textarea{
+  width:100%;
+  padding:11px;
+  border:1px solid rgba(255,255,255,.25);
+  border-radius:9px;
+  outline:none;
+  background:#080808;
+  color:#fff;
+}
+
+.form-label{
+  display:block;
+  margin:12px 0 5px;
+  color:#aaa;
+  font-size:8px;
+  font-weight:900;
+  letter-spacing:.08em;
+}
+
+.form-textarea{
+  min-height:100px;
+  resize:vertical;
+  line-height:1.5;
+}
+
+/* CHECKLIST */
+
+.checklist-add{
+  display:flex;
+  gap:6px;
+  margin-bottom:12px;
+}
+
+.add-btn{
+  flex:0 0 auto;
+  padding:0 15px;
+  border:1px solid #fff;
+  border-radius:9px;
+  background:#ddd;
+  color:#050505;
+  font-weight:950;
+}
+
+.check-item{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:11px 2px;
+  border-bottom:1px solid rgba(255,255,255,.09);
+}
+
+.check-item input{
+  width:21px;
+  height:21px;
+  accent-color:#fff;
+}
+
+.check-text{
+  flex:1;
+  font-size:11px;
+}
+
+.check-text.done{
+  color:#666;
+  text-decoration:line-through;
+}
+
+.delete-btn{
+  border:0;
+  background:transparent;
+  color:#777;
+  font-size:17px;
+}
+
+/* TRADES */
+
+.trade-add{
+  margin-bottom:13px;
+}
+
+.trade-form{
+  display:none;
+  margin-bottom:12px;
+  padding:14px;
+  border:1px solid rgba(255,255,255,.3);
+  border-radius:15px;
+  background:rgba(255,255,255,.05);
+}
+
+.trade-form.show{display:block;}
+
+.trade-form-actions{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:7px;
+  margin-top:12px;
+}
+
+.trade-card{
+  position:relative;
+  margin-bottom:9px;
+  padding:14px;
+  border:1px solid rgba(255,255,255,.27);
+  border-radius:15px;
+  background:
+    linear-gradient(
+      135deg,
+      rgba(130,130,130,.19),
+      rgba(16,16,16,.98) 37%,
+      rgba(5,5,5,.99)
+    );
+}
+
+.trade-card.completed{
+  opacity:.48;
+}
+
+.trade-top{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+}
+
+.trade-type{
+  display:inline-flex;
+  align-items:center;
+  padding:5px 8px;
+  border-radius:999px;
+  font-size:8px;
+  font-weight:950;
+}
+
+.trade-type.exchange{
+  background:#215cff;
+  color:#fff;
+}
+
+.trade-type.give{
+  background:#9a52ff;
+  color:#fff;
+}
+
+.trade-type.buy{
+  background:#e89d00;
+  color:#050505;
+}
+
+.trade-complete-label{
+  font-size:8px;
+  font-weight:900;
+  color:#aaa;
+}
+
+.trade-person{
+  margin-top:10px;
+  font-size:14px;
+  font-weight:950;
+}
+
+.trade-x{
+  display:inline-block;
+  margin-top:3px;
+  color:#b7cfff;
+  font-size:10px;
+  font-weight:800;
+  text-decoration:none;
+}
+
+.trade-content{
+  margin-top:10px;
+  padding:10px;
+  border:1px solid rgba(255,255,255,.11);
+  border-radius:10px;
+  background:rgba(255,255,255,.04);
+  font-size:10px;
+  line-height:1.6;
+  white-space:pre-wrap;
+}
+
+.trade-actions{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:6px;
+  margin-top:10px;
+}
+
+.trade-button{
+  padding:9px 5px;
+  border:1px solid rgba(255,255,255,.28);
+  border-radius:8px;
+  background:#111;
+  color:#fff;
+  font-size:8px;
+  font-weight:900;
+}
+
+.trade-button.complete{
+  color:#050505;
+  background:linear-gradient(135deg,#fff,#aaa);
+}
+
+.trade-subactions{
+  display:flex;
+  justify-content:flex-end;
+  gap:10px;
+  margin-top:9px;
+}
+
+.trade-text-btn{
+  border:0;
+  background:transparent;
+  color:#777;
+  font-size:8px;
+}
+
+/* MY */
 
 .my-status{
   display:flex;
@@ -967,125 +846,38 @@ button:active{
 }
 
 .lock{
-  width:37px;
-  height:37px;
-
+  width:39px;
+  height:39px;
   display:flex;
   align-items:center;
   justify-content:center;
-
   border:1px solid rgba(255,255,255,.4);
   border-radius:50%;
-
   background:linear-gradient(135deg,#777,#111);
-
   font-size:17px;
 }
 
-.checklist-add{
-  display:flex;
-  gap:6px;
-
+.keyword-state{
   margin-top:10px;
-}
-
-.text-input{
-  width:100%;
-
   padding:10px;
-
-  border:1px solid rgba(255,255,255,.25);
-  border-radius:9px;
-
-  outline:none;
-
-  background:#080808;
-
-  color:#fff;
+  border:1px solid rgba(255,255,255,.12);
+  border-radius:10px;
+  background:rgba(255,255,255,.04);
+  color:#aaa;
+  font-size:9px;
+  line-height:1.5;
 }
 
-.add-btn{
-  flex:0 0 auto;
-
-  padding:0 14px;
-
-  border:1px solid #fff;
-  border-radius:9px;
-
-  background:#ddd;
-
-  color:#050505;
-
-  font-weight:950;
+.keyword-ok{
+  color:#baffc5;
 }
-
-.check-item{
-  display:flex;
-  align-items:center;
-  gap:8px;
-
-  padding:9px 2px;
-
-  border-bottom:1px solid rgba(255,255,255,.09);
-}
-
-.check-item input{
-  width:18px;
-  height:18px;
-}
-
-.check-text{
-  flex:1;
-
-  font-size:11px;
-}
-
-.check-text.done{
-  color:#777;
-  text-decoration:line-through;
-}
-
-.delete-btn{
-  border:0;
-  background:transparent;
-  color:#777;
-  font-size:15px;
-}
-
-.memo{
-  width:100%;
-  min-height:180px;
-
-  padding:11px;
-
-  resize:vertical;
-
-  border:1px solid rgba(255,255,255,.2);
-  border-radius:11px;
-
-  outline:none;
-
-  background:#080808;
-
-  color:#fff;
-
-  font-size:11px;
-  line-height:1.6;
-}
-
-
-/* =========================================================
-   MY SPOTS
-========================================================= */
 
 .spot-row{
   display:flex;
   align-items:center;
   justify-content:space-between;
   gap:8px;
-
   padding:10px 0;
-
   border-bottom:1px solid rgba(255,255,255,.1);
 }
 
@@ -1096,36 +888,26 @@ button:active{
 
 .spot-go{
   padding:7px 9px;
-
   border:1px solid rgba(255,255,255,.3);
   border-radius:8px;
-
   background:#151515;
-
   color:#fff;
-
   font-size:8px;
 }
 
-
-/* =========================================================
-   BOTTOM NAV
-========================================================= */
+/* BOTTOM NAV */
 
 .bottom-nav{
   position:fixed;
-
-  left:8px;
-  right:8px;
-
-  bottom:calc(8px + env(safe-area-inset-bottom));
-
+  left:6px;
+  right:6px;
+  bottom:calc(7px + env(safe-area-inset-bottom));
   z-index:4000;
 
   display:grid;
-  grid-template-columns:repeat(4,1fr);
+  grid-template-columns:repeat(6,1fr);
 
-  padding:5px;
+  padding:4px;
 
   border:1px solid rgba(255,255,255,.48);
   border-radius:17px;
@@ -1141,55 +923,41 @@ button:active{
 
   backdrop-filter:blur(20px);
   -webkit-backdrop-filter:blur(20px);
-
   box-shadow:0 10px 35px rgba(0,0,0,.55);
 }
 
 .nav-btn{
-  padding:9px 3px;
-
+  min-width:0;
+  padding:8px 1px;
   border:0;
-  border-radius:11px;
-
+  border-radius:10px;
   background:transparent;
-
   color:#888;
-
-  font-size:8px;
+  font-size:6px;
   font-weight:950;
-  letter-spacing:.08em;
+  white-space:nowrap;
 }
 
 .nav-icon{
   display:block;
-
   margin-bottom:3px;
-
-  font-size:17px;
+  font-size:15px;
 }
 
 .nav-btn.active{
   color:#050505;
-
   background:linear-gradient(135deg,#fff,#aaa);
 }
 
-
-/* =========================================================
-   BOTTOM SHEET
-========================================================= */
+/* SHEET */
 
 .sheet-backdrop{
   position:fixed;
   inset:0;
-
   z-index:5998;
-
   background:rgba(0,0,0,.35);
-
   opacity:0;
   pointer-events:none;
-
   transition:.2s;
 }
 
@@ -1200,52 +968,31 @@ button:active{
 
 .bottom-sheet{
   position:fixed;
-
   left:8px;
   right:8px;
-
   bottom:calc(8px + env(safe-area-inset-bottom));
-
   z-index:6000;
-
   padding:10px 16px 17px;
-
   border:1px solid rgba(255,255,255,.5);
   border-radius:22px;
-
-  background:
-    linear-gradient(
-      135deg,
-      rgba(125,125,125,.98),
-      rgba(25,25,25,.99) 35%,
-      rgba(5,5,5,.99) 70%
-    );
-
+  background:linear-gradient(135deg,rgba(125,125,125,.98),rgba(25,25,25,.99) 35%,rgba(5,5,5,.99) 70%);
   box-shadow:0 -10px 50px rgba(0,0,0,.65);
-
   transform:translateY(calc(100% + 70px));
-
   transition:transform .3s ease;
 }
 
-.bottom-sheet.show{
-  transform:translateY(0);
-}
+.bottom-sheet.show{transform:translateY(0);}
 
 .sheet-handle{
   width:40px;
   height:4px;
-
   margin:0 auto 14px;
-
   border-radius:99px;
-
   background:#aaa;
 }
 
 .sheet-category{
   color:#aaa;
-
   font-size:8px;
   font-weight:900;
   letter-spacing:.15em;
@@ -1253,16 +1000,13 @@ button:active{
 
 .sheet-title{
   margin-top:3px;
-
   font-size:20px;
   font-weight:950;
 }
 
 .sheet-desc{
   margin-top:9px;
-
   color:#ccc;
-
   font-size:11px;
 }
 
@@ -1270,69 +1014,46 @@ button:active{
   display:grid;
   grid-template-columns:1fr 1fr;
   gap:7px;
-
   margin-top:13px;
 }
 
 .sheet-btn{
   padding:11px 5px;
-
   border:1px solid rgba(255,255,255,.38);
   border-radius:10px;
-
   background:#111;
-
   color:#fff;
-
   font-size:9px;
   font-weight:900;
 }
 
 .sheet-btn.saved{
   color:#050505;
-
   background:#fff;
 }
 
 .sheet-btn.navigate{
   color:#050505;
-
   background:linear-gradient(135deg,#fff,#aaa);
 }
 
-
-/* =========================================================
-   TOAST
-========================================================= */
+/* TOAST */
 
 .toast{
   position:fixed;
-
   left:50%;
-
   bottom:calc(92px + env(safe-area-inset-bottom));
-
   z-index:9000;
-
   padding:9px 14px;
-
   border:1px solid rgba(255,255,255,.4);
   border-radius:999px;
-
   background:#111;
-
   color:#fff;
-
   font-size:9px;
-
   white-space:nowrap;
-
   opacity:0;
-
   transform:translate(-50%,10px);
-
   pointer-events:none;
-
   transition:.2s;
 }
 
@@ -1349,25 +1070,23 @@ button:active{
 <div id="app">
 
 <header class="header">
-
   <div class="header-row">
 
     <div class="brand">
-      <div class="brand-title">
-        BMSG FES 2026
-      </div>
-
-      <div class="brand-sub">
-        VENUE NAVIGATOR
-      </div>
+      <div class="brand-title">BMSG FES 2026</div>
+      <div class="brand-sub">VENUE NAVIGATOR</div>
     </div>
 
-
-    <div
-      class="weather-mini"
-      id="weatherMini"
-      aria-label="3日間の天気"
+    <a
+      class="official-header"
+      href="https://bmsgfes.tokyo/"
+      target="_blank"
+      rel="noopener"
     >
+      OFFICIAL ↗
+    </a>
+
+    <div class="weather-mini" id="weatherMini">
 
       <div class="weather-day">
         <div class="weather-date">10/10</div>
@@ -1387,13 +1106,10 @@ button:active{
     </div>
 
   </div>
-
 </header>
 
 
-<!-- ======================================================
-     MAP
-====================================================== -->
+<!-- MAP -->
 
 <section class="page active" id="page-map">
 
@@ -1403,53 +1119,24 @@ button:active{
 
       <div id="map"></div>
 
-
       <div class="official-map" id="officialMap">
-
-        <img
-          src="./Map.JPG"
-          alt="BMSG FES 2026 OFFICIAL MAP"
-        >
-
+        <img src="./Map.JPG" alt="BMSG FES 2026 OFFICIAL MAP">
       </div>
-
 
       <div class="map-toolbar">
 
         <div class="map-mode">
-
-          <button
-            class="map-mode-btn active"
-            data-mapmode="real"
-          >
-            REAL
-          </button>
-
-          <button
-            class="map-mode-btn"
-            data-mapmode="official"
-          >
-            OFFICIAL
-          </button>
-
+          <button class="map-mode-btn active" data-mapmode="real">REAL</button>
+          <button class="map-mode-btn" data-mapmode="official">OFFICIAL</button>
         </div>
 
-
-        <button
-          class="locate-btn"
-          id="locateButton"
-          aria-label="現在地"
-        >
-          ◎
-        </button>
+        <button class="locate-btn" id="locateButton">◎</button>
 
       </div>
 
     </div>
 
-
     <div class="filters">
-
       <button class="filter active" data-filter="all">ALL</button>
       <button class="filter" data-filter="info">INFO</button>
       <button class="filter" data-filter="gate">GATE</button>
@@ -1461,38 +1148,26 @@ button:active{
       <button class="filter" data-filter="booth">BOOTH</button>
       <button class="filter" data-filter="smoking">SMOKING</button>
       <button class="filter" data-filter="other">OTHER</button>
-
     </div>
 
   </div>
 
-
   <div class="content">
 
     <div class="card">
-
-      <div class="card-title">
-        🚉 STATION → VENUE
-      </div>
+      <div class="card-title">🚉 STATION → VENUE</div>
 
       <div class="card-small">
         主要駅から会場までの徒歩ルートを開きます。
       </div>
 
-      <button
-        class="action"
-        onclick="stationRoute('daiba')"
-      >
+      <button class="action" onclick="stationRoute('daiba')">
         台場駅から
       </button>
 
-      <button
-        class="action"
-        onclick="stationRoute('teleport')"
-      >
+      <button class="action" onclick="stationRoute('teleport')">
         東京テレポート駅から
       </button>
-
     </div>
 
   </div>
@@ -1500,119 +1175,51 @@ button:active{
 </section>
 
 
-<!-- ======================================================
-     INFO
-====================================================== -->
+<!-- INFO -->
 
 <section class="page" id="page-info">
 
   <div class="content">
 
-    <div class="section-title">
-      INFORMATION
-    </div>
-
-    <div class="section-sub">
-      当日の情報・SUB STAGE・公式リンク
-    </div>
-
+    <div class="section-title">INFORMATION</div>
+    <div class="section-sub">当日の情報・SUB STAGE・公式リンク</div>
 
     <div class="card">
 
-      <div class="card-title">
-        🎤 SUB STAGE
+      <div class="card-title">🎤 SUB STAGE</div>
+
+      <div class="day-tabs">
+        <button class="day-tab active" data-subday="0">10/10</button>
+        <button class="day-tab" data-subday="1">10/11</button>
+        <button class="day-tab" data-subday="2">10/12</button>
       </div>
 
-      <div class="day-tabs sub-tabs">
-
-        <button class="day-tab active" data-subday="0">
-          10/10
-        </button>
-
-        <button class="day-tab" data-subday="1">
-          10/11
-        </button>
-
-        <button class="day-tab" data-subday="2">
-          10/12
-        </button>
-
-      </div>
-
-      <div
-        class="card-small"
-        id="subStageContent"
-      >
+      <div class="card-small" id="subStageContent">
         出演アーティストは後から登録できます。
       </div>
 
     </div>
 
-
     <div class="card">
-
-      <div class="card-title">
-        🎧 公式 予習LIST
-      </div>
+      <div class="card-title">🎧 公式 予習LIST</div>
 
       <div class="card-small">
-        公式の予習リストが公開されたらURLを設定できます。
+        公式の予習リストURLを後から設定できます。
       </div>
 
-      <button
-        class="action primary"
-        id="studyButton"
-        disabled
-      >
+      <button class="action primary" id="studyButton" disabled>
         予習LISTを開く
       </button>
-
     </div>
 
-
-    <div
-      class="card hidden"
-      id="streamCard"
-    >
-
-      <div class="card-title">
-        📺 STREAMING
-      </div>
-
-      <div class="card-small">
-        配信ページへ移動します。
-      </div>
-
-      <button
-        class="action primary"
-        id="streamButton"
-      >
-        配信を見る
-      </button>
-
+    <div class="card hidden" id="streamCard">
+      <div class="card-title">📺 STREAMING</div>
+      <button class="action primary" id="streamButton">配信を見る</button>
     </div>
 
-
-    <div
-      class="card hidden"
-      id="ticketCard"
-    >
-
-      <div class="card-title">
-        🎫 GOODS 整理券
-      </div>
-
-      <div class="card-small">
-        グッズ整理券ページへ移動します。
-      </div>
-
-      <button
-        class="action primary"
-        id="ticketButton"
-      >
-        整理券を開く
-      </button>
-
+    <div class="card hidden" id="ticketCard">
+      <div class="card-title">🎫 GOODS 整理券</div>
+      <button class="action primary" id="ticketButton">整理券を開く</button>
     </div>
 
   </div>
@@ -1620,39 +1227,56 @@ button:active{
 </section>
 
 
-<!-- ======================================================
-     GOODS
-====================================================== -->
+<!-- GOODS -->
 
 <section class="page" id="page-goods">
 
   <div class="content">
 
-    <div class="section-title">
-      GOODS
+    <div class="section-title">GOODS</div>
+    <div class="section-sub">BMSG FES 2026 GOODS LINEUP</div>
+
+    <div class="goods-grid">
+      <div class="goods-item">
+        <div class="goods-placeholder">＋</div>
+        <div class="goods-name">グッズ情報を追加予定</div>
+      </div>
     </div>
+
+  </div>
+
+</section>
+
+
+<!-- CHECKLIST -->
+
+<section class="page" id="page-checklist">
+
+  <div class="content">
+
+    <div class="section-title">持ち物 LIST</div>
 
     <div class="section-sub">
-      BMSG FES 2026 GOODS LINEUP
+      当日の持ち物を追加して、準備できたものにチェック。
     </div>
 
+    <div class="card">
 
-    <div
-      class="goods-grid"
-      id="goodsGrid"
-    >
+      <div class="checklist-add">
 
-      <div class="goods-item">
+        <input
+          class="text-input"
+          id="checkInput"
+          placeholder="例：モバイルバッテリー"
+        >
 
-        <div class="goods-placeholder">
-          +
-        </div>
-
-        <div class="goods-name">
-          グッズ情報を追加予定
-        </div>
+        <button class="add-btn" id="checkAdd">
+          ＋
+        </button>
 
       </div>
+
+      <div id="checkList"></div>
 
     </div>
 
@@ -1661,20 +1285,137 @@ button:active{
 </section>
 
 
-<!-- ======================================================
-     MY
-====================================================== -->
+<!-- TRADE -->
+
+<section class="page" id="page-trade">
+
+  <div class="content">
+
+    <div class="section-title">取引</div>
+
+    <div class="section-sub">
+      交換・譲渡・買取の予定を日ごとに管理。
+    </div>
+
+    <div class="day-tabs">
+
+      <button class="day-tab active" data-tradeday="0">
+        10/10
+      </button>
+
+      <button class="day-tab" data-tradeday="1">
+        10/11
+      </button>
+
+      <button class="day-tab" data-tradeday="2">
+        10/12
+      </button>
+
+    </div>
+
+
+    <button
+      class="action primary trade-add"
+      id="openTradeForm"
+    >
+      ＋ 取引を追加
+    </button>
+
+
+    <div class="trade-form" id="tradeForm">
+
+      <div class="card-title" id="tradeFormTitle">
+        NEW TRADE
+      </div>
+
+      <label class="form-label">
+        名前
+      </label>
+
+      <input
+        class="form-input"
+        id="tradeName"
+        placeholder="例：○○さん"
+      >
+
+
+      <label class="form-label">
+        X ID
+      </label>
+
+      <input
+        class="form-input"
+        id="tradeX"
+        placeholder="@xxxxx"
+        autocapitalize="none"
+      >
+
+
+      <label class="form-label">
+        種類
+      </label>
+
+      <select
+        class="form-select"
+        id="tradeType"
+      >
+        <option value="exchange">交換</option>
+        <option value="give">譲渡</option>
+        <option value="buy">買取</option>
+      </select>
+
+
+      <label class="form-label">
+        内容
+      </label>
+
+      <textarea
+        class="form-textarea"
+        id="tradeContent"
+        placeholder="例：ADAM アクスタ ⇄ RUI アクスタ"
+      ></textarea>
+
+
+      <div class="trade-form-actions">
+
+        <button
+          class="action"
+          id="cancelTrade"
+          type="button"
+        >
+          CANCEL
+        </button>
+
+        <button
+          class="action primary"
+          id="saveTrade"
+          type="button"
+        >
+          保存
+        </button>
+
+      </div>
+
+    </div>
+
+
+    <div id="tradeList"></div>
+
+  </div>
+
+</section>
+
+
+<!-- MY -->
 
 <section class="page" id="page-my">
 
   <div class="content">
 
-    <div class="section-title">
-      MY
-    </div>
+    <div class="section-title">MY</div>
 
     <div class="section-sub">
-      この端末では自動保存されます
+      自分専用データと行きたい場所
     </div>
 
 
@@ -1682,28 +1423,53 @@ button:active{
 
       <div class="my-status">
 
-        <div class="lock">
-          🔐
-        </div>
+        <div class="lock">🔐</div>
 
         <div>
-
           <div class="card-title">
-            MY DATA
+            PRIVATE DATA
           </div>
 
           <div class="card-small">
-            現在は端末内保存モード
+            自分だけのキーワードを登録
           </div>
-
         </div>
 
       </div>
 
+
+      <div
+        class="keyword-state"
+        id="keywordState"
+      >
+        キーワードはまだ登録されていません。
+      </div>
+
+
+      <label class="form-label">
+        MY KEYWORD
+      </label>
+
+      <input
+        class="form-input"
+        id="keywordInput"
+        type="password"
+        placeholder="自分だけのキーワード"
+        autocomplete="new-password"
+      >
+
+
+      <button
+        class="action primary"
+        id="saveKeyword"
+      >
+        キーワードを登録
+      </button>
+
+
       <div class="card-small">
-        別端末からパスワードだけで復元する暗号化同期は、
-        バックエンド接続後に有効化します。
-        現在地は保存しません。
+        現在はこの端末内だけに保存します。クラウド同期接続後に、
+        このキーワードを使った別端末復元へ対応します。
       </div>
 
     </div>
@@ -1716,84 +1482,10 @@ button:active{
       </div>
 
       <div class="card-small">
-        マップで「行きたい」を押した場所
+        MAPで「行きたい」を押した場所
       </div>
 
       <div id="mySpots"></div>
-
-    </div>
-
-
-    <div class="card">
-
-      <div class="card-title">
-        🎒 持ち物LIST
-      </div>
-
-      <div class="checklist-add">
-
-        <input
-          class="text-input"
-          id="checkInput"
-          placeholder="持ち物を追加"
-        >
-
-        <button
-          class="add-btn"
-          id="checkAdd"
-        >
-          ＋
-        </button>
-
-      </div>
-
-      <div id="checkList"></div>
-
-    </div>
-
-
-    <div class="card">
-
-      <div class="card-title">
-        🔄 交換・買取MEMO
-      </div>
-
-
-      <div class="day-tabs memo-tabs">
-
-        <button
-          class="day-tab active"
-          data-memoday="0"
-        >
-          10/10
-        </button>
-
-        <button
-          class="day-tab"
-          data-memoday="1"
-        >
-          10/11
-        </button>
-
-        <button
-          class="day-tab"
-          data-memoday="2"
-        >
-          10/12
-        </button>
-
-      </div>
-
-
-      <textarea
-        class="memo"
-        id="tradeMemo"
-        placeholder="交換・買取の予定やメモを自由に入力"
-      ></textarea>
-
-      <div class="card-small">
-        入力内容は自動保存されます。
-      </div>
 
     </div>
 
@@ -1802,40 +1494,36 @@ button:active{
 </section>
 
 
-<!-- ======================================================
-     BOTTOM NAV
-====================================================== -->
+<!-- NAV -->
 
 <nav class="bottom-nav">
 
-  <button
-    class="nav-btn active"
-    data-page="map"
-  >
+  <button class="nav-btn active" data-page="map">
     <span class="nav-icon">⌖</span>
     MAP
   </button>
 
-  <button
-    class="nav-btn"
-    data-page="info"
-  >
+  <button class="nav-btn" data-page="info">
     <span class="nav-icon">ⓘ</span>
     INFO
   </button>
 
-  <button
-    class="nav-btn"
-    data-page="goods"
-  >
+  <button class="nav-btn" data-page="goods">
     <span class="nav-icon">◇</span>
     GOODS
   </button>
 
-  <button
-    class="nav-btn"
-    data-page="my"
-  >
+  <button class="nav-btn" data-page="checklist">
+    <span class="nav-icon">✓</span>
+    持ち物
+  </button>
+
+  <button class="nav-btn" data-page="trade">
+    <span class="nav-icon">⇄</span>
+    取引
+  </button>
+
+  <button class="nav-btn" data-page="my">
     <span class="nav-icon">♡</span>
     MY
   </button>
@@ -1845,12 +1533,9 @@ button:active{
 </div>
 
 
-<!-- WEATHER DETAIL -->
+<!-- WEATHER -->
 
-<div
-  class="weather-detail"
-  id="weatherDetail"
->
+<div class="weather-detail" id="weatherDetail">
 
   <div class="weather-detail-title">
     WEATHER / BMSG FES 2026
@@ -1871,13 +1556,12 @@ button:active{
 </div>
 
 
-<!-- MAP DETAIL -->
+<!-- MAP SHEET -->
 
 <div
   class="sheet-backdrop"
   id="sheetBackdrop"
 ></div>
-
 
 <div
   class="bottom-sheet"
@@ -1901,7 +1585,6 @@ button:active{
     id="sheetDesc"
   ></div>
 
-
   <div class="sheet-actions">
 
     <button
@@ -1923,10 +1606,7 @@ button:active{
 </div>
 
 
-<div
-  class="toast"
-  id="toast"
-></div>
+<div class="toast" id="toast"></div>
 
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -1934,7 +1614,7 @@ button:active{
 <script>
 
 /* =========================================================
-   EVENT SETTINGS
+   SETTINGS
 ========================================================= */
 
 const EVENT_DAYS = [
@@ -1943,52 +1623,19 @@ const EVENT_DAYS = [
   "2026-10-12"
 ];
 
-
-/*
-  会場付近。
-  天気取得用なのでユーザーの現在地は使用しません。
-*/
-
 const VENUE_WEATHER_LAT = 35.6234;
 const VENUE_WEATHER_LNG = 139.7750;
 
-
-/*
-  公開されたらURLを入れる。
-
-  空欄の場合、
-  STREAMING / 整理券は自動的に非表示。
-*/
-
 const OFFICIAL_LINKS = {
-
   study:"",
-
   streaming:"",
-
   goodsTicket:""
-
 };
 
-
-/*
-  SUB STAGE
-
-  後で出演者をここへ追加可能。
-*/
-
 const SUB_STAGE = {
-
-  "2026-10-10":[
-    // "ARTIST NAME"
-  ],
-
-  "2026-10-11":[
-  ],
-
-  "2026-10-12":[
-  ]
-
+  "2026-10-10":[],
+  "2026-10-11":[],
+  "2026-10-12":[]
 };
 
 
@@ -1996,17 +1643,10 @@ const SUB_STAGE = {
    MAP
 ========================================================= */
 
-const map = L.map(
-  "map",
-  {
-    zoomControl:false,
-    attributionControl:true
-  }
-).setView(
-  [35.62345,139.77505],
-  17
-);
-
+const map = L.map("map",{
+  zoomControl:false,
+  attributionControl:true
+}).setView([35.62345,139.77505],17);
 
 L.tileLayer(
   "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
@@ -2016,27 +1656,16 @@ L.tileLayer(
   }
 ).addTo(map);
 
-
-/*
-  フェスエリア中心へ収める
-*/
-
 const festivalBounds = L.latLngBounds(
   [35.62165,139.77195],
   [35.62505,139.77810]
 );
 
-
-map.fitBounds(
-  festivalBounds,
-  {
-    padding:[12,12]
-  }
-);
+map.fitBounds(festivalBounds,{padding:[12,12]});
 
 
 /* =========================================================
-   ICON SVG
+   ICONS
 ========================================================= */
 
 const icons = {
@@ -2129,62 +1758,41 @@ smoking:`
 
 
 /* =========================================================
-   FIXED STAGES
+   STAGES
 ========================================================= */
 
 const stages = [
-
 {
   id:"main",
   name:"MAIN STAGE",
   lat:35.6244039,
   lng:139.7766349
 },
-
 {
   id:"sub",
   name:"SUB STAGE",
   lat:35.6220921,
   lng:139.7744679
 }
-
 ];
 
+stages.forEach(stage=>{
 
-stages.forEach(stage => {
-
-  const icon = L.divIcon({
-
+  const icon=L.divIcon({
     className:"",
-
     html:`
       <div class="stage-fixed">
-
         <div class="stage-plate">
-
           <div class="stage-name">
-
-            <span class="stage-dot"></span>
-
-            ${stage.name}
-
+            <span class="stage-dot"></span>${stage.name}
           </div>
-
-          <div class="stage-sub">
-            BMSG FES 2026
-          </div>
-
+          <div class="stage-sub">BMSG FES 2026</div>
         </div>
-
       </div>
     `,
-
     iconSize:[146,50],
-
     iconAnchor:[73,25]
-
   });
-
 
   L.marker(
     [stage.lat,stage.lng],
@@ -2202,748 +1810,295 @@ stages.forEach(stage => {
    VENUES
 ========================================================= */
 
-const venues = [
+const venues=[
 
-{
-id:"west",
-name:"WEST GATE",
-label:"WEST GATE",
-category:"gate",
-style:"west",
-lat:35.6240456,
-lng:139.77429,
-description:"一般指定・注釈付き指定"
-},
+{id:"west",name:"WEST GATE",label:"WEST GATE",category:"gate",style:"west",lat:35.6240456,lng:139.77429,description:"一般指定・注釈付き指定"},
 
-{
-id:"east",
-name:"EAST GATE",
-label:"EAST GATE",
-category:"gate",
-style:"east",
-lat:35.6238603,
-lng:139.775506,
-description:"SS・S指定"
-},
+{id:"east",name:"EAST GATE",label:"EAST GATE",category:"gate",style:"east",lat:35.6238603,lng:139.775506,description:"SS・S指定"},
 
-{
-id:"a",
-name:"A-GATE",
-label:"A-GATE",
-category:"gate",
-style:"gate",
-lat:35.6239875,
-lng:139.7764993,
-description:"A-GATE"
-},
+{id:"a",name:"A-GATE",label:"A-GATE",category:"gate",style:"gate",lat:35.6239875,lng:139.7764993,description:"A-GATE"},
 
-{
-id:"b",
-name:"B-GATE",
-label:"B-GATE",
-category:"gate",
-style:"gate",
-lat:35.6223569,
-lng:139.7761837,
-description:"B-GATE"
-},
+{id:"b",name:"B-GATE",label:"B-GATE",category:"gate",style:"gate",lat:35.6223569,lng:139.7761837,description:"B-GATE"},
 
-{
-id:"c",
-name:"C-GATE",
-label:"C-GATE",
-category:"gate",
-style:"gate",
-lat:35.6222686,
-lng:139.7753053,
-description:"C-GATE"
-},
+{id:"c",name:"C-GATE",label:"C-GATE",category:"gate",style:"gate",lat:35.6222686,lng:139.7753053,description:"C-GATE"},
 
-{
-id:"info",
-name:"インフォメーション",
-label:"INFO",
-category:"info",
-style:"info",
-lat:35.6245086,
-lng:139.7752889,
-description:"インフォメーション"
-},
+{id:"info",name:"インフォメーション",label:"INFO",category:"info",style:"info",lat:35.6245086,lng:139.7752889,description:"インフォメーション"},
 
-{
-id:"fc",
-name:"ファンクラブブース・CD販売ブース",
-label:"FC・CD",
-category:"goods",
-style:"goods",
-lat:35.6237055,
-lng:139.7726431,
-description:"ファンクラブブース・CD販売ブース"
-},
+{id:"fc",name:"ファンクラブブース・CD販売ブース",label:"FC・CD",category:"goods",style:"goods",lat:35.6237055,lng:139.7726431,description:"ファンクラブブース・CD販売ブース"},
 
-{
-id:"capsule",
-name:"MEGA CAPSULE",
-label:"MEGA CAPSULE",
-category:"goods",
-style:"goods",
-lat:35.6239039,
-lng:139.7728989,
-description:"MEGA CAPSULE"
-},
+{id:"capsule",name:"MEGA CAPSULE",label:"MEGA CAPSULE",category:"goods",style:"goods",lat:35.6239039,lng:139.7728989,description:"MEGA CAPSULE"},
 
-{
-id:"goods",
-name:"グッズ",
-label:"GOODS",
-category:"goods",
-style:"goods",
-lat:35.6241717,
-lng:139.7732538,
-description:"オフィシャルグッズ"
-},
+{id:"goods",name:"グッズ",label:"GOODS",category:"goods",style:"goods",lat:35.6241717,lng:139.7732538,description:"オフィシャルグッズ"},
 
-{
-id:"penlight",
-name:"ペンライトブース①",
-label:"PENLIGHT",
-category:"penlight",
-style:"penlight",
-lat:35.6241597,
-lng:139.7735247,
-description:"ペンライトブース"
-},
+{id:"penlight",name:"ペンライトブース①",label:"PENLIGHT",category:"penlight",style:"penlight",lat:35.6241597,lng:139.7735247,description:"ペンライトブース"},
 
-{
-id:"penlight2",
-name:"ペンライトブース②",
-label:"PENLIGHT",
-category:"penlight",
-style:"penlight",
-lat:35.6241,
-lng:139.7737,
-description:"ペンライトブース"
-},
+{id:"penlight2",name:"ペンライトブース②",label:"PENLIGHT",category:"penlight",style:"penlight",lat:35.6241,lng:139.7737,description:"ペンライトブース"},
 
-{
-id:"food",
-name:"キッチンカー",
-label:"FOOD",
-category:"food",
-style:"food",
-lat:35.6233886,
-lng:139.7727889,
-description:"キッチンカー"
-},
+{id:"food",name:"キッチンカー",label:"FOOD",category:"food",style:"food",lat:35.6233886,lng:139.7727889,description:"キッチンカー"},
 
-{
-id:"bar1",
-name:"オフィシャルバー①",
-label:"OFFICIAL BAR",
-category:"food",
-style:"food",
-iconType:"bar",
-lat:35.6230078,
-lng:139.7730473,
-description:"オフィシャルバー"
-},
+{id:"bar1",name:"オフィシャルバー①",label:"OFFICIAL BAR",category:"food",style:"food",iconType:"bar",lat:35.6230078,lng:139.7730473,description:"オフィシャルバー"},
 
-{
-id:"bar2",
-name:"オフィシャルバー②",
-label:"OFFICIAL BAR",
-category:"food",
-style:"food",
-iconType:"bar",
-lat:35.6241601,
-lng:139.7774193,
-description:"オフィシャルバー"
-},
+{id:"bar2",name:"オフィシャルバー②",label:"OFFICIAL BAR",category:"food",style:"food",iconType:"bar",lat:35.6241601,lng:139.7774193,description:"オフィシャルバー"},
 
-{
-id:"bar3",
-name:"オフィシャルバー③",
-label:"OFFICIAL BAR",
-category:"food",
-style:"food",
-iconType:"bar",
-lat:35.6233,
-lng:139.77325,
-description:"オフィシャルバー"
-},
+{id:"bar3",name:"オフィシャルバー③",label:"OFFICIAL BAR",category:"food",style:"food",iconType:"bar",lat:35.6233,lng:139.77325,description:"オフィシャルバー"},
 
-{
-id:"drink",
-name:"ドリンク",
-label:"DRINK",
-category:"food",
-style:"food",
-iconType:"drink",
-lat:35.62345,
-lng:139.77305,
-description:"ドリンク販売"
-},
+{id:"drink",name:"ドリンク",label:"DRINK",category:"food",style:"food",iconType:"drink",lat:35.62345,lng:139.77305,description:"ドリンク販売"},
 
-{
-id:"rest",
-name:"休憩テント",
-label:"休憩テント",
-category:"other",
-style:"other",
-lat:35.6239264,
-lng:139.773412,
-description:"休憩テント"
-},
+{id:"rest",name:"休憩テント",label:"休憩テント",category:"other",style:"other",lat:35.6239264,lng:139.773412,description:"休憩テント"},
 
-{
-id:"eco",
-name:"エコステーション",
-label:"ECO",
-category:"other",
-style:"other",
-lat:35.6239115,
-lng:139.7737049,
-description:"エコステーション"
-},
+{id:"eco",name:"エコステーション",label:"ECO",category:"other",style:"other",lat:35.6239115,lng:139.7737049,description:"エコステーション"},
 
-{
-id:"suntory",
-name:"サントリー生ビール",
-label:"SUNTORY",
-category:"booth",
-style:"booth",
-lat:35.6233861,
-lng:139.774265,
-description:"サントリー生ビール"
-},
+{id:"suntory",name:"サントリー生ビール",label:"SUNTORY",category:"booth",style:"booth",lat:35.6233861,lng:139.774265,description:"サントリー生ビール"},
 
-{
-id:"toyota",
-name:"TOYOTA 給電ラッピングカー",
-label:"TOYOTA",
-category:"booth",
-style:"booth",
-lat:35.6236633,
-lng:139.77448,
-description:"TOYOTA 給電ラッピングカー"
-},
+{id:"toyota",name:"TOYOTA 給電ラッピングカー",label:"TOYOTA",category:"booth",style:"booth",lat:35.6236633,lng:139.77448,description:"TOYOTA 給電ラッピングカー"},
 
-{
-id:"umajo",
-name:"UMAJO",
-label:"UMAJO",
-category:"booth",
-style:"booth",
-lat:35.6231266,
-lng:139.7746901,
-description:"UMAJO"
-},
+{id:"umajo",name:"UMAJO",label:"UMAJO",category:"booth",style:"booth",lat:35.6231266,lng:139.7746901,description:"UMAJO"},
 
-{
-id:"photo1",
-name:"フォトスポット①",
-label:"PHOTO",
-category:"photo",
-style:"photo",
-lat:35.6235071,
-lng:139.774729,
-description:"フォトスポット"
-},
+{id:"photo1",name:"フォトスポット①",label:"PHOTO",category:"photo",style:"photo",lat:35.6235071,lng:139.774729,description:"フォトスポット"},
 
-{
-id:"photo2",
-name:"フォトスポット②",
-label:"PHOTO",
-category:"photo",
-style:"photo",
-lat:35.6225914,
-lng:139.7750294,
-description:"フォトスポット"
-},
+{id:"photo2",name:"フォトスポット②",label:"PHOTO",category:"photo",style:"photo",lat:35.6225914,lng:139.7750294,description:"フォトスポット"},
 
-{
-id:"flower",
-name:"フラワーディスプレイ",
-label:"FLOWER",
-category:"photo",
-style:"photo",
-lat:35.6224736,
-lng:139.7751608,
-description:"フラワーディスプレイ"
-},
+{id:"flower",name:"フラワーディスプレイ",label:"FLOWER",category:"photo",style:"photo",lat:35.6224736,lng:139.7751608,description:"フラワーディスプレイ"},
 
-{
-id:"wc1",
-name:"トイレ①",
-label:"WC",
-category:"wc",
-style:"wc",
-lat:35.6226513,
-lng:139.773784,
-description:"トイレ"
-},
+{id:"wc1",name:"トイレ①",label:"WC",category:"wc",style:"wc",lat:35.6226513,lng:139.773784,description:"トイレ"},
 
-{
-id:"wc2",
-name:"トイレ②",
-label:"WC",
-category:"wc",
-style:"wc",
-lat:35.6227654,
-lng:139.7737075,
-description:"トイレ"
-},
+{id:"wc2",name:"トイレ②",label:"WC",category:"wc",style:"wc",lat:35.6227654,lng:139.7737075,description:"トイレ"},
 
-{
-id:"wc3",
-name:"トイレ③",
-label:"WC",
-category:"wc",
-style:"wc",
-lat:35.6225191,
-lng:139.7739266,
-description:"トイレ"
-},
+{id:"wc3",name:"トイレ③",label:"WC",category:"wc",style:"wc",lat:35.6225191,lng:139.7739266,description:"トイレ"},
 
-{
-id:"wc4",
-name:"トイレ④",
-label:"WC",
-category:"wc",
-style:"wc",
-lat:35.6242767,
-lng:139.7760214,
-description:"トイレ"
-},
+{id:"wc4",name:"トイレ④",label:"WC",category:"wc",style:"wc",lat:35.6242767,lng:139.7760214,description:"トイレ"},
 
-{
-id:"wc5",
-name:"トイレ⑤",
-label:"WC",
-category:"wc",
-style:"wc",
-lat:35.6238661,
-lng:139.7750866,
-description:"トイレ"
-},
+{id:"wc5",name:"トイレ⑤",label:"WC",category:"wc",style:"wc",lat:35.6238661,lng:139.7750866,description:"トイレ"},
 
-{
-id:"wcPremium",
-name:"アップグレード専用トイレ",
-label:"アプグレ WC",
-category:"wc",
-style:"upgrade",
-lat:35.6220957,
-lng:139.7754264,
-description:"アップグレード席専用トイレ"
-},
+{id:"wcPremium",name:"アップグレード専用トイレ",label:"アプグレ WC",category:"wc",style:"upgrade",lat:35.6220957,lng:139.7754264,description:"アップグレード席専用トイレ"},
 
-{
-id:"smoking",
-name:"喫煙所",
-label:"喫煙所",
-category:"smoking",
-style:"smoking",
-lat:35.6231,
-lng:139.77415,
-description:"喫煙所"
-}
+{id:"smoking",name:"喫煙所",label:"喫煙所",category:"smoking",style:"smoking",lat:35.6231,lng:139.77415,description:"喫煙所"}
 
 ];
 
 
-/* =========================================================
-   CREATE MARKERS
-========================================================= */
-
 function createVenueIcon(v){
 
-  const iconType =
-    v.iconType ||
-    v.category;
-
+  const iconType=v.iconType||v.category;
 
   return L.divIcon({
-
     className:"",
-
     html:`
-      <div
-        class="
-          venue-marker
-          marker-${v.style}
-        "
-      >
-
+      <div class="venue-marker marker-${v.style}">
         <div class="marker-pin">
-
           <div class="marker-inner">
-
-            ${icons[iconType] || icons.other}
-
+            ${icons[iconType]||icons.other}
           </div>
-
         </div>
-
-        <div class="marker-label">
-          ${v.label}
-        </div>
-
+        <div class="marker-label">${v.label}</div>
       </div>
     `,
-
     iconSize:[110,62],
-
     iconAnchor:[55,42]
-
   });
-
 }
 
 
-const venueMarkers = [];
+const venueMarkers=[];
 
+venues.forEach(v=>{
 
-venues.forEach(v => {
-
-  const marker = L.marker(
-
+  const marker=L.marker(
     [v.lat,v.lng],
-
     {
       icon:createVenueIcon(v),
       riseOnHover:true
     }
-
   ).addTo(map);
 
+  marker.on("click",()=>openVenue(v));
 
-  marker.on(
-    "click",
-    () => openVenue(v)
-  );
-
-
-  venueMarkers.push({
-    venue:v,
-    marker
-  });
-
+  venueMarkers.push({venue:v,marker});
 });
 
 
 /* =========================================================
-   STATION DIRECTION LABELS
-
-   会場外方向を示す案内表示。
+   STATIONS
 ========================================================= */
 
-function stationIcon(
-  text,
-  rotation
-){
+function stationIcon(text,rotation){
 
   return L.divIcon({
-
     className:"",
-
     html:`
       <div class="station-direction">
-
         <span
           class="station-arrow"
-          style="
-            transform:rotate(${rotation}deg)
-          "
-        >
-          ↑
-        </span>
-
+          style="transform:rotate(${rotation}deg)"
+        >↑</span>
         ${text}
-
       </div>
     `,
-
     iconSize:[140,48],
-
     iconAnchor:[70,24]
-
   });
 
 }
 
-
-/*
-  台場駅方向
-*/
-
 L.marker(
   [35.62478,139.77695],
   {
-    icon:stationIcon(
-      "台場駅",
-      0
-    ),
+    icon:stationIcon("台場駅",0),
     interactive:false
   }
 ).addTo(map);
-
-
-/*
-  東京テレポート駅方向
-*/
 
 L.marker(
   [35.62202,139.77335],
   {
-    icon:stationIcon(
-      "東京テレポート駅",
-      180
-    ),
+    icon:stationIcon("東京テレポート駅",180),
     interactive:false
   }
 ).addTo(map);
 
 
-/* =========================================================
-   FILTER
-========================================================= */
+/* FILTER */
 
-document
-.querySelectorAll(".filter")
-.forEach(button => {
+document.querySelectorAll(".filter").forEach(button=>{
 
-  button.addEventListener(
-    "click",
-    () => {
+  button.addEventListener("click",()=>{
 
-      document
-      .querySelectorAll(".filter")
-      .forEach(b =>
-        b.classList.remove("active")
-      );
+    document.querySelectorAll(".filter")
+      .forEach(b=>b.classList.remove("active"));
 
+    button.classList.add("active");
 
-      button.classList.add("active");
+    const category=button.dataset.filter;
 
+    venueMarkers.forEach(item=>{
 
-      const category =
-        button.dataset.filter;
+      const visible=
+        category==="all" ||
+        item.venue.category===category;
 
+      if(visible){
 
-      venueMarkers.forEach(item => {
-
-        const visible =
-          category === "all" ||
-          item.venue.category === category;
-
-
-        if(visible){
-
-          if(!map.hasLayer(item.marker)){
-            item.marker.addTo(map);
-          }
-
+        if(!map.hasLayer(item.marker)){
+          item.marker.addTo(map);
         }
 
-        else{
+      }else{
 
-          if(map.hasLayer(item.marker)){
-            map.removeLayer(item.marker);
-          }
-
+        if(map.hasLayer(item.marker)){
+          map.removeLayer(item.marker);
         }
 
-      });
+      }
 
-    }
-  );
+    });
+
+  });
 
 });
 
 
-/* =========================================================
-   REAL / OFFICIAL
-========================================================= */
+/* MAP MODE */
 
-const officialMap =
-  document.getElementById("officialMap");
+const officialMap=document.getElementById("officialMap");
 
+document.querySelectorAll(".map-mode-btn").forEach(button=>{
 
-document
-.querySelectorAll(".map-mode-btn")
-.forEach(button => {
+  button.addEventListener("click",()=>{
 
-  button.addEventListener(
-    "click",
-    () => {
+    document.querySelectorAll(".map-mode-btn")
+      .forEach(b=>b.classList.remove("active"));
 
-      document
-      .querySelectorAll(".map-mode-btn")
-      .forEach(b =>
-        b.classList.remove("active")
-      );
+    button.classList.add("active");
 
+    const official=
+      button.dataset.mapmode==="official";
 
-      button.classList.add("active");
+    officialMap.classList.toggle("show",official);
 
+    document.getElementById("locateButton").style.display=
+      official ? "none" : "";
 
-      const official =
-        button.dataset.mapmode === "official";
-
-
-      officialMap.classList.toggle(
-        "show",
-        official
-      );
-
-
-      document.getElementById(
-        "locateButton"
-      ).style.display =
-        official
-        ? "none"
-        : "";
-
-    }
-  );
+  });
 
 });
 
 
-/* =========================================================
-   CURRENT LOCATION
+/* LOCATION — NOT SAVED */
 
-   現在地は保存しない。
-========================================================= */
+let locationMarker=null;
+let accuracyCircle=null;
 
-let locationMarker = null;
-let accuracyCircle = null;
-
-
-const userIcon = L.divIcon({
-
+const userIcon=L.divIcon({
   className:"",
-
-  html:
-    '<div class="user-location"></div>',
-
+  html:'<div class="user-location"></div>',
   iconSize:[21,21],
-
   iconAnchor:[10.5,10.5]
-
 });
 
-
-document
-.getElementById("locateButton")
-.addEventListener(
-  "click",
-  locateUser
-);
-
+document.getElementById("locateButton")
+.addEventListener("click",locateUser);
 
 function locateUser(){
 
   if(!navigator.geolocation){
-
-    showToast(
-      "位置情報を利用できません"
-    );
-
+    showToast("位置情報を利用できません");
     return;
-
   }
 
-
-  showToast(
-    "現在地を取得しています…"
-  );
-
+  showToast("現在地を取得しています…");
 
   navigator.geolocation.getCurrentPosition(
 
-    position => {
+    position=>{
 
-      const lat =
-        position.coords.latitude;
-
-      const lng =
-        position.coords.longitude;
-
-      const accuracy =
-        position.coords.accuracy;
-
+      const lat=position.coords.latitude;
+      const lng=position.coords.longitude;
+      const accuracy=position.coords.accuracy;
 
       if(!locationMarker){
 
-        locationMarker =
-          L.marker(
-            [lat,lng],
-            {
-              icon:userIcon,
-              zIndexOffset:10000
-            }
-          ).addTo(map);
+        locationMarker=L.marker(
+          [lat,lng],
+          {
+            icon:userIcon,
+            zIndexOffset:10000
+          }
+        ).addTo(map);
+
+      }else{
+
+        locationMarker.setLatLng([lat,lng]);
 
       }
-
-      else{
-
-        locationMarker.setLatLng(
-          [lat,lng]
-        );
-
-      }
-
 
       if(!accuracyCircle){
 
-        accuracyCircle =
-          L.circle(
-            [lat,lng],
-            {
-              radius:accuracy,
-              color:"#1976ff",
-              weight:1,
-              fillColor:"#1976ff",
-              fillOpacity:.07
-            }
-          ).addTo(map);
+        accuracyCircle=L.circle(
+          [lat,lng],
+          {
+            radius:accuracy,
+            color:"#1976ff",
+            weight:1,
+            fillColor:"#1976ff",
+            fillOpacity:.07
+          }
+        ).addTo(map);
+
+      }else{
+
+        accuracyCircle.setLatLng([lat,lng]);
+        accuracyCircle.setRadius(accuracy);
 
       }
 
-      else{
+      map.flyTo([lat,lng],18);
 
-        accuracyCircle.setLatLng(
-          [lat,lng]
-        );
-
-        accuracyCircle.setRadius(
-          accuracy
-        );
-
-      }
-
-
-      map.flyTo(
-        [lat,lng],
-        18
-      );
-
-
-      showToast(
-        "現在地を表示しました"
-      );
+      showToast("現在地を表示しました");
 
     },
 
-    () => {
-
-      showToast(
-        "現在地を取得できませんでした"
-      );
-
+    ()=>{
+      showToast("現在地を取得できませんでした");
     },
 
     {
@@ -2957,252 +2112,129 @@ function locateUser(){
 }
 
 
-/* =========================================================
-   VENUE SHEET
-========================================================= */
+/* VENUE SHEET */
 
-let activeVenue = null;
+let activeVenue=null;
 
-
-const bottomSheet =
-  document.getElementById("bottomSheet");
-
-const sheetBackdrop =
-  document.getElementById("sheetBackdrop");
-
-const saveSpotButton =
-  document.getElementById("saveSpotButton");
-
+const bottomSheet=document.getElementById("bottomSheet");
+const sheetBackdrop=document.getElementById("sheetBackdrop");
+const saveSpotButton=document.getElementById("saveSpotButton");
 
 function openVenue(v){
 
-  activeVenue = v;
+  activeVenue=v;
 
-
-  document.getElementById(
-    "sheetCategory"
-  ).textContent =
+  document.getElementById("sheetCategory").textContent=
     v.category.toUpperCase();
 
-
-  document.getElementById(
-    "sheetTitle"
-  ).textContent =
-    v.name;
-
-
-  document.getElementById(
-    "sheetDesc"
-  ).textContent =
-    v.description;
-
+  document.getElementById("sheetTitle").textContent=v.name;
+  document.getElementById("sheetDesc").textContent=v.description;
 
   updateSaveButton();
 
-
   bottomSheet.classList.add("show");
-
   sheetBackdrop.classList.add("show");
-
 }
-
 
 function closeSheet(){
-
   bottomSheet.classList.remove("show");
-
   sheetBackdrop.classList.remove("show");
-
 }
 
-
-sheetBackdrop.addEventListener(
-  "click",
-  closeSheet
-);
+sheetBackdrop.addEventListener("click",closeSheet);
 
 
-/* =========================================================
-   MY SPOTS
-========================================================= */
+/* MY SPOTS */
 
-let mySpots =
+let mySpots=
   JSON.parse(
-    localStorage.getItem(
-      "bmsgfes_myspots"
-    ) || "[]"
+    localStorage.getItem("bmsgfes_myspots")||"[]"
   );
 
+saveSpotButton.addEventListener("click",()=>{
 
-saveSpotButton.addEventListener(
-  "click",
-  () => {
+  if(!activeVenue)return;
 
-    if(!activeVenue){
-      return;
-    }
+  const exists=mySpots.includes(activeVenue.id);
 
+  if(exists){
 
-    const exists =
-      mySpots.includes(
-        activeVenue.id
-      );
+    mySpots=mySpots.filter(id=>id!==activeVenue.id);
+    showToast("MY SPOTSから削除しました");
 
+  }else{
 
-    if(exists){
-
-      mySpots =
-        mySpots.filter(
-          id =>
-            id !== activeVenue.id
-        );
-
-      showToast(
-        "MY SPOTSから削除しました"
-      );
-
-    }
-
-    else{
-
-      mySpots.push(
-        activeVenue.id
-      );
-
-      showToast(
-        "行きたい場所に保存しました"
-      );
-
-    }
-
-
-    saveMySpots();
-
-    updateSaveButton();
-
-    renderMySpots();
+    mySpots.push(activeVenue.id);
+    showToast("行きたい場所に保存しました");
 
   }
-);
-
-
-function saveMySpots(){
 
   localStorage.setItem(
     "bmsgfes_myspots",
     JSON.stringify(mySpots)
   );
 
-}
+  updateSaveButton();
+  renderMySpots();
 
+});
 
 function updateSaveButton(){
 
-  if(!activeVenue){
-    return;
-  }
+  if(!activeVenue)return;
 
+  const saved=mySpots.includes(activeVenue.id);
 
-  const saved =
-    mySpots.includes(
-      activeVenue.id
-    );
+  saveSpotButton.textContent=
+    saved ? "♥ 保存済み" : "♡ 行きたい";
 
-
-  saveSpotButton.textContent =
-    saved
-    ? "♥ 保存済み"
-    : "♡ 行きたい";
-
-
-  saveSpotButton.classList.toggle(
-    "saved",
-    saved
-  );
-
+  saveSpotButton.classList.toggle("saved",saved);
 }
-
 
 function renderMySpots(){
 
-  const container =
-    document.getElementById(
-      "mySpots"
-    );
+  const container=document.getElementById("mySpots");
+  container.innerHTML="";
 
+  if(mySpots.length===0){
 
-  container.innerHTML = "";
-
-
-  if(mySpots.length === 0){
-
-    container.innerHTML =
+    container.innerHTML=
       '<div class="card-small">まだ保存されていません。</div>';
 
     return;
-
   }
 
+  mySpots.forEach(id=>{
 
-  mySpots.forEach(id => {
+    const venue=venues.find(v=>v.id===id);
 
-    const venue =
-      venues.find(
-        v => v.id === id
-      );
+    if(!venue)return;
 
+    const row=document.createElement("div");
+    row.className="spot-row";
 
-    if(!venue){
-      return;
-    }
-
-
-    const row =
-      document.createElement(
-        "div"
-      );
-
-
-    row.className =
-      "spot-row";
-
-
-    row.innerHTML = `
-      <div class="spot-name">
-        ${venue.name}
-      </div>
-
-      <button class="spot-go">
-        MAP
-      </button>
+    row.innerHTML=`
+      <div class="spot-name">${escapeHtml(venue.name)}</div>
+      <button class="spot-go">MAP</button>
     `;
 
-
-    row
-    .querySelector(".spot-go")
-    .addEventListener(
-      "click",
-      () => {
+    row.querySelector(".spot-go")
+      .addEventListener("click",()=>{
 
         switchPage("map");
 
-        setTimeout(
-          () => {
+        setTimeout(()=>{
 
-            map.flyTo(
-              [venue.lat,venue.lng],
-              19
-            );
+          map.flyTo(
+            [venue.lat,venue.lng],
+            19
+          );
 
-            openVenue(venue);
+          openVenue(venue);
 
-          },
-          100
-        );
+        },100);
 
-      }
-    );
-
+      });
 
     container.appendChild(row);
 
@@ -3211,84 +2243,37 @@ function renderMySpots(){
 }
 
 
-/* =========================================================
-   NAVIGATE TO VENUE
+/* NAVIGATE */
 
-   現在地を外部へ保存しない。
-   端末の地図アプリ/ブラウザへ徒歩目的地を渡す。
-========================================================= */
+document.getElementById("navigateButton")
+.addEventListener("click",()=>{
 
-document
-.getElementById("navigateButton")
-.addEventListener(
-  "click",
-  () => {
+  if(!activeVenue)return;
 
-    if(!activeVenue){
-      return;
-    }
+  const destination=
+    `${activeVenue.lat},${activeVenue.lng}`;
 
+  const url=
+    `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(destination)}&travelmode=walking`;
 
-    const destination =
-      `${activeVenue.lat},${activeVenue.lng}`;
+  window.open(url,"_blank","noopener");
 
+});
 
-    const url =
-      `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(destination)}&travelmode=walking`;
-
-
-    window.open(
-      url,
-      "_blank",
-      "noopener"
-    );
-
-  }
-);
-
-
-/* =========================================================
-   STATION ROUTE
-========================================================= */
 
 function stationRoute(type){
 
-  /*
-    目的地は会場中央付近。
-    後でWEST/EAST GATE等へ変更可能。
-  */
+  const destination="35.62395,139.77520";
 
-  const destination =
-    "35.62395,139.77520";
+  const origin=
+    type==="daiba"
+    ? "台場駅"
+    : "東京テレポート駅";
 
-
-  let origin = "";
-
-
-  if(type === "daiba"){
-
-    origin =
-      "台場駅";
-
-  }
-
-  else{
-
-    origin =
-      "東京テレポート駅";
-
-  }
-
-
-  const url =
+  const url=
     `https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(origin)}&destination=${encodeURIComponent(destination)}&travelmode=walking`;
 
-
-  window.open(
-    url,
-    "_blank",
-    "noopener"
-  );
+  window.open(url,"_blank","noopener");
 
 }
 
@@ -3297,71 +2282,41 @@ function stationRoute(type){
    CHECKLIST
 ========================================================= */
 
-let checklist =
+let checklist=
   JSON.parse(
-    localStorage.getItem(
-      "bmsgfes_checklist"
-    ) || "[]"
+    localStorage.getItem("bmsgfes_checklist")||"[]"
   );
 
+const checkInput=document.getElementById("checkInput");
 
-const checkInput =
-  document.getElementById(
-    "checkInput"
-  );
+document.getElementById("checkAdd")
+.addEventListener("click",addChecklist);
 
+checkInput.addEventListener("keydown",event=>{
 
-document
-.getElementById("checkAdd")
-.addEventListener(
-  "click",
-  addChecklist
-);
-
-
-checkInput.addEventListener(
-  "keydown",
-  event => {
-
-    if(event.key === "Enter"){
-      addChecklist();
-    }
-
+  if(event.key==="Enter"){
+    addChecklist();
   }
-);
 
+});
 
 function addChecklist(){
 
-  const text =
-    checkInput.value.trim();
+  const text=checkInput.value.trim();
 
-
-  if(!text){
-    return;
-  }
-
+  if(!text)return;
 
   checklist.push({
-
     id:Date.now(),
-
-    text:text,
-
+    text,
     done:false
-
   });
 
-
-  checkInput.value = "";
-
+  checkInput.value="";
 
   saveChecklist();
-
   renderChecklist();
-
 }
-
 
 function saveChecklist(){
 
@@ -3372,88 +2327,57 @@ function saveChecklist(){
 
 }
 
-
 function renderChecklist(){
 
-  const container =
-    document.getElementById(
-      "checkList"
-    );
+  const container=document.getElementById("checkList");
+  container.innerHTML="";
 
+  if(checklist.length===0){
 
-  container.innerHTML = "";
+    container.innerHTML=
+      '<div class="card-small">まだ持ち物は登録されていません。</div>';
 
+    return;
+  }
 
-  checklist.forEach(item => {
+  checklist.forEach(item=>{
 
-    const row =
-      document.createElement(
-        "div"
-      );
+    const row=document.createElement("div");
+    row.className="check-item";
 
-
-    row.className =
-      "check-item";
-
-
-    row.innerHTML = `
-
+    row.innerHTML=`
       <input
         type="checkbox"
         ${item.done ? "checked" : ""}
       >
 
-      <div
-        class="
-          check-text
-          ${item.done ? "done" : ""}
-        "
-      >
+      <div class="check-text ${item.done ? "done" : ""}">
         ${escapeHtml(item.text)}
       </div>
 
-      <button class="delete-btn">
-        ×
-      </button>
-
+      <button class="delete-btn">×</button>
     `;
 
+    row.querySelector("input")
+      .addEventListener("change",event=>{
 
-    row
-    .querySelector("input")
-    .addEventListener(
-      "change",
-      event => {
-
-        item.done =
-          event.target.checked;
+        item.done=event.target.checked;
 
         saveChecklist();
-
         renderChecklist();
 
-      }
-    );
+      });
 
+    row.querySelector(".delete-btn")
+      .addEventListener("click",()=>{
 
-    row
-    .querySelector(".delete-btn")
-    .addEventListener(
-      "click",
-      () => {
-
-        checklist =
-          checklist.filter(
-            x => x.id !== item.id
-          );
+        checklist=
+          checklist.filter(x=>x.id!==item.id);
 
         saveChecklist();
-
         renderChecklist();
 
-      }
-    );
-
+      });
 
     container.appendChild(row);
 
@@ -3463,86 +2387,452 @@ function renderChecklist(){
 
 
 /* =========================================================
-   TRADE MEMO
+   TRADES
 ========================================================= */
 
-let memoDay = 0;
+let tradeDay=0;
+let editingTradeId=null;
 
-
-let tradeMemos =
+let trades=
   JSON.parse(
-    localStorage.getItem(
-      "bmsgfes_trade_memos"
-    ) || "{}"
+    localStorage.getItem("bmsgfes_trades")||"[]"
   );
 
-
-const tradeMemo =
-  document.getElementById(
-    "tradeMemo"
-  );
-
-
-function loadMemo(){
-
-  const date =
-    EVENT_DAYS[memoDay];
+const tradeForm=document.getElementById("tradeForm");
+const tradeName=document.getElementById("tradeName");
+const tradeX=document.getElementById("tradeX");
+const tradeType=document.getElementById("tradeType");
+const tradeContent=document.getElementById("tradeContent");
 
 
-  tradeMemo.value =
-    tradeMemos[date] || "";
+document.querySelectorAll("[data-tradeday]").forEach(button=>{
+
+  button.addEventListener("click",()=>{
+
+    document.querySelectorAll("[data-tradeday]")
+      .forEach(b=>b.classList.remove("active"));
+
+    button.classList.add("active");
+
+    tradeDay=Number(button.dataset.tradeday);
+
+    closeTradeForm();
+    renderTrades();
+
+  });
+
+});
+
+
+document.getElementById("openTradeForm")
+.addEventListener("click",()=>{
+
+  editingTradeId=null;
+
+  document.getElementById("tradeFormTitle").textContent=
+    "NEW TRADE";
+
+  tradeName.value="";
+  tradeX.value="";
+  tradeType.value="exchange";
+  tradeContent.value="";
+
+  tradeForm.classList.add("show");
+
+  tradeName.focus();
+
+});
+
+
+document.getElementById("cancelTrade")
+.addEventListener("click",closeTradeForm);
+
+
+function closeTradeForm(){
+
+  tradeForm.classList.remove("show");
+  editingTradeId=null;
 
 }
 
 
-tradeMemo.addEventListener(
-  "input",
-  () => {
+document.getElementById("saveTrade")
+.addEventListener("click",()=>{
 
-    const date =
-      EVENT_DAYS[memoDay];
+  const name=tradeName.value.trim();
+  let xid=tradeX.value.trim();
+  const content=tradeContent.value.trim();
 
+  if(!name){
 
-    tradeMemos[date] =
-      tradeMemo.value;
-
-
-    localStorage.setItem(
-      "bmsgfes_trade_memos",
-      JSON.stringify(tradeMemos)
-    );
+    showToast("名前を入力してください");
+    return;
 
   }
-);
 
+  if(xid && !xid.startsWith("@")){
+    xid="@"+xid;
+  }
 
-document
-.querySelectorAll("[data-memoday]")
-.forEach(button => {
+  if(editingTradeId){
 
-  button.addEventListener(
-    "click",
-    () => {
+    const item=
+      trades.find(t=>t.id===editingTradeId);
 
-      document
-      .querySelectorAll("[data-memoday]")
-      .forEach(b =>
-        b.classList.remove("active")
-      );
+    if(item){
 
-
-      button.classList.add("active");
-
-
-      memoDay =
-        Number(
-          button.dataset.memoday
-        );
-
-
-      loadMemo();
+      item.name=name;
+      item.x=xid;
+      item.type=tradeType.value;
+      item.content=content;
 
     }
+
+  }else{
+
+    trades.push({
+      id:Date.now(),
+      date:EVENT_DAYS[tradeDay],
+      name,
+      x:xid,
+      type:tradeType.value,
+      content,
+      completed:false,
+      createdAt:Date.now()
+    });
+
+  }
+
+  saveTrades();
+  closeTradeForm();
+  renderTrades();
+
+  showToast(
+    editingTradeId
+      ? "取引を更新しました"
+      : "取引を保存しました"
+  );
+
+});
+
+
+function saveTrades(){
+
+  localStorage.setItem(
+    "bmsgfes_trades",
+    JSON.stringify(trades)
+  );
+
+}
+
+
+function tradeTypeLabel(type){
+
+  if(type==="exchange")return "交換";
+  if(type==="give")return "譲渡";
+  if(type==="buy")return "買取";
+
+  return "取引";
+}
+
+
+function normalizeXId(xid){
+
+  return xid
+    .trim()
+    .replace(/^@/,"");
+}
+
+
+function renderTrades(){
+
+  const date=EVENT_DAYS[tradeDay];
+
+  const container=
+    document.getElementById("tradeList");
+
+  container.innerHTML="";
+
+  const items=
+    trades
+      .filter(item=>item.date===date)
+      .sort((a,b)=>{
+
+        if(a.completed!==b.completed){
+          return Number(a.completed)-Number(b.completed);
+        }
+
+        return a.createdAt-b.createdAt;
+
+      });
+
+
+  if(items.length===0){
+
+    container.innerHTML=`
+      <div class="card">
+        <div class="card-small">
+          この日の取引はまだ登録されていません。
+        </div>
+      </div>
+    `;
+
+    return;
+
+  }
+
+
+  items.forEach(item=>{
+
+    const card=document.createElement("div");
+
+    card.className=
+      `trade-card ${item.completed ? "completed" : ""}`;
+
+
+    const xUser=normalizeXId(item.x||"");
+
+    const xLink=
+      xUser
+      ? `https://x.com/${encodeURIComponent(xUser)}`
+      : "";
+
+
+    card.innerHTML=`
+
+      <div class="trade-top">
+
+        <span class="trade-type ${item.type}">
+          ${tradeTypeLabel(item.type)}
+        </span>
+
+        ${
+          item.completed
+          ? '<span class="trade-complete-label">✓ 完了済み</span>'
+          : ""
+        }
+
+      </div>
+
+
+      <div class="trade-person">
+        ${escapeHtml(item.name)}
+      </div>
+
+
+      ${
+        xUser
+        ? `
+          <a
+            class="trade-x"
+            href="${xLink}"
+            target="_blank"
+            rel="noopener"
+          >
+            @${escapeHtml(xUser)} ↗
+          </a>
+        `
+        : `
+          <div class="card-small">
+            X ID 未登録
+          </div>
+        `
+      }
+
+
+      ${
+        item.content
+        ? `
+          <div class="trade-content">
+            ${escapeHtml(item.content)}
+          </div>
+        `
+        : ""
+      }
+
+
+      <div class="trade-actions">
+
+        <button
+          class="trade-button x-open"
+          ${!xUser ? "disabled" : ""}
+        >
+          Xを開く ↗
+        </button>
+
+        <button class="trade-button complete complete-btn">
+          ${
+            item.completed
+            ? "↩ 未完了に戻す"
+            : "✓ 完了"
+          }
+        </button>
+
+      </div>
+
+
+      <div class="trade-subactions">
+
+        <button class="trade-text-btn edit-trade">
+          編集
+        </button>
+
+        <button class="trade-text-btn delete-trade">
+          削除
+        </button>
+
+      </div>
+
+    `;
+
+
+    const xButton=
+      card.querySelector(".x-open");
+
+    if(xUser){
+
+      xButton.addEventListener("click",()=>{
+
+        window.open(
+          xLink,
+          "_blank",
+          "noopener"
+        );
+
+      });
+
+    }
+
+
+    card.querySelector(".complete-btn")
+      .addEventListener("click",()=>{
+
+        item.completed=!item.completed;
+
+        saveTrades();
+        renderTrades();
+
+      });
+
+
+    card.querySelector(".edit-trade")
+      .addEventListener("click",()=>{
+
+        editingTradeId=item.id;
+
+        document.getElementById("tradeFormTitle")
+          .textContent="EDIT TRADE";
+
+        tradeName.value=item.name;
+        tradeX.value=item.x||"";
+        tradeType.value=item.type;
+        tradeContent.value=item.content||"";
+
+        tradeForm.classList.add("show");
+
+        tradeForm.scrollIntoView({
+          behavior:"smooth",
+          block:"start"
+        });
+
+      });
+
+
+    card.querySelector(".delete-trade")
+      .addEventListener("click",()=>{
+
+        if(!confirm("この取引を削除しますか？")){
+          return;
+        }
+
+        trades=
+          trades.filter(t=>t.id!==item.id);
+
+        saveTrades();
+        renderTrades();
+
+      });
+
+
+    container.appendChild(card);
+
+  });
+
+}
+
+
+/* =========================================================
+   PRIVATE KEYWORD
+========================================================= */
+
+const keywordInput=
+  document.getElementById("keywordInput");
+
+const keywordState=
+  document.getElementById("keywordState");
+
+
+function renderKeywordState(){
+
+  const exists=
+    !!localStorage.getItem(
+      "bmsgfes_private_keyword"
+    );
+
+  if(exists){
+
+    keywordState.innerHTML=
+      '<span class="keyword-ok">● キーワード登録済み</span><br>この端末でPRIVATE DATAを利用しています。';
+
+    document.getElementById("saveKeyword")
+      .textContent="キーワードを変更";
+
+  }else{
+
+    keywordState.textContent=
+      "キーワードはまだ登録されていません。";
+
+    document.getElementById("saveKeyword")
+      .textContent="キーワードを登録";
+
+  }
+
+}
+
+
+document.getElementById("saveKeyword")
+.addEventListener("click",()=>{
+
+  const keyword=
+    keywordInput.value.trim();
+
+  if(keyword.length<4){
+
+    showToast(
+      "4文字以上で登録してください"
+    );
+
+    return;
+
+  }
+
+  /*
+    現段階は端末保存のみ。
+    クラウド同期実装時は、
+    平文保存を廃止してWeb Cryptoへ変更する。
+  */
+
+  localStorage.setItem(
+    "bmsgfes_private_keyword",
+    keyword
+  );
+
+  keywordInput.value="";
+
+  renderKeywordState();
+
+  showToast(
+    "キーワードを登録しました"
   );
 
 });
@@ -3554,121 +2844,79 @@ document
 
 function renderSubStage(dayIndex){
 
-  const date =
-    EVENT_DAYS[dayIndex];
+  const date=EVENT_DAYS[dayIndex];
+  const artists=SUB_STAGE[date]||[];
 
+  const content=
+    document.getElementById("subStageContent");
 
-  const artists =
-    SUB_STAGE[date] || [];
+  if(artists.length===0){
 
-
-  const content =
-    document.getElementById(
-      "subStageContent"
-    );
-
-
-  if(artists.length === 0){
-
-    content.textContent =
+    content.textContent=
       "出演アーティストは後から登録できます。";
 
     return;
-
   }
 
-
-  content.innerHTML =
+  content.innerHTML=
     artists
-    .map(
-      artist =>
-        `・${escapeHtml(artist)}`
-    )
-    .join("<br>");
+      .map(artist=>`・${escapeHtml(artist)}`)
+      .join("<br>");
 
 }
 
 
-document
-.querySelectorAll("[data-subday]")
-.forEach(button => {
+document.querySelectorAll("[data-subday]").forEach(button=>{
 
-  button.addEventListener(
-    "click",
-    () => {
+  button.addEventListener("click",()=>{
 
-      document
-      .querySelectorAll("[data-subday]")
-      .forEach(b =>
-        b.classList.remove("active")
-      );
+    document.querySelectorAll("[data-subday]")
+      .forEach(b=>b.classList.remove("active"));
 
+    button.classList.add("active");
 
-      button.classList.add("active");
+    renderSubStage(
+      Number(button.dataset.subday)
+    );
 
-
-      renderSubStage(
-        Number(
-          button.dataset.subday
-        )
-      );
-
-    }
-  );
+  });
 
 });
 
 
 /* =========================================================
-   OFFICIAL LINKS
+   OPTIONAL LINKS
 ========================================================= */
 
 function setupLinks(){
 
-  const studyButton =
-    document.getElementById(
-      "studyButton"
-    );
-
+  const studyButton=
+    document.getElementById("studyButton");
 
   if(OFFICIAL_LINKS.study){
 
-    studyButton.disabled = false;
+    studyButton.disabled=false;
 
-    studyButton.addEventListener(
-      "click",
-      () => {
+    studyButton.addEventListener("click",()=>{
 
-        window.open(
-          OFFICIAL_LINKS.study,
-          "_blank",
-          "noopener"
-        );
+      window.open(
+        OFFICIAL_LINKS.study,
+        "_blank",
+        "noopener"
+      );
 
-      }
-    );
+    });
 
   }
 
 
   if(OFFICIAL_LINKS.streaming){
 
-    document
-    .getElementById(
-      "streamCard"
-    )
-    .classList.remove(
-      "hidden"
-    );
+    document.getElementById("streamCard")
+      .classList.remove("hidden");
 
-
-    document
-    .getElementById(
-      "streamButton"
-    )
-    .addEventListener(
-      "click",
-      () => {
+    document.getElementById("streamButton")
+      .addEventListener("click",()=>{
 
         window.open(
           OFFICIAL_LINKS.streaming,
@@ -3676,30 +2924,18 @@ function setupLinks(){
           "noopener"
         );
 
-      }
-    );
+      });
 
   }
 
 
   if(OFFICIAL_LINKS.goodsTicket){
 
-    document
-    .getElementById(
-      "ticketCard"
-    )
-    .classList.remove(
-      "hidden"
-    );
+    document.getElementById("ticketCard")
+      .classList.remove("hidden");
 
-
-    document
-    .getElementById(
-      "ticketButton"
-    )
-    .addEventListener(
-      "click",
-      () => {
+    document.getElementById("ticketButton")
+      .addEventListener("click",()=>{
 
         window.open(
           OFFICIAL_LINKS.goodsTicket,
@@ -3707,8 +2943,7 @@ function setupLinks(){
           "noopener"
         );
 
-      }
-    );
+      });
 
   }
 
@@ -3717,165 +2952,89 @@ function setupLinks(){
 
 /* =========================================================
    WEATHER
-   Open-Meteo
-
-   APIキー不要。
-   最後に成功した結果は端末へキャッシュ。
 ========================================================= */
 
-const weatherMini =
-  document.getElementById(
-    "weatherMini"
-  );
+const weatherMini=
+  document.getElementById("weatherMini");
 
+const weatherDetail=
+  document.getElementById("weatherDetail");
 
-const weatherDetail =
-  document.getElementById(
-    "weatherDetail"
-  );
+weatherMini.addEventListener("click",()=>{
 
+  weatherDetail.classList.add("show");
 
-weatherMini.addEventListener(
-  "click",
-  () => {
+});
 
-    weatherDetail.classList.add(
-      "show"
-    );
+document.getElementById("weatherClose")
+.addEventListener("click",()=>{
 
-  }
-);
+  weatherDetail.classList.remove("show");
 
-
-document
-.getElementById("weatherClose")
-.addEventListener(
-  "click",
-  () => {
-
-    weatherDetail.classList.remove(
-      "show"
-    );
-
-  }
-);
+});
 
 
 function weatherEmoji(code){
 
-  if(code === 0){
-    return "☀️";
-  }
+  if(code===0)return "☀️";
 
-  if(
-    code === 1 ||
-    code === 2
-  ){
-    return "🌤️";
-  }
+  if(code===1||code===2)return "🌤️";
 
-  if(code === 3){
-    return "☁️";
-  }
+  if(code===3)return "☁️";
 
-  if(
-    code === 45 ||
-    code === 48
-  ){
-    return "🌫️";
-  }
+  if(code===45||code===48)return "🌫️";
 
-  if(
-    code >= 51 &&
-    code <= 67
-  ){
-    return "🌧️";
-  }
+  if(code>=51&&code<=67)return "🌧️";
 
-  if(
-    code >= 71 &&
-    code <= 77
-  ){
-    return "🌨️";
-  }
+  if(code>=71&&code<=77)return "🌨️";
 
-  if(
-    code >= 80 &&
-    code <= 82
-  ){
-    return "🌦️";
-  }
+  if(code>=80&&code<=82)return "🌦️";
 
-  if(
-    code >= 95
-  ){
-    return "⛈️";
-  }
+  if(code>=95)return "⛈️";
 
   return "☁️";
-
 }
 
 
 async function loadWeather(){
 
-  /*
-    予報対象日がAPIの予報可能期間外の場合は、
-    キャッシュまたは「−」を表示。
-  */
-
-  const url =
+  const url=
     `https://api.open-meteo.com/v1/forecast?latitude=${VENUE_WEATHER_LAT}&longitude=${VENUE_WEATHER_LNG}&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=Asia%2FTokyo&forecast_days=16`;
-
 
   try{
 
-    const response =
-      await fetch(url);
-
+    const response=await fetch(url);
 
     if(!response.ok){
       throw new Error();
     }
 
-
-    const data =
-      await response.json();
-
+    const data=await response.json();
 
     localStorage.setItem(
       "bmsgfes_weather_cache",
       JSON.stringify({
         savedAt:Date.now(),
-        data:data
+        data
       })
     );
 
-
     renderWeather(data);
 
-  }
+  }catch(error){
 
-  catch(error){
-
-    const cache =
+    const cache=
       localStorage.getItem(
         "bmsgfes_weather_cache"
       );
 
-
     if(cache){
 
-      const parsed =
-        JSON.parse(cache);
-
       renderWeather(
-        parsed.data
+        JSON.parse(cache).data
       );
 
-    }
-
-    else{
+    }else{
 
       renderWeather(null);
 
@@ -3888,200 +3047,145 @@ async function loadWeather(){
 
 function renderWeather(data){
 
-  const grid =
+  const grid=
     document.getElementById(
       "weatherDetailGrid"
     );
 
+  grid.innerHTML="";
 
-  grid.innerHTML = "";
+  EVENT_DAYS.forEach((date,index)=>{
 
+    let dailyIndex=-1;
 
-  EVENT_DAYS.forEach(
-    (date,index) => {
+    if(
+      data &&
+      data.daily &&
+      Array.isArray(data.daily.time)
+    ){
 
-      let dailyIndex = -1;
-
-
-      if(
-        data &&
-        data.daily &&
-        Array.isArray(data.daily.time)
-      ){
-
-        dailyIndex =
-          data.daily.time.indexOf(
-            date
-          );
-
-      }
-
-
-      let icon = "−";
-      let max = "−";
-      let min = "−";
-      let rain = "−";
-
-
-      if(dailyIndex !== -1){
-
-        icon =
-          weatherEmoji(
-            data.daily.weather_code[
-              dailyIndex
-            ]
-          );
-
-
-        max =
-          Math.round(
-            data.daily.temperature_2m_max[
-              dailyIndex
-            ]
-          );
-
-
-        min =
-          Math.round(
-            data.daily.temperature_2m_min[
-              dailyIndex
-            ]
-          );
-
-
-        rain =
-          data.daily.precipitation_probability_max[
-            dailyIndex
-          ];
-
-      }
-
-
-      const mini =
-        document.getElementById(
-          `weatherIcon${index}`
-        );
-
-
-      mini.textContent =
-        icon;
-
-
-      mini.classList.remove(
-        "weather-loading"
-      );
-
-
-      const dateLabel =
-        date.slice(5).replace("-","/");
-
-
-      const card =
-        document.createElement(
-          "div"
-        );
-
-
-      card.className =
-        "weather-card";
-
-
-      card.innerHTML = `
-
-        <div class="weather-card-date">
-          ${dateLabel}
-        </div>
-
-        <div class="weather-card-icon">
-          ${icon}
-        </div>
-
-        <div class="weather-card-temp">
-          HIGH ${max}℃<br>
-          LOW ${min}℃
-        </div>
-
-        <div class="weather-card-rain">
-          ☂ ${rain}%
-        </div>
-
-      `;
-
-
-      grid.appendChild(card);
+      dailyIndex=
+        data.daily.time.indexOf(date);
 
     }
-  );
+
+    let icon="−";
+    let max="−";
+    let min="−";
+    let rain="−";
+
+    if(dailyIndex!==-1){
+
+      icon=
+        weatherEmoji(
+          data.daily.weather_code[dailyIndex]
+        );
+
+      max=
+        Math.round(
+          data.daily.temperature_2m_max[dailyIndex]
+        );
+
+      min=
+        Math.round(
+          data.daily.temperature_2m_min[dailyIndex]
+        );
+
+      rain=
+        data.daily.precipitation_probability_max[
+          dailyIndex
+        ];
+
+    }
+
+    const mini=
+      document.getElementById(
+        `weatherIcon${index}`
+      );
+
+    mini.textContent=icon;
+    mini.classList.remove("weather-loading");
+
+    const dateLabel=
+      date.slice(5).replace("-","/");
+
+    const card=
+      document.createElement("div");
+
+    card.className="weather-card";
+
+    card.innerHTML=`
+      <div class="weather-card-date">
+        ${dateLabel}
+      </div>
+
+      <div class="weather-card-icon">
+        ${icon}
+      </div>
+
+      <div class="weather-card-temp">
+        HIGH ${max}℃<br>
+        LOW ${min}℃
+      </div>
+
+      <div class="weather-card-rain">
+        ☂ ${rain}%
+      </div>
+    `;
+
+    grid.appendChild(card);
+
+  });
 
 }
 
 
 /* =========================================================
-   PAGE NAV
+   NAV
 ========================================================= */
 
-document
-.querySelectorAll(".nav-btn")
-.forEach(button => {
+document.querySelectorAll(".nav-btn").forEach(button=>{
 
-  button.addEventListener(
-    "click",
-    () => {
+  button.addEventListener("click",()=>{
 
-      switchPage(
-        button.dataset.page
-      );
+    switchPage(
+      button.dataset.page
+    );
 
-    }
-  );
+  });
 
 });
 
 
 function switchPage(page){
 
-  document
-  .querySelectorAll(".page")
-  .forEach(section =>
-    section.classList.remove(
-      "active"
-    )
-  );
-
-
-  document
-  .getElementById(
-    `page-${page}`
-  )
-  .classList.add(
-    "active"
-  );
-
-
-  document
-  .querySelectorAll(".nav-btn")
-  .forEach(button => {
-
-    button.classList.toggle(
-      "active",
-      button.dataset.page === page
+  document.querySelectorAll(".page")
+    .forEach(section=>
+      section.classList.remove("active")
     );
 
+  document.getElementById(`page-${page}`)
+    .classList.add("active");
+
+  document.querySelectorAll(".nav-btn")
+    .forEach(button=>{
+
+      button.classList.toggle(
+        "active",
+        button.dataset.page===page
+      );
+
+    });
+
+  window.scrollTo({
+    top:0,
+    behavior:"smooth"
   });
 
-
-  window.scrollTo(
-    {
-      top:0,
-      behavior:"smooth"
-    }
-  );
-
-
-  if(page === "map"){
+  if(page==="map"){
 
     setTimeout(
-      () => map.invalidateSize(),
+      ()=>map.invalidateSize(),
       100
     );
 
@@ -4096,55 +3200,34 @@ function switchPage(page){
 
 function escapeHtml(text){
 
-  const div =
-    document.createElement(
-      "div"
-    );
+  const div=
+    document.createElement("div");
 
-  div.textContent =
-    text;
+  div.textContent=
+    text==null ? "" : String(text);
 
   return div.innerHTML;
-
 }
 
 
-const toast =
-  document.getElementById(
-    "toast"
-  );
-
+const toast=
+  document.getElementById("toast");
 
 let toastTimer;
 
-
 function showToast(message){
 
-  clearTimeout(
-    toastTimer
-  );
+  clearTimeout(toastTimer);
 
+  toast.textContent=message;
 
-  toast.textContent =
-    message;
+  toast.classList.add("show");
 
+  toastTimer=setTimeout(()=>{
 
-  toast.classList.add(
-    "show"
-  );
+    toast.classList.remove("show");
 
-
-  toastTimer =
-    setTimeout(
-      () => {
-
-        toast.classList.remove(
-          "show"
-        );
-
-      },
-      2200
-    );
+  },2200);
 
 }
 
@@ -4154,15 +3237,11 @@ function showToast(message){
 ========================================================= */
 
 renderMySpots();
-
 renderChecklist();
-
-loadMemo();
-
+renderTrades();
+renderKeywordState();
 renderSubStage(0);
-
 setupLinks();
-
 loadWeather();
 
 </script>
