@@ -1070,23 +1070,50 @@ button:active{transform:scale(.98);}
 
 
 
-<style id="main-only-editor-style">
-.main-only-edit-btn{
-  position:absolute;right:10px;top:10px;z-index:1000;
-  border:1px solid rgba(255,255,255,.5);border-radius:999px;
-  background:rgba(5,5,5,.9);color:#fff;padding:9px 12px;
-  font-size:11px;font-weight:800;
+
+
+
+
+
+
+<style id="station-route-guide-style">
+.route-guide-modal{
+  position:fixed;inset:0;z-index:200000;display:none;
+  background:rgba(0,0,0,.86);padding:14px;overflow:auto;
 }
-.main-only-panel{
-  position:absolute;left:10px;right:10px;bottom:12px;z-index:1200;
-  display:none;background:rgba(5,5,5,.96);color:#fff;
-  border:1px solid rgba(255,255,255,.4);border-radius:14px;padding:12px;
+.route-guide-modal.on{display:block}
+.route-guide-card{
+  max-width:520px;margin:20px auto;background:#0b0b0b;color:#fff;
+  border:1px solid rgba(255,255,255,.28);border-radius:18px;padding:16px;
 }
-.main-only-panel.on{display:block}
-.main-only-panel .row{display:flex;gap:8px;margin-top:10px}
-.main-only-panel button{flex:1;border:0;border-radius:10px;padding:11px;font-weight:800}
-.main-only-panel .save{background:#fff;color:#050505}
-.main-only-panel .cancel{background:#292929;color:#fff}
+.route-guide-head{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.route-guide-head h3{margin:0;font-size:18px}
+.route-guide-close{
+  border:1px solid rgba(255,255,255,.35);background:#222;color:#fff;
+  border-radius:999px;width:34px;height:34px;font-size:18px
+}
+.route-diagram{
+  margin:14px 0;background:#f4f4f2;color:#111;border-radius:16px;padding:15px;
+}
+.route-node{
+  border:2px solid #111;border-radius:12px;padding:10px;text-align:center;
+  font-weight:900;font-size:13px;background:#fff
+}
+.route-arrow{text-align:center;font-size:22px;font-weight:900;padding:5px 0}
+.route-note{
+  margin-top:10px;border-radius:12px;padding:11px;background:#171717;
+  font-size:12px;line-height:1.65;color:#ddd
+}
+.route-toilet{
+  margin-top:10px;border:1px solid rgba(255,255,255,.2);
+  border-radius:12px;padding:11px;font-size:12px;line-height:1.65
+}
+.route-guide-actions{display:flex;gap:8px;margin-top:12px}
+.route-guide-actions button{
+  flex:1;border:0;border-radius:11px;padding:11px;font-weight:900
+}
+.route-guide-actions .online{background:#fff;color:#050505}
+.route-guide-actions .dismiss{background:#292929;color:#fff}
 </style>
 
 </head>
@@ -1211,26 +1238,10 @@ button:active{transform:scale(.98);}
     <div class="section-sub">当日の情報・SUB STAGE・公式リンク</div>
 
     <div class="card">
-
-      <div class="card-title">🎤 SUB STAGE</div>
-
-      <div class="day-tabs">
-        <button class="day-tab active" data-subday="0">10/10</button>
-        <button class="day-tab" data-subday="1">10/11</button>
-        <button class="day-tab" data-subday="2">10/12</button>
-      </div>
-
-      <div class="card-small" id="subStageContent">
-        出演アーティストは後から登録できます。
-      </div>
-
-    </div>
-
-    <div class="card">
       <div class="card-title">🎧 公式 予習LIST</div>
 
       <div class="card-small">
-        公式の予習リストURLを後から設定できます。
+        Spotifyで公式予習リストを開きます。
       </div>
 
       <button class="action primary" id="studyButton" disabled>
@@ -1635,7 +1646,53 @@ button:active{transform:scale(.98);}
 <div class="toast" id="toast"></div>
 
 
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
+/* =========================================================
+   STATION OFFLINE ROUTE GUIDES
+========================================================= */
+function openStationGuide(id){
+  const modal=document.getElementById(id);
+  if(!modal) return;
+  modal.classList.add("on");
+  modal.setAttribute("aria-hidden","false");
+  document.body.style.overflow="hidden";
+}
+function closeStationGuides(){
+  document.querySelectorAll(".route-guide-modal.on").forEach(modal=>{
+    modal.classList.remove("on");
+    modal.setAttribute("aria-hidden","true");
+  });
+  document.body.style.overflow="";
+}
+document.querySelectorAll("[data-close-route]").forEach(btn=>{
+  btn.addEventListener("click",closeStationGuides);
+});
+document.querySelectorAll(".route-guide-modal").forEach(modal=>{
+  modal.addEventListener("click",e=>{
+    if(e.target===modal) closeStationGuides();
+  });
+});
+
+/* 既存の駅ルートボタンをサイト内オフライン案内へ変更 */
+document.querySelectorAll("button,a").forEach(el=>{
+  const text=(el.textContent||"").replace(/\s+/g,"");
+  if(text.includes("東京テレポート駅") && text.includes("会場")){
+    el.addEventListener("click",e=>{
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      openStationGuide("teleportGuide");
+    },true);
+  }
+  if(text.includes("台場駅") && text.includes("会場")){
+    el.addEventListener("click",e=>{
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      openStationGuide("daibaGuide");
+    },true);
+  }
+});
+
+</script>
 
 <script>
 
@@ -1653,7 +1710,7 @@ const VENUE_WEATHER_LAT = 35.6234;
 const VENUE_WEATHER_LNG = 139.7750;
 
 const OFFICIAL_LINKS = {
-  study:"",
+  study:"https://open.spotify.com/playlist/57s7ZBqsowffPFT5zLnRuU?si=OOanRO-UQb6g2Qclw2QGMQ",
   streaming:"",
   goodsTicket:""
 };
@@ -1806,8 +1863,8 @@ const stages = [
 {
   id:"main",
   name:"MAIN STAGE",
-  lat:35.6244039,
-  lng:139.7766349
+  lat:35.6232112,
+  lng:139.7770309
 },
 {
   id:"sub",
@@ -1816,6 +1873,8 @@ const stages = [
   lng:139.7744679
 }
 ];
+
+let mainStageMarker = null;
 
 stages.forEach(stage=>{
 
@@ -1835,17 +1894,20 @@ stages.forEach(stage=>{
     iconAnchor:[73,25]
   });
 
-  L.marker(
+  const stageMarker = L.marker(
     [stage.lat,stage.lng],
     {
       icon,
-      interactive:false,
+      interactive: stage.id === "main",
       zIndexOffset:2000
     }
   ).addTo(map);
 
-});
+  if(stage.id === "main"){
+    mainStageMarker = stageMarker;
+  }
 
+});
 
 /* =========================================================
    VENUES
@@ -2180,150 +2242,11 @@ saveSpotButton.addEventListener("click",()=>{
   
 
 
-/* =========================================================
-   MAIN STAGE ONLY POSITION EDITOR
-   MAIN以外のピンは編集不可。
-========================================================= */
-const MAIN_ONLY_POSITION_KEY = "bmsgfes_main_stage_position_v2";
-let mainOnlyEditing = false;
-let mainOnlyOriginal = null;
-let mainOnlyDraft = null;
 
-function findMainStageMarker(){
-  if(typeof markers === "undefined" || !markers) return null;
-
-  if(markers instanceof Map){
-    return markers.get("main") || null;
-  }
-
-  if(Array.isArray(markers)){
-    const item = markers.find(v =>
-      v && (v.id === "main" || v.data?.id === "main")
-    );
-    return item?.marker || item || null;
-  }
-
-  return markers.main || null;
-}
-
-function loadSavedMainOnlyPosition(){
-  try{
-    const pos = JSON.parse(
-      localStorage.getItem(MAIN_ONLY_POSITION_KEY) || "null"
-    );
-    if(!pos || !Number.isFinite(pos.lat) || !Number.isFinite(pos.lng)) return;
-
-    const marker = findMainStageMarker();
-    if(marker?.setLatLng){
-      marker.setLatLng([pos.lat, pos.lng]);
-    }
-  }catch(e){}
-}
-
-function setupMainOnlyEditor(){
-  if(typeof map === "undefined") return;
-
-  const mapEl = document.getElementById("map");
-  if(!mapEl) return;
-
-  const wrap = mapEl.parentElement;
-  wrap.style.position = "relative";
-
-  const editBtn = document.createElement("button");
-  editBtn.type = "button";
-  editBtn.className = "main-only-edit-btn";
-  editBtn.textContent = "MAINだけ位置調整";
-  wrap.appendChild(editBtn);
-
-  const panel = document.createElement("div");
-  panel.className = "main-only-panel";
-  panel.innerHTML = `
-    <strong>MAIN STAGEだけ編集</strong><br>
-    <small style="color:#ccc;line-height:1.55">
-      正しいMAIN STAGEの場所を地図上でタップしてください。<br>
-      他のピンは一切動きません。
-    </small>
-    <div class="row">
-      <button type="button" class="cancel">キャンセル</button>
-      <button type="button" class="save">この位置で固定</button>
-    </div>
-  `;
-  wrap.appendChild(panel);
-
-  editBtn.addEventListener("click", ()=>{
-    const marker = findMainStageMarker();
-    if(!marker?.getLatLng){
-      showToast("MAIN STAGEを取得できません");
-      return;
-    }
-
-    const p = marker.getLatLng();
-    mainOnlyOriginal = {lat:p.lat, lng:p.lng};
-    mainOnlyDraft = null;
-    mainOnlyEditing = true;
-
-    panel.classList.add("on");
-    editBtn.style.display = "none";
-    showToast("MAIN STAGEの正しい位置をタップ");
-  });
-
-  map.on("click", e=>{
-    if(!mainOnlyEditing) return;
-
-    mainOnlyDraft = {
-      lat:e.latlng.lat,
-      lng:e.latlng.lng
-    };
-
-    const marker = findMainStageMarker();
-    if(marker?.setLatLng){
-      marker.setLatLng(e.latlng);
-    }
-  });
-
-  panel.querySelector(".cancel").addEventListener("click", ()=>{
-    const marker = findMainStageMarker();
-
-    if(mainOnlyOriginal && marker?.setLatLng){
-      marker.setLatLng([
-        mainOnlyOriginal.lat,
-        mainOnlyOriginal.lng
-      ]);
-    }
-
-    mainOnlyEditing = false;
-    mainOnlyDraft = null;
-    mainOnlyOriginal = null;
-    panel.classList.remove("on");
-    editBtn.style.display = "";
-  });
-
-  panel.querySelector(".save").addEventListener("click", ()=>{
-    if(!mainOnlyDraft){
-      showToast("先に地図上の位置をタップしてください");
-      return;
-    }
-
-    localStorage.setItem(
-      MAIN_ONLY_POSITION_KEY,
-      JSON.stringify(mainOnlyDraft)
-    );
-
-    mainOnlyEditing = false;
-    mainOnlyOriginal = null;
-    panel.classList.remove("on");
-    editBtn.style.display = "";
-
-    showToast("MAIN STAGEの位置を固定しました");
-  });
-
-  // map/marker生成後に保存位置を反映
-  setTimeout(loadSavedMainOnlyPosition, 300);
-  setTimeout(loadSavedMainOnlyPosition, 1000);
-}
-
-
-setupMainOnlyEditor();
+/* MAIN STAGE: fixed over the Aomi 2nd Temporary Parking Lot map label. */
+localStorage.removeItem("bmsgfes_main_stage_position_v1");
+localStorage.removeItem("bmsgfes_main_stage_position_v2");
+localStorage.removeItem("bmsgfes_main_stage_position_v3");
 
 renderMySpots();
 
@@ -3452,8 +3375,25 @@ function renderSubStage(dayIndex){
 
   content.innerHTML=
     artists
-      .map(artist=>`・${escapeHtml(artist)}`)
-      .join("<br>");
+      .map(item=>`
+        <div style="
+          display:flex;
+          gap:12px;
+          align-items:baseline;
+          padding:8px 0;
+          border-bottom:1px solid rgba(255,255,255,.10);
+        ">
+          <strong style="min-width:42px;color:#fff;">
+            ${escapeHtml(item.time)}
+          </strong>
+          <span>${escapeHtml(item.artist)}</span>
+        </div>
+      `)
+      .join("")
+    +
+    `<div style="margin-top:9px;font-size:10px;color:#888;">
+      ※タイムテーブル・出演者は変更となる場合があります。
+    </div>`;
 
 }
 
@@ -3475,6 +3415,18 @@ document.querySelectorAll("[data-subday]").forEach(button=>{
 
 });
 
+
+/* =========================================================
+   RESALE
+========================================================= */
+const RESALE_URL = "https://bmsgfes.tokyo/news/260930";
+
+function setupOfficialInfoLinks(){
+  document.getElementById("resaleButton")
+    ?.addEventListener("click",()=>{
+      window.open(RESALE_URL,"_blank","noopener");
+    });
+}
 
 /* =========================================================
    OPTIONAL LINKS
@@ -3834,6 +3786,7 @@ renderTrades();
 renderKeywordState();
 renderSubStage(0);
 setupLinks();
+setupOfficialInfoLinks();
 loadWeather();
 
 /* PWA / OFFLINE */
@@ -3845,6 +3798,87 @@ if("serviceWorker" in navigator){
 }
 
 </script>
+
+
+<div class="route-guide-modal" id="teleportGuide" aria-hidden="true">
+  <div class="route-guide-card">
+    <div class="route-guide-head">
+      <h3>🚃 東京テレポート駅 → 会場</h3>
+      <button class="route-guide-close" type="button" data-close-route>×</button>
+    </div>
+
+    <div class="route-diagram">
+      <div class="route-node">りんかい線<br>東京テレポート駅</div>
+      <div class="route-arrow">↓</div>
+      <div class="route-node">B1F 改札</div>
+      <div class="route-arrow">↓</div>
+      <div class="route-node">A出口方面へ</div>
+      <div class="route-arrow">↓</div>
+      <div class="route-node">青海・会場方面へ</div>
+      <div class="route-arrow">↓</div>
+      <div class="route-node">BMSG FES 特設会場</div>
+    </div>
+
+    <div class="route-toilet">
+      <strong>🚻 お手洗い</strong><br>
+      東京テレポート駅には駅構内トイレがあります。
+      会場へ向かう前に駅で済ませておくのがおすすめです。
+    </div>
+
+    <div class="route-note">
+      <strong>OFFLINE GUIDE</strong><br>
+      この案内はサイト本体に保存されるため、機内モードでも確認できます。
+      A出口は公式駅案内で青海方面の施設が案内されている出口です。
+    </div>
+
+    <div class="route-guide-actions">
+      <button class="dismiss" type="button" data-close-route>閉じる</button>
+      <button class="online" type="button"
+        onclick="window.open('https://www.google.com/maps/dir/?api=1&origin=東京テレポート駅&destination=35.6232112,139.7770309&travelmode=walking','_blank')">
+        オンライン地図
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="route-guide-modal" id="daibaGuide" aria-hidden="true">
+  <div class="route-guide-card">
+    <div class="route-guide-head">
+      <h3>🚝 台場駅 → 会場</h3>
+      <button class="route-guide-close" type="button" data-close-route>×</button>
+    </div>
+
+    <div class="route-diagram">
+      <div class="route-node">ゆりかもめ<br>台場駅</div>
+      <div class="route-arrow">↓</div>
+      <div class="route-node">改札を出る</div>
+      <div class="route-arrow">↓</div>
+      <div class="route-node">青海・東京テレポート方面へ</div>
+      <div class="route-arrow">↓</div>
+      <div class="route-node">BMSG FES 特設会場</div>
+    </div>
+
+    <div class="route-toilet">
+      <strong>🚻 お手洗い</strong><br>
+      台場駅には一般トイレ・バリアフリートイレがあります。
+      会場へ歩き始める前に駅で済ませておくと安心です。
+    </div>
+
+    <div class="route-note">
+      <strong>OFFLINE GUIDE</strong><br>
+      台場駅については、公式情報で確認できない出口番号を推測して表示していません。
+      現地の「青海・東京テレポート方面」の案内表示も確認してください。
+    </div>
+
+    <div class="route-guide-actions">
+      <button class="dismiss" type="button" data-close-route>閉じる</button>
+      <button class="online" type="button"
+        onclick="window.open('https://www.google.com/maps/dir/?api=1&origin=台場駅&destination=35.6232112,139.7770309&travelmode=walking','_blank')">
+        オンライン地図
+      </button>
+    </div>
+  </div>
+</div>
 
 </body>
 </html>
