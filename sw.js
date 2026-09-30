@@ -3,14 +3,7 @@ const CACHE_NAME = "bmsgfes26-v14";
 /*
   =========================================================
   APP SHELL
-
-  ★ index.html を最初から保存する
-
-  これにより、
-  Cloudflare Pages版を一度オンラインで読み込んで
-  Service Workerのインストールが完了すれば、
-
-  機内モードでもサイト本体を起動できる。
+  サイト本体をオフライン起動できるように保存
   =========================================================
 */
 
@@ -141,15 +134,10 @@ self.addEventListener(
           );
 
 
-        /* =================================================
-           APP SHELL
-
-           index.html
-           Map.JPG
-           manifest
-
-           をオフライン用に保存
-        ================================================= */
+        /*
+          index.html / Map.JPG / manifest
+          をオフライン用に保存
+        */
 
         for (
           const url of APP_SHELL
@@ -186,26 +174,19 @@ self.addEventListener(
           catch (e) {
 
             /*
-              1ファイル取得失敗しても
-              Service Worker全体は止めない
+              1ファイル失敗しても
+              SW全体は止めない
             */
-
-            console.warn(
-              "APP SHELL CACHE FAILED:",
-              url
-            );
 
           }
 
         }
 
 
-        /* =================================================
-           VENUE MAP TILES
-
-           会場周辺のOpenStreetMapタイルを
-           圏外用に保存
-        ================================================= */
+        /*
+          会場周辺のOpenStreetMapタイルを
+          オフライン用に保存
+        */
 
         const tileUrls =
           venueTileUrls();
@@ -244,7 +225,7 @@ self.addEventListener(
           catch (e) {
 
             /*
-              一部タイル取得失敗は無視
+              一部の地図タイル取得失敗は無視
             */
 
           }
@@ -257,8 +238,7 @@ self.addEventListener(
 
 
     /*
-      新しいSWを待機状態にせず
-      すぐ使用可能にする
+      新しいSWをすぐ待機解除
     */
 
     self.skipWaiting();
@@ -284,20 +264,16 @@ self.addEventListener(
 
 
         /*
-          v13以前など
-          古いService Workerキャッシュを削除
+          古いSWキャッシュを削除
 
-          ★ localStorageは削除しない
-
-          そのため
+          localStorageは削除しないので
 
           MY
           持ち物
           取引
           キーワード接続情報
 
-          などのブラウザ保存データには
-          触れない。
+          などには影響しない
         */
 
         await Promise.all(
@@ -319,7 +295,7 @@ self.addEventListener(
 
         /*
           開いているページを
-          新しいSWの管理下へ
+          新しいSWの管理下にする
         */
 
         await self.clients.claim();
@@ -345,7 +321,7 @@ self.addEventListener(
 
 
     /*
-      GET以外は触らない
+      GET以外は処理しない
     */
 
     if (
@@ -366,20 +342,15 @@ self.addEventListener(
     /* =====================================================
        LEAFLET CDN
 
-       ★重要★
+       Leaflet本体はSWでは処理しない。
 
-       Leaflet本体はSWで触らない。
-
-       index.html側で
+       index.html側の
 
        unpkg
-       ↓失敗
+       ↓
        jsDelivr
 
-       のフォールバックを行う。
-
-       ここをSWでキャッシュすると
-       マップ全体が死ぬ原因になる可能性があるため除外。
+       フォールバックをそのまま使用する。
     ===================================================== */
 
     if (
@@ -395,13 +366,8 @@ self.addEventListener(
     /* =====================================================
        PRIVATE API / WEATHER
 
+       個人データAPIと天気APIは
        SWではキャッシュしない
-
-       ・個人保存データAPI
-       ・天気API
-
-       オフライン時に古いレスポンスを
-       APIの最新値として返さない。
     ===================================================== */
 
     if (
@@ -423,18 +389,12 @@ self.addEventListener(
 
     /* =====================================================
        PAGE NAVIGATION
-       
-       index.html / 各ページ表示
 
        ONLINE
-       ↓
-       Cloudflare Pagesから最新版取得
-       ↓
-       成功したらキャッシュ更新
+       → Cloudflare Pagesの最新版
 
        OFFLINE
-       ↓
-       最後に正常取得したindex.htmlを表示
+       → 保存済みindex.html
     ===================================================== */
 
     if (
@@ -451,9 +411,9 @@ self.addEventListener(
             );
 
 
-          /* ===============================================
-             ONLINE
-          =============================================== */
+          /*
+            ONLINE
+          */
 
           try {
 
@@ -472,7 +432,7 @@ self.addEventListener(
             ) {
 
               /*
-                最新ページを保存
+                最新index.htmlを保存
               */
 
               await cache.put(
@@ -482,8 +442,7 @@ self.addEventListener(
 
 
               /*
-                "/" と index.html の両方で
-                オフライン起動できるようにする
+                ルートURL用にも保存
               */
 
               try {
@@ -498,8 +457,7 @@ self.addEventListener(
               catch (e) {
 
                 /*
-                  保存できなくても
-                  index.htmlがあれば問題なし
+                  index.htmlが保存できていればOK
                 */
 
               }
@@ -514,19 +472,19 @@ self.addEventListener(
           catch (e) {
 
             /*
-              ネットワークエラー
+              ネットワーク失敗
               ↓
-              OFFLINE処理へ
+              オフライン処理へ
             */
 
           }
 
 
-          /* ===============================================
-             OFFLINE
+          /*
+            OFFLINE
 
-             まず index.html
-          =============================================== */
+            まずindex.htmlを探す
+          */
 
           let cached =
             await cache.match(
@@ -541,9 +499,9 @@ self.addEventListener(
           }
 
 
-          /* ===============================================
-             次に "/"
-          =============================================== */
+          /*
+            次にルートURLを探す
+          */
 
           cached =
             await cache.match(
@@ -558,9 +516,9 @@ self.addEventListener(
           }
 
 
-          /* ===============================================
-             念のため現在URLも確認
-          =============================================== */
+          /*
+            現在のリクエストURLも確認
+          */
 
           cached =
             await cache.match(
@@ -576,79 +534,126 @@ self.addEventListener(
 
 
           /*
-            どこにも保存版が無い場合
+            どこにも保存版がない場合
           */
 
           return new Response(
             `
-            <!DOCTYPE html>
-            <html lang="ja">
-            <head>
-              <meta charset="UTF-8">
-              <meta
-                name="viewport"
-                content="width=device-width,initial-scale=1"
-              >
-              <title>BMSG FES 2026</title>
-              <style>
-                body {
-                  margin: 0;
-                  background: #080808;
-                  color: #fff;
-                  font-family:
-                    -apple-system,
-                    BlinkMacSystemFont,
-                    "Helvetica Neue",
-                    Arial,
-                    sans-serif;
-                  min-height: 100vh;
-                  display: flex;
-                  align-items: center;
-                  justify-content: center;
-                  text-align: center;
-                }
+<!DOCTYPE html>
+<html lang="ja">
 
-                .offline {
-                  padding: 30px;
-                }
+<head>
 
-                h1 {
-                  font-size: 22px;
-                  letter-spacing: .08em;
-                }
+<meta charset="UTF-8">
 
-                p {
-                  color: #aaa;
-                  line-height: 1.8;
-                  font-size: 14px;
-                }
-              </style>
-            </head>
+<meta
+  name="viewport"
+  content="width=device-width,initial-scale=1"
+>
 
-            <body>
+<title>BMSG FES 2026</title>
 
-              <div class="offline">
+<style>
 
-                <h1>
-                  BMSG FES 2026
-                </h1>
+body {
 
-                <p>
-                  オフラインデータを準備できませんでした。<br>
-                  一度オンラインでサイトを開いてから<br>
-                  もう一度お試しください。
-                </p>
+  margin: 0;
 
-              </div>
+  background: #080808;
 
-            </body>
-            </html>
+  color: #ffffff;
+
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    "Helvetica Neue",
+    Arial,
+    sans-serif;
+
+  min-height: 100vh;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  text-align: center;
+
+}
+
+
+.offline {
+
+  padding: 30px;
+
+}
+
+
+h1 {
+
+  font-size: 22px;
+
+  letter-spacing: .08em;
+
+}
+
+
+p {
+
+  color: #aaaaaa;
+
+  line-height: 1.8;
+
+  font-size: 14px;
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<div class="offline">
+
+
+<h1>
+BMSG FES 2026
+</h1>
+
+
+<p>
+
+オフラインデータを準備できませんでした。
+
+<br>
+
+一度オンラインでサイトを開いてから
+
+<br>
+
+もう一度お試しください。
+
+</p>
+
+
+</div>
+
+
+</body>
+
+</html>
             `,
             {
               status: 503,
               headers: {
+
                 "Content-Type":
                   "text/html; charset=utf-8"
+
               }
             }
           );
@@ -666,20 +671,10 @@ self.addEventListener(
     /* =====================================================
        OPENSTREETMAP
 
-       CACHE FIRST
+       保存済みタイルを最優先。
 
-       保存済みタイル
-       ↓
-       あれば即表示
-
-       なければ
-       ↓
-       ネット取得
-       ↓
-       成功したら保存
-
-       これにより
-       会場周辺は圏外でも表示可能。
+       保存されていない場合のみ
+       ネットから取得する。
     ===================================================== */
 
     if (
@@ -699,7 +694,7 @@ self.addEventListener(
 
 
           /*
-            保存済み確認
+            保存済みタイルを確認
           */
 
           const hit =
@@ -716,8 +711,7 @@ self.addEventListener(
 
 
           /*
-            保存されていなければ
-            ネット取得
+            なければオンライン取得
           */
 
           try {
@@ -741,7 +735,7 @@ self.addEventListener(
 
                 /*
                   キャッシュ失敗しても
-                  地図表示自体は続行
+                  地図表示は続ける
                 */
 
               }
@@ -756,7 +750,7 @@ self.addEventListener(
           catch (e) {
 
             /*
-              タイルが無い＋圏外
+              タイルなし＋オフライン
             */
 
             return new Response(
@@ -779,23 +773,13 @@ self.addEventListener(
 
 
     /* =====================================================
-       SAME ORIGIN STATIC FILES
-
-       Cloudflare Pages上の
-
-       ・画像
-       ・CSS
-       ・JS
-       ・manifest
-       など
+       CLOUDFLARE PAGES内のファイル
 
        ONLINE
-       ↓
-       最新版取得＋保存
+       → 最新版取得＋保存
 
        OFFLINE
-       ↓
-       保存版
+       → 保存済みを使用
     ===================================================== */
 
     if (
@@ -860,7 +844,7 @@ self.addEventListener(
           catch (e) {
 
             /*
-              OFFLINEへ
+              オフライン処理へ
             */
 
           }
@@ -901,17 +885,13 @@ self.addEventListener(
 
 
     /* =====================================================
-       OTHER EXTERNAL FILES
-
-       その他の外部リソース。
+       その他の外部ファイル
 
        ONLINE
-       ↓
-       そのまま取得
+       → 最新版を取得
 
        OFFLINE
-       ↓
-       過去に保存されていれば使用
+       → 保存済みがあれば使用
     ===================================================== */
 
     event.respondWith(
@@ -925,7 +905,7 @@ self.addEventListener(
 
 
         /*
-          保存済みがあるか確認
+          保存済み確認
         */
 
         const cached =
@@ -937,7 +917,7 @@ self.addEventListener(
         try {
 
           /*
-            ONLINEでは最新版優先
+            ONLINEでは最新版を取得
           */
 
           const fresh =
@@ -966,8 +946,8 @@ self.addEventListener(
             catch (e) {
 
               /*
-                CORS等で保存不可でも
-                表示自体は続行
+                CORS等で保存できなくても
+                表示自体は続ける
               */
 
             }
