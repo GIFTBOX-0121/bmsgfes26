@@ -3800,9 +3800,20 @@ loadWeather();
 
 /* PWA / OFFLINE */
 if("serviceWorker" in navigator){
-  window.addEventListener("load",()=>{
-    navigator.serviceWorker.register("./sw.js?v=15-fixed-pins")
-      .catch(()=>{});
+  window.addEventListener("load", async ()=>{
+    try{
+      const registration = await navigator.serviceWorker.register(
+        "./sw.js?v=16-offline",
+        {
+          updateViaCache:"none"
+        }
+      );
+
+      registration.update().catch(()=>{});
+
+    }catch(error){
+      console.warn("Service Worker registration failed:", error);
+    }
   });
 }
 
