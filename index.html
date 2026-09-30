@@ -1076,46 +1076,14 @@ button:active{transform:scale(.98);}
 
 
 
-<style id="station-route-guide-style">
-.route-guide-modal{
-  position:fixed;inset:0;z-index:200000;display:none;
-  background:rgba(0,0,0,.86);padding:14px;overflow:auto;
-}
-.route-guide-modal.on{display:block}
-.route-guide-card{
-  max-width:520px;margin:20px auto;background:#0b0b0b;color:#fff;
-  border:1px solid rgba(255,255,255,.28);border-radius:18px;padding:16px;
-}
-.route-guide-head{display:flex;align-items:center;justify-content:space-between;gap:10px}
-.route-guide-head h3{margin:0;font-size:18px}
-.route-guide-close{
-  border:1px solid rgba(255,255,255,.35);background:#222;color:#fff;
-  border-radius:999px;width:34px;height:34px;font-size:18px
-}
-.route-diagram{
-  margin:14px 0;background:#f4f4f2;color:#111;border-radius:16px;padding:15px;
-}
-.route-node{
-  border:2px solid #111;border-radius:12px;padding:10px;text-align:center;
-  font-weight:900;font-size:13px;background:#fff
-}
-.route-arrow{text-align:center;font-size:22px;font-weight:900;padding:5px 0}
-.route-note{
-  margin-top:10px;border-radius:12px;padding:11px;background:#171717;
-  font-size:12px;line-height:1.65;color:#ddd
-}
-.route-toilet{
-  margin-top:10px;border:1px solid rgba(255,255,255,.2);
-  border-radius:12px;padding:11px;font-size:12px;line-height:1.65
-}
-.route-guide-actions{display:flex;gap:8px;margin-top:12px}
-.route-guide-actions button{
-  flex:1;border:0;border-radius:11px;padding:11px;font-weight:900
-}
-.route-guide-actions .online{background:#fff;color:#050505}
-.route-guide-actions .dismiss{background:#292929;color:#fff}
-</style>
 
+<style id="station-image-guide-style">
+.station-image-modal{position:fixed;inset:0;z-index:250000;display:none;background:rgba(0,0,0,.92);padding:14px;overflow:auto}
+.station-image-modal.on{display:block}
+.station-image-box{max-width:430px;margin:18px auto;background:#0b0b0b;border:1px solid #444;border-radius:18px;padding:12px}
+.station-image-box img{display:block;width:100%;height:auto;border-radius:13px;background:#f2f2ef}
+.station-image-close{width:100%;margin-top:10px;border:0;border-radius:11px;padding:12px;background:#fff;color:#050505;font-weight:900}
+</style>
 </head>
 
 <body>
@@ -1647,49 +1615,31 @@ button:active{transform:scale(.98);}
 
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
-/* =========================================================
-   STATION OFFLINE ROUTE GUIDES
-========================================================= */
-function openStationGuide(id){
-  const modal=document.getElementById(id);
-  if(!modal) return;
-  modal.classList.add("on");
-  modal.setAttribute("aria-hidden","false");
-  document.body.style.overflow="hidden";
+/* STATION ROUTE: offline image takes priority over old map links */
+function showStationImageGuide(id){
+  const el=document.getElementById(id);
+  if(el){el.classList.add("on");document.body.style.overflow="hidden";}
 }
-function closeStationGuides(){
-  document.querySelectorAll(".route-guide-modal.on").forEach(modal=>{
-    modal.classList.remove("on");
-    modal.setAttribute("aria-hidden","true");
-  });
+function closeStationImageGuides(){
+  document.querySelectorAll(".station-image-modal.on").forEach(el=>el.classList.remove("on"));
   document.body.style.overflow="";
 }
-document.querySelectorAll("[data-close-route]").forEach(btn=>{
-  btn.addEventListener("click",closeStationGuides);
-});
-document.querySelectorAll(".route-guide-modal").forEach(modal=>{
-  modal.addEventListener("click",e=>{
-    if(e.target===modal) closeStationGuides();
-  });
-});
+document.querySelectorAll(".station-image-close").forEach(b=>b.addEventListener("click",closeStationImageGuides));
+document.addEventListener("click",function(e){
+  const el=e.target.closest("button,a");
+  if(!el) return;
+  const t=(el.textContent||"").replace(/\s+/g,"");
+  if(t.includes("東京テレポート駅") && t.includes("会場")){
+    e.preventDefault(); e.stopImmediatePropagation();
+    showStationImageGuide("teleportImageGuide");
+  }else if(t.includes("台場駅") && t.includes("会場")){
+    e.preventDefault(); e.stopImmediatePropagation();
+    showStationImageGuide("daibaImageGuide");
+  }
+},true);
 
-/* 既存の駅ルートボタンをサイト内オフライン案内へ変更 */
-document.querySelectorAll("button,a").forEach(el=>{
-  const text=(el.textContent||"").replace(/\s+/g,"");
-  if(text.includes("東京テレポート駅") && text.includes("会場")){
-    el.addEventListener("click",e=>{
-      e.preventDefault();
-      e.stopImmediatePropagation();
-      openStationGuide("teleportGuide");
-    },true);
-  }
-  if(text.includes("台場駅") && text.includes("会場")){
-    el.addEventListener("click",e=>{
-      e.preventDefault();
-      e.stopImmediatePropagation();
-      openStationGuide("daibaGuide");
-    },true);
-  }
+document.getElementById("resaleButton")?.addEventListener("click",()=>{
+  window.open("https://bmsgfes.tokyo/news/260930","_blank","noopener");
 });
 
 </script>
@@ -1716,9 +1666,24 @@ const OFFICIAL_LINKS = {
 };
 
 const SUB_STAGE = {
-  "2026-10-10":[],
-  "2026-10-11":[],
-  "2026-10-12":[]
+  "2026-10-10":[
+    {time:"11:00",artist:"BANVOX"},
+    {time:"11:30",artist:"ODORI"},
+    {time:"11:50",artist:"BANVOX"},
+    {time:"12:20",artist:"BMSG TRAINEE"}
+  ],
+  "2026-10-11":[
+    {time:"11:00",artist:"BANVOX"},
+    {time:"11:30",artist:"RHT."},
+    {time:"11:50",artist:"BANVOX"},
+    {time:"12:20",artist:"BMSG TRAINEE"}
+  ],
+  "2026-10-12":[
+    {time:"11:00",artist:"BANVOX"},
+    {time:"11:30",artist:"THE SPC BOYS CLUB"},
+    {time:"11:50",artist:"BANVOX"},
+    {time:"12:20",artist:"BMSG TRAINEE"}
+  ]
 };
 
 /* =========================================================
@@ -3361,42 +3326,25 @@ function renderSubStage(dayIndex){
 
   const date=EVENT_DAYS[dayIndex];
   const artists=SUB_STAGE[date]||[];
+  const content=document.getElementById("subStageContent");
 
-  const content=
-    document.getElementById("subStageContent");
+  if(!content) return;
 
   if(artists.length===0){
-
-    content.textContent=
-      "出演アーティストは後から登録できます。";
-
+    content.textContent="出演情報はありません。";
     return;
   }
 
-  content.innerHTML=
-    artists
-      .map(item=>`
-        <div style="
-          display:flex;
-          gap:12px;
-          align-items:baseline;
-          padding:8px 0;
-          border-bottom:1px solid rgba(255,255,255,.10);
-        ">
-          <strong style="min-width:42px;color:#fff;">
-            ${escapeHtml(item.time)}
-          </strong>
-          <span>${escapeHtml(item.artist)}</span>
-        </div>
-      `)
-      .join("")
-    +
-    `<div style="margin-top:9px;font-size:10px;color:#888;">
-      ※タイムテーブル・出演者は変更となる場合があります。
-    </div>`;
-
+  content.innerHTML=artists.map(item=>`
+    <div style="display:flex;gap:12px;align-items:baseline;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.10);">
+      <strong style="min-width:42px;color:#fff;">${escapeHtml(item.time)}</strong>
+      <span>${escapeHtml(item.artist)}</span>
+    </div>
+  `).join("")+
+  `<div style="margin-top:9px;font-size:10px;color:#888;">
+    ※タイムテーブル・出演者は変更となる場合があります。
+  </div>`;
 }
-
 
 document.querySelectorAll("[data-subday]").forEach(button=>{
 
@@ -3800,83 +3748,17 @@ if("serviceWorker" in navigator){
 </script>
 
 
-<div class="route-guide-modal" id="teleportGuide" aria-hidden="true">
-  <div class="route-guide-card">
-    <div class="route-guide-head">
-      <h3>🚃 東京テレポート駅 → 会場</h3>
-      <button class="route-guide-close" type="button" data-close-route>×</button>
-    </div>
 
-    <div class="route-diagram">
-      <div class="route-node">りんかい線<br>東京テレポート駅</div>
-      <div class="route-arrow">↓</div>
-      <div class="route-node">B1F 改札</div>
-      <div class="route-arrow">↓</div>
-      <div class="route-node">A出口方面へ</div>
-      <div class="route-arrow">↓</div>
-      <div class="route-node">青海・会場方面へ</div>
-      <div class="route-arrow">↓</div>
-      <div class="route-node">BMSG FES 特設会場</div>
-    </div>
-
-    <div class="route-toilet">
-      <strong>🚻 お手洗い</strong><br>
-      東京テレポート駅には駅構内トイレがあります。
-      会場へ向かう前に駅で済ませておくのがおすすめです。
-    </div>
-
-    <div class="route-note">
-      <strong>OFFLINE GUIDE</strong><br>
-      この案内はサイト本体に保存されるため、機内モードでも確認できます。
-      A出口は公式駅案内で青海方面の施設が案内されている出口です。
-    </div>
-
-    <div class="route-guide-actions">
-      <button class="dismiss" type="button" data-close-route>閉じる</button>
-      <button class="online" type="button"
-        onclick="window.open('https://www.google.com/maps/dir/?api=1&origin=東京テレポート駅&destination=35.6232112,139.7770309&travelmode=walking','_blank')">
-        オンライン地図
-      </button>
-    </div>
+<div class="station-image-modal" id="teleportImageGuide">
+  <div class="station-image-box">
+    <img src="data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22360%22%20height%3D%22655%22%20viewBox%3D%220%200%20360%20655%22%3E%0A%3Crect%20width%3D%22360%22%20height%3D%22655%22%20fill%3D%22%23f2f2ef%22/%3E%0A%3Ctext%20x%3D%22180%22%20y%3D%2236%22%20text-anchor%3D%22middle%22%20font-family%3D%22sans-serif%22%20font-size%3D%2220%22%20font-weight%3D%22900%22%20fill%3D%22%23111%22%3E%E6%9D%B1%E4%BA%AC%E3%83%86%E3%83%AC%E3%83%9D%E3%83%BC%E3%83%88%E9%A7%85%20%E2%86%92%20%E4%BC%9A%E5%A0%B4%3C/text%3E%0A%3Ctext%20x%3D%22180%22%20y%3D%2261%22%20text-anchor%3D%22middle%22%20font-family%3D%22sans-serif%22%20font-size%3D%2211%22%20fill%3D%22%23555%22%3EOFFLINE%20ROUTE%20GUIDE%3C/text%3E%0A%3Crect%20x%3D%2228%22%20y%3D%2295%22%20width%3D%22304%22%20height%3D%2258%22%20rx%3D%2214%22%20fill%3D%22white%22%20stroke%3D%22%23111%22%20stroke-width%3D%222%22/%3E%3Ctext%20x%3D%22180%22%20y%3D%22129%22%20text-anchor%3D%22middle%22%20font-family%3D%22sans-serif%22%20font-size%3D%2215%22%20font-weight%3D%22700%22%20fill%3D%22%23111%22%3E%E6%9D%B1%E4%BA%AC%E3%83%86%E3%83%AC%E3%83%9D%E3%83%BC%E3%83%88%E9%A7%85%3C/text%3E%3Ctext%20x%3D%22180%22%20y%3D%22177%22%20text-anchor%3D%22middle%22%20font-family%3D%22sans-serif%22%20font-size%3D%2228%22%20font-weight%3D%22900%22%20fill%3D%22%23111%22%3E%E2%86%93%3C/text%3E%3Crect%20x%3D%2228%22%20y%3D%22189%22%20width%3D%22304%22%20height%3D%2258%22%20rx%3D%2214%22%20fill%3D%22white%22%20stroke%3D%22%23111%22%20stroke-width%3D%222%22/%3E%3Ctext%20x%3D%22180%22%20y%3D%22223%22%20text-anchor%3D%22middle%22%20font-family%3D%22sans-serif%22%20font-size%3D%2215%22%20font-weight%3D%22700%22%20fill%3D%22%23111%22%3EB1F%20%E6%94%B9%E6%9C%AD%3C/text%3E%3Ctext%20x%3D%22180%22%20y%3D%22271%22%20text-anchor%3D%22middle%22%20font-family%3D%22sans-serif%22%20font-size%3D%2228%22%20font-weight%3D%22900%22%20fill%3D%22%23111%22%3E%E2%86%93%3C/text%3E%3Crect%20x%3D%2228%22%20y%3D%22283%22%20width%3D%22304%22%20height%3D%2258%22%20rx%3D%2214%22%20fill%3D%22white%22%20stroke%3D%22%23111%22%20stroke-width%3D%222%22/%3E%3Ctext%20x%3D%22180%22%20y%3D%22317%22%20text-anchor%3D%22middle%22%20font-family%3D%22sans-serif%22%20font-size%3D%2215%22%20font-weight%3D%22700%22%20fill%3D%22%23111%22%3EA%E5%87%BA%E5%8F%A3%E6%96%B9%E9%9D%A2%E3%81%B8%3C/text%3E%3Ctext%20x%3D%22180%22%20y%3D%22365%22%20text-anchor%3D%22middle%22%20font-family%3D%22sans-serif%22%20font-size%3D%2228%22%20font-weight%3D%22900%22%20fill%3D%22%23111%22%3E%E2%86%93%3C/text%3E%3Crect%20x%3D%2228%22%20y%3D%22377%22%20width%3D%22304%22%20height%3D%2258%22%20rx%3D%2214%22%20fill%3D%22white%22%20stroke%3D%22%23111%22%20stroke-width%3D%222%22/%3E%3Ctext%20x%3D%22180%22%20y%3D%22411%22%20text-anchor%3D%22middle%22%20font-family%3D%22sans-serif%22%20font-size%3D%2215%22%20font-weight%3D%22700%22%20fill%3D%22%23111%22%3E%E9%9D%92%E6%B5%B7%E3%83%BB%E4%BC%9A%E5%A0%B4%E6%96%B9%E9%9D%A2%E3%81%B8%3C/text%3E%3Ctext%20x%3D%22180%22%20y%3D%22459%22%20text-anchor%3D%22middle%22%20font-family%3D%22sans-serif%22%20font-size%3D%2228%22%20font-weight%3D%22900%22%20fill%3D%22%23111%22%3E%E2%86%93%3C/text%3E%3Crect%20x%3D%2228%22%20y%3D%22471%22%20width%3D%22304%22%20height%3D%2258%22%20rx%3D%2214%22%20fill%3D%22white%22%20stroke%3D%22%23111%22%20stroke-width%3D%222%22/%3E%3Ctext%20x%3D%22180%22%20y%3D%22505%22%20text-anchor%3D%22middle%22%20font-family%3D%22sans-serif%22%20font-size%3D%2215%22%20font-weight%3D%22700%22%20fill%3D%22%23111%22%3EBMSG%20FES%20%E4%BC%9A%E5%A0%B4%3C/text%3E%3Crect%20x%3D%2220%22%20y%3D%22543%22%20width%3D%22320%22%20height%3D%2292%22%20rx%3D%2214%22%20fill%3D%22%23111%22/%3E%3Ctext%20x%3D%2236%22%20y%3D%22571%22%20font-family%3D%22sans-serif%22%20font-size%3D%2214%22%20font-weight%3D%22700%22%20fill%3D%22white%22%3E%F0%9F%9A%BB%20%E3%81%8A%E6%89%8B%E6%B4%97%E3%81%84%3C/text%3E%3Ctext%20x%3D%2236%22%20y%3D%22595%22%20font-family%3D%22sans-serif%22%20font-size%3D%2212%22%20fill%3D%22white%22%3E%E9%A7%85%E6%A7%8B%E5%86%85%E3%83%88%E3%82%A4%E3%83%AC%E3%81%82%E3%82%8A%E3%80%82%E4%BC%9A%E5%A0%B4%E3%81%B8%E5%90%91%E3%81%8B%E3%81%86%E5%89%8D%E3%81%AB%E9%A7%85%E3%81%A7%E6%B8%88%E3%81%BE%3C/text%3E%3Ctext%20x%3D%2236%22%20y%3D%22613%22%20font-family%3D%22sans-serif%22%20font-size%3D%2212%22%20fill%3D%22white%22%3E%E3%81%9B%E3%81%A6%E3%81%8A%E3%81%8F%E3%81%A8%E5%AE%89%E5%BF%83%E3%80%82%3C/text%3E%0A%3C/svg%3E" alt="東京テレポート駅からBMSG FES会場までのオフライン案内画像">
+    <button class="station-image-close" type="button">閉じる</button>
   </div>
 </div>
-
-<div class="route-guide-modal" id="daibaGuide" aria-hidden="true">
-  <div class="route-guide-card">
-    <div class="route-guide-head">
-      <h3>🚝 台場駅 → 会場</h3>
-      <button class="route-guide-close" type="button" data-close-route>×</button>
-    </div>
-
-    <div class="route-diagram">
-      <div class="route-node">ゆりかもめ<br>台場駅</div>
-      <div class="route-arrow">↓</div>
-      <div class="route-node">改札を出る</div>
-      <div class="route-arrow">↓</div>
-      <div class="route-node">青海・東京テレポート方面へ</div>
-      <div class="route-arrow">↓</div>
-      <div class="route-node">BMSG FES 特設会場</div>
-    </div>
-
-    <div class="route-toilet">
-      <strong>🚻 お手洗い</strong><br>
-      台場駅には一般トイレ・バリアフリートイレがあります。
-      会場へ歩き始める前に駅で済ませておくと安心です。
-    </div>
-
-    <div class="route-note">
-      <strong>OFFLINE GUIDE</strong><br>
-      台場駅については、公式情報で確認できない出口番号を推測して表示していません。
-      現地の「青海・東京テレポート方面」の案内表示も確認してください。
-    </div>
-
-    <div class="route-guide-actions">
-      <button class="dismiss" type="button" data-close-route>閉じる</button>
-      <button class="online" type="button"
-        onclick="window.open('https://www.google.com/maps/dir/?api=1&origin=台場駅&destination=35.6232112,139.7770309&travelmode=walking','_blank')">
-        オンライン地図
-      </button>
-    </div>
+<div class="station-image-modal" id="daibaImageGuide">
+  <div class="station-image-box">
+    <img src="data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22360%22%20height%3D%22561%22%20viewBox%3D%220%200%20360%20561%22%3E%0A%3Crect%20width%3D%22360%22%20height%3D%22561%22%20fill%3D%22%23f2f2ef%22/%3E%0A%3Ctext%20x%3D%22180%22%20y%3D%2236%22%20text-anchor%3D%22middle%22%20font-family%3D%22sans-serif%22%20font-size%3D%2220%22%20font-weight%3D%22900%22%20fill%3D%22%23111%22%3E%E5%8F%B0%E5%A0%B4%E9%A7%85%20%E2%86%92%20%E4%BC%9A%E5%A0%B4%3C/text%3E%0A%3Ctext%20x%3D%22180%22%20y%3D%2261%22%20text-anchor%3D%22middle%22%20font-family%3D%22sans-serif%22%20font-size%3D%2211%22%20fill%3D%22%23555%22%3EOFFLINE%20ROUTE%20GUIDE%3C/text%3E%0A%3Crect%20x%3D%2228%22%20y%3D%2295%22%20width%3D%22304%22%20height%3D%2258%22%20rx%3D%2214%22%20fill%3D%22white%22%20stroke%3D%22%23111%22%20stroke-width%3D%222%22/%3E%3Ctext%20x%3D%22180%22%20y%3D%22129%22%20text-anchor%3D%22middle%22%20font-family%3D%22sans-serif%22%20font-size%3D%2215%22%20font-weight%3D%22700%22%20fill%3D%22%23111%22%3E%E5%8F%B0%E5%A0%B4%E9%A7%85%3C/text%3E%3Ctext%20x%3D%22180%22%20y%3D%22177%22%20text-anchor%3D%22middle%22%20font-family%3D%22sans-serif%22%20font-size%3D%2228%22%20font-weight%3D%22900%22%20fill%3D%22%23111%22%3E%E2%86%93%3C/text%3E%3Crect%20x%3D%2228%22%20y%3D%22189%22%20width%3D%22304%22%20height%3D%2258%22%20rx%3D%2214%22%20fill%3D%22white%22%20stroke%3D%22%23111%22%20stroke-width%3D%222%22/%3E%3Ctext%20x%3D%22180%22%20y%3D%22223%22%20text-anchor%3D%22middle%22%20font-family%3D%22sans-serif%22%20font-size%3D%2215%22%20font-weight%3D%22700%22%20fill%3D%22%23111%22%3E%E6%94%B9%E6%9C%AD%E3%82%92%E5%87%BA%E3%82%8B%3C/text%3E%3Ctext%20x%3D%22180%22%20y%3D%22271%22%20text-anchor%3D%22middle%22%20font-family%3D%22sans-serif%22%20font-size%3D%2228%22%20font-weight%3D%22900%22%20fill%3D%22%23111%22%3E%E2%86%93%3C/text%3E%3Crect%20x%3D%2228%22%20y%3D%22283%22%20width%3D%22304%22%20height%3D%2258%22%20rx%3D%2214%22%20fill%3D%22white%22%20stroke%3D%22%23111%22%20stroke-width%3D%222%22/%3E%3Ctext%20x%3D%22180%22%20y%3D%22317%22%20text-anchor%3D%22middle%22%20font-family%3D%22sans-serif%22%20font-size%3D%2215%22%20font-weight%3D%22700%22%20fill%3D%22%23111%22%3E%E9%9D%92%E6%B5%B7%E3%83%BB%E6%9D%B1%E4%BA%AC%E3%83%86%E3%83%AC%E3%83%9D%E3%83%BC%E3%83%88%E6%96%B9%E9%9D%A2%E3%81%B8%3C/text%3E%3Ctext%20x%3D%22180%22%20y%3D%22365%22%20text-anchor%3D%22middle%22%20font-family%3D%22sans-serif%22%20font-size%3D%2228%22%20font-weight%3D%22900%22%20fill%3D%22%23111%22%3E%E2%86%93%3C/text%3E%3Crect%20x%3D%2228%22%20y%3D%22377%22%20width%3D%22304%22%20height%3D%2258%22%20rx%3D%2214%22%20fill%3D%22white%22%20stroke%3D%22%23111%22%20stroke-width%3D%222%22/%3E%3Ctext%20x%3D%22180%22%20y%3D%22411%22%20text-anchor%3D%22middle%22%20font-family%3D%22sans-serif%22%20font-size%3D%2215%22%20font-weight%3D%22700%22%20fill%3D%22%23111%22%3EBMSG%20FES%20%E4%BC%9A%E5%A0%B4%3C/text%3E%3Crect%20x%3D%2220%22%20y%3D%22449%22%20width%3D%22320%22%20height%3D%2292%22%20rx%3D%2214%22%20fill%3D%22%23111%22/%3E%3Ctext%20x%3D%2236%22%20y%3D%22477%22%20font-family%3D%22sans-serif%22%20font-size%3D%2214%22%20font-weight%3D%22700%22%20fill%3D%22white%22%3E%F0%9F%9A%BB%20%E3%81%8A%E6%89%8B%E6%B4%97%E3%81%84%3C/text%3E%3Ctext%20x%3D%2236%22%20y%3D%22501%22%20font-family%3D%22sans-serif%22%20font-size%3D%2212%22%20fill%3D%22white%22%3E%E9%A7%85%E3%81%AB%E4%B8%80%E8%88%AC%E3%83%BB%E3%83%90%E3%83%AA%E3%82%A2%E3%83%95%E3%83%AA%E3%83%BC%E3%83%88%E3%82%A4%E3%83%AC%E3%81%82%E3%82%8A%E3%80%82%E5%87%BA%E7%99%BA%E5%89%8D%E3%81%AB%3C/text%3E%3Ctext%20x%3D%2236%22%20y%3D%22519%22%20font-family%3D%22sans-serif%22%20font-size%3D%2212%22%20fill%3D%22white%22%3E%E6%B8%88%E3%81%BE%E3%81%9B%E3%81%A6%E3%81%8A%E3%81%8F%E3%81%A8%E5%AE%89%E5%BF%83%E3%80%82%3C/text%3E%0A%3C/svg%3E" alt="台場駅からBMSG FES会場までのオフライン案内画像">
+    <button class="station-image-close" type="button">閉じる</button>
   </div>
 </div>
 
