@@ -909,7 +909,7 @@ button:active{transform:scale(.98);}
   z-index:4000;
 
   display:grid;
-  grid-template-columns:repeat(6,1fr);
+  grid-template-columns:repeat(7,1fr);
 
   padding:4px;
 
@@ -1257,6 +1257,33 @@ button:active{transform:scale(.98);}
   transform:scale(.98);
 }
 
+
+/* =========================================================
+   BOTTOM NAV 7 ITEMS / VISIBILITY UPGRADE
+========================================================= */
+.bottom-nav{
+  grid-template-columns:repeat(7,1fr);
+  padding:5px 4px;
+}
+.nav-btn{
+  min-height:49px;
+  padding:7px 1px 6px;
+  color:#b0b0b0;
+  font-size:7px;
+  font-weight:950;
+  letter-spacing:.01em;
+}
+.nav-icon{
+  margin-bottom:4px;
+  font-size:18px;
+  line-height:18px;
+}
+.nav-btn.active{
+  color:#050505;
+  background:linear-gradient(135deg,#fff,#bdbdbd);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.9);
+}
+
 </style>
 
 
@@ -1448,19 +1475,70 @@ button:active{transform:scale(.98);}
 <!-- INFO -->
 
 <section class="page" id="page-info">
-
   <div class="content">
 
     <div class="section-title">INFORMATION</div>
-    <div class="section-sub">当日の情報・SUB STAGE・公式リンク</div>
+    <div class="section-sub">配信・公式リンク・当日の案内</div>
+
+
+    <div class="card ppv-card" id="ppvSection">
+      <div class="card-title">📺 PPV</div>
+      <div class="card-small">BMSG FES 2026 配信情報</div>
+      <button class="action primary" type="button" id="ppvPrimeButton">
+        PPV情報を開く
+      </button>
+      <div class="card-small" style="margin-top:7px;">
+        Amazon Prime Video PPVの公式案内を開きます。
+      </div>
+    </div>
+
+<div class="card">
+      <div class="card-title">🎧 公式 予習LIST</div>
+      <div class="card-small">Spotifyで公式予習リストを開きます。</div>
+      <button class="action primary" id="studyButton" type="button">
+        予習LISTを開く
+      </button>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🎫 公式リセール</div>
+      <div class="card-small">BMSG FES ’26 公式リセール情報</div>
+      <button class="action primary" id="resaleButton" type="button">
+        リセール情報を開く
+      </button>
+    </div>
+
+    <div class="card hidden" id="streamCard">
+      <div class="card-title">📺 STREAMING</div>
+      <button class="action primary" id="streamButton">配信を見る</button>
+    </div>
+
+    <div class="card hidden" id="ticketCard">
+      <div class="card-title">🎫 GOODS 整理券</div>
+      <button class="action primary" id="ticketButton">整理券を開く</button>
+    </div>
+
+  
+
+  </div>
+</section>
+
+
+<!-- FES -->
+
+<section class="page" id="page-fes">
+  <div class="content">
+
+    <div class="section-title">FES</div>
+    <div class="section-sub">MAIN STAGE・SUB STAGE・PPV</div>
 
     <div class="info-jump-nav">
       <button class="info-jump-btn" type="button" data-info-jump="mainStageSection">MAIN STAGE</button>
       <button class="info-jump-btn" type="button" data-info-jump="subStageSection">SUB STAGE</button>
-      <button class="info-jump-btn" type="button" data-info-jump="ppvSection">PPV</button>
+      <button class="info-jump-btn" type="button" data-info-jump="fesPpvSection">PPV</button>
     </div>
 
-    <div class="card" id="mainStageSection">
+<div class="card" id="mainStageSection">
       <div class="card-title">🎤 MAIN STAGE</div>
       <div class="card-small">10/10 - 10/12 / HEADLINER & SPECIAL MV</div>
 
@@ -1594,34 +1672,24 @@ button:active{transform:scale(.98);}
       <div id="subStageContent" style="margin-top:10px;"></div>
     </div>
 
-    <div class="card">
-      <div class="card-title">🎧 公式 予習LIST</div>
-      <div class="card-small">Spotifyで公式予習リストを開きます。</div>
-      <button class="action primary" id="studyButton" type="button">
-        予習LISTを開く
+    
+
+    <div id="fesPpvSection">
+
+    <div class="card ppv-card" id="ppvSectionFes">
+      <div class="card-title">📺 PPV</div>
+      <div class="card-small">BMSG FES 2026 配信情報</div>
+      <button class="action primary" type="button" id="ppvPrimeButtonFes" disabled>
+        Amazon Prime Video PPV
       </button>
+      <div class="card-small" style="margin-top:7px;">
+        配信リンクは追加予定です。
+      </div>
     </div>
 
-    <div class="card">
-      <div class="card-title">🎫 公式リセール</div>
-      <div class="card-small">BMSG FES ’26 公式リセール情報</div>
-      <button class="action primary" id="resaleButton" type="button">
-        リセール情報を開く
-      </button>
-    </div>
-
-    <div class="card hidden" id="streamCard">
-      <div class="card-title">📺 STREAMING</div>
-      <button class="action primary" id="streamButton">配信を見る</button>
-    </div>
-
-    <div class="card hidden" id="ticketCard">
-      <div class="card-title">🎫 GOODS 整理券</div>
-      <button class="action primary" id="ticketButton">整理券を開く</button>
     </div>
 
   </div>
-
 </section>
 
 
@@ -1904,6 +1972,11 @@ button:active{transform:scale(.98);}
   <button class="nav-btn" data-page="info">
     <span class="nav-icon">ⓘ</span>
     INFO
+  </button>
+
+  <button class="nav-btn" data-page="fes">
+    <span class="nav-icon">★</span>
+    FES
   </button>
 
   <button class="nav-btn" data-page="goods">
@@ -4307,6 +4380,12 @@ document.querySelectorAll(".bottom-nav button,[data-page]").forEach(btn=>{
       window.scrollTo({top:0,left:0,behavior:"instant"});
     });
   });
+});
+
+
+/* INFO PPV */
+document.getElementById("ppvPrimeButton")?.addEventListener("click",()=>{
+  window.open("https://bmsgfes.tokyo/news/261001","_blank","noopener");
 });
 
 </script>
