@@ -1175,28 +1175,44 @@ button:active{transform:scale(.98);}
 }
 
 
+
+
+
 /* =========================================================
-   BOTTOM NAV BACKDROP
-   下部ナビの背後〜画面最下部を隠す。
-   ナビ本体の位置・サイズ・デザインは変更しない。
+   BOTTOM NAV / SAFE AREA FIX
+   ナビの下を画面最下端まで完全に塞ぎ、
+   本文がナビの裏へ潜り込まないようにする。
 ========================================================= */
-body::after{
+
+/* 本文の末尾が固定ナビの裏に入らないための余白 */
+#app{
+  padding-bottom:calc(132px + env(safe-area-inset-bottom));
+}
+
+/* ナビ本体の見た目はそのまま */
+.bottom-nav{
+  bottom:calc(7px + env(safe-area-inset-bottom));
+  z-index:4000;
+  isolation:isolate;
+}
+
+/* ナビの下端から画面最下端までを固定背景で埋める */
+.bottom-nav::after{
   content:"";
-  position:fixed;
-  left:0;
-  right:0;
-  bottom:0;
-  height:calc(98px + env(safe-area-inset-bottom));
-  z-index:3990;
+  position:absolute;
+  z-index:-1;
+  left:-7px;
+  right:-7px;
+  top:calc(100% - 1px);
+  height:calc(8px + env(safe-area-inset-bottom));
+  background:#050505;
   pointer-events:none;
-  background:
-    linear-gradient(
-      to bottom,
-      rgba(5,5,5,0) 0,
-      rgba(5,5,5,.94) 18px,
-      #050505 34px,
-      #050505 100%
-    );
+}
+
+/* Safariで最下部まで確実に黒を維持 */
+html,
+body{
+  background-color:#050505;
 }
 
 </style>
