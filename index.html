@@ -1177,8 +1177,14 @@ button:active{transform:scale(.98);}
 
 /* NAV LOWER BLACK MASK */
 #bottomNavLowerMask{
-  position:fixed;left:0;right:0;bottom:0;height:0;
-  z-index:3999;background:#050505;pointer-events:none;
+  position:fixed;
+  left:0;
+  right:0;
+  bottom:0;
+  height:calc(14px + env(safe-area-inset-bottom));
+  z-index:3999;
+  background:#050505;
+  pointer-events:none;
 }
 .bottom-nav{z-index:4000;}
 
@@ -4175,24 +4181,43 @@ document.querySelectorAll(".bottom-nav button,[data-page]").forEach(btn=>{
 });
 
 
-/* NAV LOWER BLACK MASK: keep nav exactly where it is; hide only below it */
+/* NAV LOWER BLACK MASK
+   Safariの可視領域変化に左右されず、固定ナビより下だけを黒で覆う。
+   ナビ本体の位置・サイズは変更しない。
+*/
 function updateBottomNavLowerMask(){
   const nav=document.querySelector(".bottom-nav");
   const mask=document.getElementById("bottomNavLowerMask");
   if(!nav||!mask)return;
-  const bottom=nav.getBoundingClientRect().bottom;
-  mask.style.height=Math.max(0,Math.ceil(window.innerHeight-bottom))+"px";
+
+  const viewportHeight = window.visualViewport
+    ? window.visualViewport.height + window.visualViewport.offsetTop
+    : window.innerHeight;
+
+  const navBottom = nav.getBoundingClientRect().bottom;
+  const coverHeight = Math.max(
+    14,
+    Math.ceil(viewportHeight - navBottom) + 14
+  );
+
+  mask.style.height = coverHeight + "px";
 }
+
+function refreshBottomMask(){
+  requestAnimationFrame(updateBottomNavLowerMask);
+}
+
 window.addEventListener("load",()=>{
-  updateBottomNavLowerMask();
-  setTimeout(updateBottomNavLowerMask,100);
-  setTimeout(updateBottomNavLowerMask,500);
+  refreshBottomMask();
+  setTimeout(refreshBottomMask,100);
+  setTimeout(refreshBottomMask,500);
 });
-window.addEventListener("resize",updateBottomNavLowerMask);
-window.addEventListener("orientationchange",()=>setTimeout(updateBottomNavLowerMask,150));
+window.addEventListener("scroll",refreshBottomMask,{passive:true});
+window.addEventListener("resize",refreshBottomMask);
+window.addEventListener("orientationchange",()=>setTimeout(refreshBottomMask,150));
 if(window.visualViewport){
-  window.visualViewport.addEventListener("resize",updateBottomNavLowerMask);
-  window.visualViewport.addEventListener("scroll",updateBottomNavLowerMask);
+  window.visualViewport.addEventListener("resize",refreshBottomMask);
+  window.visualViewport.addEventListener("scroll",refreshBottomMask);
 }
 
 </script>
