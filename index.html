@@ -1702,138 +1702,14 @@ button:active{transform:scale(.98);}
 </style>
 
 
-<style id="goods-accordion-redesign">
-.goods-tap-note{
-  margin:9px 0 12px;
-  color:#e5e5e5;
-  font-size:12px;
-  font-weight:900;
-  text-align:center;
-}
-.goods-visual-card,
-.goods-summary-card{
-  margin-top:10px;
-  padding:13px;
-  border:1px solid rgba(255,255,255,.22);
-  border-radius:16px;
-  background:rgba(255,255,255,.045);
-}
-.goods-capsule-title{margin-top:14px;}
-.goods-capsule-image{
-  display:block;
-  width:100%;
-  margin-top:8px;
-}
-.goods-capsule-image img{
-  width:100%;
-  max-height:none;
-  object-fit:contain;
-}
-.goods-summary-title{
-  margin-bottom:10px;
-  font-size:15px;
-  font-weight:950;
-}
-.goods-summary-row{
-  display:flex;
-  gap:10px;
-  padding:11px 0;
-  border-top:1px solid rgba(255,255,255,.12);
-}
-.goods-summary-row:first-of-type{border-top:0;}
-.goods-summary-time{
-  flex:0 0 62px;
-  font-size:13px;
-  font-weight:950;
-  line-height:1.5;
-}
-.goods-summary-main{
-  min-width:0;
-  font-size:12px;
-  line-height:1.65;
-}
-.goods-summary-main strong,
-.goods-summary-main span{display:block;}
-.goods-line-btn-wide{
-  display:block;
-  width:100%;
-  margin:12px 0 0;
-  padding:14px 12px;
-  border-radius:13px;
-  font-size:13px;
-  font-weight:950;
-  text-align:center;
-  text-decoration:none;
-}
-.goods-accordion-wrap{margin-top:12px;}
-.goods-accordion{
-  margin-top:8px;
-  overflow:hidden;
-  border:1px solid rgba(255,255,255,.2);
-  border-radius:13px;
-  background:rgba(255,255,255,.04);
-}
-.goods-accordion summary{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:10px;
-  padding:13px 14px;
-  list-style:none;
-  cursor:pointer;
-  font-size:12px;
-  font-weight:950;
-  line-height:1.45;
-}
-.goods-accordion summary::-webkit-details-marker{display:none;}
-.goods-accordion-plus{
-  position:relative;
-  flex:0 0 18px;
-  width:18px;
-  height:18px;
-}
-.goods-accordion-plus::before,
-.goods-accordion-plus::after{
-  content:"";
-  position:absolute;
-  top:50%;
-  left:50%;
-  width:12px;
-  height:1.5px;
-  border-radius:2px;
-  background:#fff;
-  transform:translate(-50%,-50%);
-}
-.goods-accordion-plus::after{
-  transform:translate(-50%,-50%) rotate(90deg);
-  transition:transform .18s ease;
-}
-.goods-accordion[open] .goods-accordion-plus::after{
-  transform:translate(-50%,-50%) rotate(0deg);
-}
-.goods-accordion-body{
-  padding:0 14px 14px;
-  border-top:1px solid rgba(255,255,255,.1);
-  padding-top:12px;
-  color:#e5e5e5;
-  font-size:11px;
-  line-height:1.8;
-}
-.goods-realmap-btn{
-  width:100%;
-  margin-top:12px;
-  padding:13px 10px;
-}
-.goods-official-link-bottom{
-  display:block;
-  margin-top:10px;
-  text-align:center;
-}
+<style id="goods-layout-adjustment">
+.goods-tap-note{margin:9px 0 12px;color:#e5e5e5;font-size:12px;font-weight:900;text-align:center;}
+.goods-top-grid{align-items:start;}
+.goods-info-block,.goods-ticket-body,.goods-detail-text{overflow-wrap:anywhere;word-break:normal;}
 @media(max-width:390px){
-  .goods-summary-time{flex-basis:58px;font-size:12px;}
-  .goods-summary-main{font-size:11px;}
-  .goods-accordion summary{font-size:11px;}
-  .goods-accordion-body{font-size:10.5px;}
+  .goods-panel{padding:10px;}
+  .goods-panel-title,.goods-ticket-title,.goods-detail-title{font-size:13px;}
+  .goods-info-block,.goods-ticket-body,.goods-detail-text{font-size:10.5px;line-height:1.75;}
 }
 </style>
 
@@ -2201,177 +2077,151 @@ button:active{transform:scale(.98);}
 <!-- GOODS -->
 
 <section class="page" id="page-goods">
-
   <div class="content">
 
     <div class="section-title">GOODS</div>
     <div class="section-sub">BMSG FES 2026 GOODS LINEUP / 10.01 UPDATE</div>
-
     <div class="goods-tap-note">🔍 画像をタップすると拡大できます</div>
 
-    <div class="goods-visual-card">
-      <div class="goods-panel-title">BMSG FES’26 OFFICIAL GOODS</div>
+    <div class="goods-top-grid">
 
-      <div class="goods-images-two">
-        <button class="goods-image-button" type="button" data-goods-image="./goods01.JPG" aria-label="グッズ画像1を拡大">
-          <img src="./goods01.JPG" alt="BMSG FES’26 GOODS 1">
-        </button>
-        <button class="goods-image-button" type="button" data-goods-image="./goods02.JPG" aria-label="グッズ画像2を拡大">
-          <img src="./goods02.JPG" alt="BMSG FES’26 GOODS 2">
-        </button>
+      <div class="goods-panel">
+        <div class="goods-panel-title">BMSG FES’26 OFFICIAL GOODS</div>
+
+        <div class="goods-images-two">
+          <button class="goods-image-button" type="button" data-goods-image="./goods01.JPG" aria-label="グッズ画像1を拡大">
+            <img src="./goods01.JPG" alt="BMSG FES’26 GOODS 1">
+          </button>
+          <button class="goods-image-button" type="button" data-goods-image="./goods02.JPG" aria-label="グッズ画像2を拡大">
+            <img src="./goods02.JPG" alt="BMSG FES’26 GOODS 2">
+          </button>
+        </div>
+
+        <div class="goods-info-block">
+          <strong>【購入制限】</strong><br>
+          「BMSG FES'26 ロゴＴシャツ WH」<br>→ Architect会員様限定カラー<br>
+          「BMSG FES'26 ランダム<br>マーカーチャーム 2P」：10点まで<br>
+          メンバー別商品：各メンバー3点まで<br>
+          「[Ayumu Imazu] Random Rubber Band」：5点まで<br>
+          上記以外の商品：3点まで
+
+          <div class="goods-alert">
+            <strong>🕘9:30~ 販売開始(予定)</strong><br>
+            場所：BMSG FES’26 B-SIDE AREA内<br>グッズブース<br>
+            ⚠️グッズ整理券あり（事前抽選）<br>
+            ⚠️公演チケット所持者のみ購入可能
+          </div>
+
+          <div class="goods-alert">
+            <strong>🕙10:00~ 販売開始(予定)</strong><br>
+            場所：ダイバーシティ東京 プラザ<br>「BMSG FES’26 POP UP STORE」<br>
+            （4階 &amp;mallデスク横イベントスペース）<br>
+            ⚠️グッズ整理券あり（事前抽選）<br>
+            <span class="goods-green">🟢公演チケットなしでも購入可能</span>
+          </div>
+
+          <div class="goods-ec">✨️後日、数量限定にてEC販売予定✨️</div>
+        </div>
       </div>
 
-      <div class="goods-panel-title goods-capsule-title">MEGA CAPSULE</div>
-      <button class="goods-image-button goods-capsule-image" type="button" data-goods-image="./goods03.JPG" aria-label="MEGA CAPSULE画像を拡大">
-        <img src="./goods03.JPG" alt="BMSG FES’26 MEGA CAPSULE">
-      </button>
+      <div class="goods-panel">
+        <div class="goods-panel-title">MEGA CAPSULE</div>
+
+        <button class="goods-image-button" type="button" data-goods-image="./goods03.JPG" aria-label="MEGA CAPSULE画像を拡大">
+          <img src="./goods03.JPG" alt="BMSG FES’26 MEGA CAPSULE">
+        </button>
+
+        <div class="goods-info-block">
+          <strong>【購入制限】1人3回まで</strong>
+
+          <div class="goods-alert">
+            <strong>🕘9:30~ 販売開始(予定)</strong><br>
+            場所：当サイト内REALMAP<br>→ GOODS → 📍CAPSULE<br>
+            （オフィシャルマップ内→MEGA CAPSULE）<br>
+            ⚠️当日整理券あり（先着配布）
+          </div>
+        </div>
+      </div>
+
     </div>
 
-    <div class="goods-summary-card">
-      <div class="goods-summary-title">🛍️ 販売概要</div>
-
-      <div class="goods-summary-row">
-        <div class="goods-summary-time">9:30〜</div>
-        <div class="goods-summary-main">
-          <strong>B-SIDE AREA内 グッズブース</strong>
-          <span>グッズ整理券あり（事前抽選）</span>
-          <span>⚠️ 公演チケット所持者のみ購入可能</span>
-        </div>
-      </div>
-
-      <div class="goods-summary-row">
-        <div class="goods-summary-time">10:00〜</div>
-        <div class="goods-summary-main">
-          <strong>ダイバーシティ東京 プラザ</strong>
-          <span>4階 &amp;mallデスク横イベントスペース</span>
-          <span>グッズ整理券あり（事前抽選）</span>
-          <span class="goods-green">🟢 公演チケットなしでも購入可能</span>
-        </div>
-      </div>
-
-      <div class="goods-summary-row">
-        <div class="goods-summary-time">9:30〜</div>
-        <div class="goods-summary-main">
-          <strong>MEGA CAPSULE</strong>
-          <span>当サイト内 REAL MAP → GOODS → 📍CAPSULE</span>
-          <span>⚠️ 当日整理券あり（先着配布）</span>
-        </div>
-      </div>
-
-      <div class="goods-ec">✨️ グッズは後日、数量限定にてEC販売予定 ✨️</div>
-    </div>
-
-    <a class="goods-line-btn goods-line-btn-wide" href="https://lin.ee/hJ7UK4U" target="_blank" rel="noopener">
-      LINE『BMSG 整理券』を追加 ↗
-    </a>
-
-    <div class="goods-accordion-wrap">
-
-      <details class="goods-accordion" open>
-        <summary>
-          <span>🎫 グッズ整理券（事前抽選）</span>
-          <span class="goods-accordion-plus"></span>
-        </summary>
-        <div class="goods-accordion-body">
+    <div class="goods-ticket-grid">
+      <div class="goods-ticket-card">
+        <div class="goods-ticket-title">グッズ整理券（事前抽選）</div>
+        <div class="goods-ticket-body">
           <strong>申込期間：</strong><br>
-          10月2日(金)18:00〜10月4日(日)23:59迄<br><br>
+          10月2日(金)18:00~<br>10月4日(日)23:59迄<br><br>
           <strong>抽選結果：</strong><br>
-          10月6日(火)18:00（予定）<br><br>
-          ① LINEにて『BMSG 整理券』追加<br>
-          ② 会場物販 or ダイバーシティ物販を選択<br>
-          ③ 希望する日時を選択 → 応募<br><br>
-          📱 1公演につき1枚まで申し込み可能
-        </div>
-      </details>
+          10月6日(火)18:00(予定)<br><br>
+          ①LINEにて『BMSG 整理券』追加<br>
+          ②会場物販orダイバーシティ物販を選択<br>
+          ③希望する日時を選択→応募<br><br>
+          📱1公演につき1枚まで申し込み可能
 
-      <details class="goods-accordion">
-        <summary>
-          <span>🎰 MEGA CAPSULE 当日整理券</span>
-          <span class="goods-accordion-plus"></span>
-        </summary>
-        <div class="goods-accordion-body">
+          <a class="goods-line-btn" href="https://lin.ee/hJ7UK4U" target="_blank" rel="noopener">
+            LINE『BMSG 整理券』を追加 ↗
+          </a>
+        </div>
+      </div>
+
+      <div class="goods-ticket-card">
+        <div class="goods-ticket-title">MEGA CAPSULE<br>当日整理券配布（先着）</div>
+        <div class="goods-ticket-body">
           <strong>配布開始：</strong><br>
-          公演当日 9:00〜定員に達し次第終了<br><br>
+          公演当日 9:00〜<br>定員に達し次第終了<br><br>
           ※先着順での受付<br>
           ※会場付近（1.5km圏内）でのみ取得可能<br>
           ※おひとり様1日1枚まで取得可能<br>
           ※当日限定のため、後日ECなどは無し
         </div>
-      </details>
+      </div>
+    </div>
 
-      <details class="goods-accordion">
-        <summary>
-          <span>🛍️ 購入制限</span>
-          <span class="goods-accordion-plus"></span>
-        </summary>
-        <div class="goods-accordion-body">
-          <strong>OFFICIAL GOODS</strong><br><br>
-          「BMSG FES'26 ロゴＴシャツ WH」<br>
-          → Architect会員様限定カラー<br><br>
-          「BMSG FES'26 ランダムマーカーチャーム 2P」：10点まで<br>
-          メンバー別商品：各メンバー3点まで<br>
-          「[Ayumu Imazu] Random Rubber Band」：5点まで<br>
-          上記以外の商品：3点まで<br><br>
-          <strong>MEGA CAPSULE：1人3回まで</strong>
-        </div>
-      </details>
+    <div class="goods-detail-card">
+      <div class="goods-detail-title">■お支払い方法</div>
+      <div class="goods-detail-text">
+        ・現金のほか、クレジットカード・QRコード決済が利用可能<br>
+        ・お支払いは一括払いのみ<br>
+        ・ご利用可能カード：VISA / MasterCard / American Express / JCB<br>
+        （※一部ご利用いただけない場合がございます）<br>
+        ・ご利用可能決済：PayPay / d払い / au PAY / 楽天ペイ / Alipay / WeChat Pay<br>
+        （※一部ご利用いただけない場合がございます）<br>
+        ・現金、クレジットカード、QRコード決済の併用は不可<br>
+        ・お会計後の合算は不可<br>
+        ・通信状況により決済にお時間がかかる場合あり
+      </div>
 
-      <details class="goods-accordion">
-        <summary>
-          <span>💳 お支払い方法</span>
-          <span class="goods-accordion-plus"></span>
-        </summary>
-        <div class="goods-accordion-body">
-          ・現金のほか、クレジットカード・QRコード決済が利用可能<br>
-          ・お支払いは一括払いのみ<br>
-          ・ご利用可能カード：VISA / MasterCard / American Express / JCB<br>
-          （※一部ご利用いただけない場合がございます）<br>
-          ・ご利用可能決済：PayPay / d払い / au PAY / 楽天ペイ / Alipay / WeChat Pay<br>
-          （※一部ご利用いただけない場合がございます）<br>
-          ・現金、クレジットカード、QRコード決済の併用は不可<br>
-          ・お会計後の合算は不可<br>
-          ・通信状況により決済にお時間がかかる場合あり
-        </div>
-      </details>
+      <div class="goods-detail-divider"></div>
 
-      <details class="goods-accordion">
-        <summary>
-          <span>📱 整理券に関する注意事項</span>
-          <span class="goods-accordion-plus"></span>
-        </summary>
-        <div class="goods-accordion-body">
-          ・整理券1枚につき、1名様のみ入場可能<br>
-          （サポートが必要な方、小学生以下のお客様は同伴入場が可能）<br>
-          ・入場可能になると、LINEにて通知メッセージおよびQRコードが表示<br>
-          ・LINE上で呼出番号の確認可能。番号が近くなったら会場付近へ<br>
-          ・早朝からの待機 ❌<br>
-          ・呼出時間に遅れると入場できない場合あり<br>
-          ・整理券の譲渡、転売 ❌<br>
-          ・混雑状況により待ち時間が長くなる可能性あり<br>
-          ・売り切れる場合あり<br>
-          ・当日の状況により購入制限が増える場合あり<br>
-          ・当日の状況により整理券の追加配布を行う場合あり
-        </div>
-      </details>
+      <div class="goods-detail-title">📱整理券に関する注意事項</div>
+      <div class="goods-detail-text">
+        ・整理券1枚につき、1名様のみ入場可能<br>
+        （サポートが必要な方、小学生以下のお客様は同伴入場が可能)<br>
+        ・入場可能になると、LINEにて通知メッセージおよびQRコードが表示<br>
+        ・LINE上で呼出番号の確認可能。番号が近くなったら会場付近へ<br>
+        ・早朝からの待機❌<br>
+        ・呼出時間に遅れると入場できない場合あり<br>
+        ・整理券の譲渡、転売❌<br>
+        ・混雑状況により待ち時間が長くなる可能性あり<br>
+        ・売り切る場合あり<br>
+        ・当日の状況により購入制限が増える場合あり<br>
+        ・当日の状況により整理券の追加配布を行う場合あり
+      </div>
 
-      <details class="goods-accordion">
-        <summary>
-          <span>⚠️ グッズ販売に関する注意事項</span>
-          <span class="goods-accordion-plus"></span>
-        </summary>
-        <div class="goods-accordion-body">
-          ・全て数量限定のため、売り切れになる場合がある<br>
-          ・表示価格はすべて税込<br>
-          ・不良品以外の返品・交換は不可<br>
-          ・商品不良があった場合は、当日中に売場スタッフさんにお声掛けを<br>
-          ・購入商品、数量、お釣りは必ずその場で確認！<br>
-          ・売場離脱後の対応なし<br>
-          ・待機中は水分補給など体調管理にご注意ください<br>
-          ・列への後からの合流は禁止 ❌（待ち合わせは物販エリア外で）<br>
-          ・整理券がない方は整理券を持っている方の後に購入可能（売り切れの場合あり）
-        </div>
-      </details>
+      <div class="goods-detail-divider"></div>
 
+      <div class="goods-detail-title">■グッズ販売に関する注意事項</div>
+      <div class="goods-detail-text">
+        ・全て数量限定のため、売り切れになる場合がある<br>
+        ・表示価格はすべて税込<br>
+        ・不良品以外の返品・交換は不可<br>
+        ・商品不良があった場合は、当日中に売場スタッフさんにお声掛けを<br>
+        ・購入商品、数量、お釣りは必ずその場で確認！<br>
+        ・売場離脱後の対応なし<br>
+        ・待機中は水分補給など体調管理にご注意ください<br>
+        ・列への後からの合流は禁止❌（待ち合わせは物販エリア外で)<br>
+        ・整理券がない方は整理券を持っている方の後に購入可能（売り切れの場合あり)
+      </div>
     </div>
 
     <button class="action primary goods-realmap-btn" type="button" data-page-jump="map">
@@ -2383,7 +2233,6 @@ button:active{transform:scale(.98);}
     </a>
 
   </div>
-
 </section>
 
 
