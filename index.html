@@ -1285,6 +1285,144 @@ button:active{transform:scale(.98);}
 }
 
 
+
+/* =========================================================
+   MY FRIENDS
+   日別 / 名前＋メモのみ。
+   端末へ即保存し、PRIVATE DATA接続時は暗号化同期対象。
+========================================================= */
+
+let friendDay=0;
+let editingFriendId=null;
+
+const friendForm=document.getElementById("friendForm");
+const friendName=document.getElementById("friendName");
+const friendMemo=document.getElementById("friendMemo");
+
+function saveFriends(){
+  localStorage.setItem(
+    "bmsgfes_friends",
+    JSON.stringify(friends)
+  );
+  scheduleCloudSync();
+}
+
+function closeFriendForm(){
+  friendForm?.classList.remove("show");
+  editingFriendId=null;
+}
+
+document.querySelectorAll("[data-friendday]").forEach(button=>{
+  button.addEventListener("click",()=>{
+    document.querySelectorAll("[data-friendday]")
+      .forEach(b=>b.classList.remove("active"));
+
+    button.classList.add("active");
+    friendDay=Number(button.dataset.friendday);
+
+    closeFriendForm();
+    renderFriends();
+  });
+});
+
+document.getElementById("openFriendForm")?.addEventListener("click",()=>{
+  editingFriendId=null;
+  document.getElementById("friendFormTitle").textContent="NEW FRIEND";
+  friendName.value="";
+  friendMemo.value="";
+  friendForm.classList.add("show");
+  friendName.focus();
+});
+
+document.getElementById("cancelFriend")?.addEventListener("click",closeFriendForm);
+
+document.getElementById("saveFriend")?.addEventListener("click",()=>{
+  const name=friendName.value.trim();
+  const memo=friendMemo.value.trim();
+
+  if(!name){
+    showToast("名前を入力してください");
+    return;
+  }
+
+  if(editingFriendId){
+    const item=friends.find(f=>f.id===editingFriendId);
+    if(item){
+      item.name=name;
+      item.memo=memo;
+      item.updatedAt=Date.now();
+    }
+  }else{
+    friends.push({
+      id:Date.now(),
+      date:EVENT_DAYS[friendDay],
+      name,
+      memo,
+      createdAt:Date.now(),
+      updatedAt:Date.now()
+    });
+  }
+
+  saveFriends();
+  closeFriendForm();
+  renderFriends();
+  showToast("お友達を保存しました");
+});
+
+function renderFriends(){
+  const container=document.getElementById("friendList");
+  if(!container) return;
+
+  const date=EVENT_DAYS[friendDay];
+
+  const items=friends
+    .filter(item=>item.date===date)
+    .sort((a,b)=>(a.createdAt||0)-(b.createdAt||0));
+
+  container.innerHTML="";
+
+  if(!items.length){
+    container.innerHTML=
+      '<div class="card-small" style="margin-top:11px;">この日に会うお友達はまだ登録されていません。</div>';
+    return;
+  }
+
+  items.forEach(item=>{
+    const card=document.createElement("div");
+    card.className="friend-card";
+
+    card.innerHTML=`
+      <div class="friend-name">${escapeHtml(item.name)}</div>
+      ${item.memo ? `<div class="friend-memo">${escapeHtml(item.memo)}</div>` : ""}
+      <div class="friend-actions">
+        <button class="friend-text-btn friend-edit" type="button">編集</button>
+        <button class="friend-text-btn friend-delete" type="button">削除</button>
+      </div>
+    `;
+
+    card.querySelector(".friend-edit").addEventListener("click",()=>{
+      editingFriendId=item.id;
+      document.getElementById("friendFormTitle").textContent="EDIT FRIEND";
+      friendName.value=item.name||"";
+      friendMemo.value=item.memo||"";
+      friendForm.classList.add("show");
+      friendForm.scrollIntoView({behavior:"smooth",block:"start"});
+    });
+
+    card.querySelector(".friend-delete").addEventListener("click",()=>{
+      if(!confirm("このお友達を削除しますか？")) return;
+
+      friends=friends.filter(f=>f.id!==item.id);
+      saveFriends();
+      renderFriends();
+      showToast("お友達を削除しました");
+    });
+
+    container.appendChild(card);
+  });
+}
+
+
 /* =========================================================
    MY MEMO
 ========================================================= */
@@ -1639,6 +1777,62 @@ button:active{transform:scale(.98);}
   .goods-panel{padding:9px;}
   .goods-panel-title{font-size:13px;}
   .goods-info-block{font-size:10px;}
+}
+</style>
+
+
+<style id="my-friends-style">
+.friend-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+}
+.friend-add-btn{
+  flex:0 0 auto;
+  width:auto;
+  margin:0;
+  padding:8px 12px;
+}
+.friend-form{
+  display:none;
+  margin-top:12px;
+  padding-top:12px;
+  border-top:1px solid rgba(255,255,255,.12);
+}
+.friend-form.show{display:block;}
+.friend-card{
+  margin-top:9px;
+  padding:12px;
+  border:1px solid rgba(255,255,255,.16);
+  border-radius:13px;
+  background:rgba(255,255,255,.045);
+}
+.friend-name{
+  font-size:12px;
+  font-weight:950;
+  line-height:1.45;
+}
+.friend-memo{
+  margin-top:6px;
+  color:#ddd;
+  font-size:10px;
+  line-height:1.65;
+  white-space:pre-wrap;
+  overflow-wrap:anywhere;
+}
+.friend-actions{
+  display:flex;
+  justify-content:flex-end;
+  gap:12px;
+  margin-top:9px;
+}
+.friend-text-btn{
+  border:0;
+  background:transparent;
+  color:#aaa;
+  font-size:8px;
+  font-weight:900;
 }
 </style>
 
@@ -2409,6 +2603,47 @@ button:active{transform:scale(.98);}
       </div>
 
       <div id="mySpots"></div>
+
+    </div>
+
+
+    <div class="card" id="myFriendsCard">
+
+      <div class="friend-head">
+        <div>
+          <div class="card-title">👥 会うお友達</div>
+          <div class="card-small">日別に、会うお友達を名前＋メモで登録。</div>
+        </div>
+
+        <button class="action primary friend-add-btn" id="openFriendForm" type="button">
+          ＋ ADD
+        </button>
+      </div>
+
+      <div class="day-tabs" style="margin-top:12px;">
+        <button class="day-tab active" data-friendday="0" type="button">10/10</button>
+        <button class="day-tab" data-friendday="1" type="button">10/11</button>
+        <button class="day-tab" data-friendday="2" type="button">10/12</button>
+      </div>
+
+      <div class="friend-form" id="friendForm">
+
+        <div class="card-title" id="friendFormTitle">NEW FRIEND</div>
+
+        <label class="form-label">名前</label>
+        <input class="form-input" id="friendName" placeholder="例：○○ちゃん">
+
+        <label class="form-label">メモ</label>
+        <textarea class="form-textarea" id="friendMemo" placeholder="例：グッズ交換 / 終演後に会う"></textarea>
+
+        <div class="trade-form-actions">
+          <button class="action" id="cancelFriend" type="button">CANCEL</button>
+          <button class="action primary" id="saveFriend" type="button">保存</button>
+        </div>
+
+      </div>
+
+      <div id="friendList"></div>
 
     </div>
 
@@ -3396,6 +3631,11 @@ let memos=
     localStorage.getItem("bmsgfes_memos")||"[]"
   );
 
+let friends=
+  JSON.parse(
+    localStorage.getItem("bmsgfes_friends")||"[]"
+  );
+
 const tradeForm=document.getElementById("tradeForm");
 const tradeName=document.getElementById("tradeName");
 const tradeX=document.getElementById("tradeX");
@@ -4138,6 +4378,7 @@ function getPrivatePayload(){
     trades,
     mySpots,
     memos,
+    friends,
     savedAt:Date.now()
   };
 }
@@ -4177,10 +4418,19 @@ function applyPrivatePayload(data){
     );
   }
 
+  if(Array.isArray(data.friends)){
+    friends = data.friends;
+    localStorage.setItem(
+      "bmsgfes_friends",
+      JSON.stringify(friends)
+    );
+  }
+
   renderChecklist();
   renderTrades();
   renderMySpots();
   renderMemos();
+  renderFriends();
 }
 
 function savePrivateSession(session){
@@ -4399,7 +4649,8 @@ async function syncPrivateData(force=false){
     checklist:payload.checklist,
     trades:payload.trades,
     mySpots:payload.mySpots,
-    memos:payload.memos
+    memos:payload.memos,
+    friends:payload.friends
   });
 
   const previous =
@@ -5027,6 +5278,7 @@ renderMySpots();
 renderChecklist();
 renderTrades();
 renderMemos();
+renderFriends();
 renderKeywordState();
 renderSubStage(0);
 setupLinks();
