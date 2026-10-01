@@ -1719,22 +1719,72 @@ const OFFICIAL_LINKS = {
 
 const SUB_STAGE = {
   "2026-10-10":[
-    {time:"11:00",artist:"BANVOX"},
-    {time:"11:30",artist:"ODORI"},
-    {time:"11:50",artist:"BANVOX"},
-    {time:"12:20",artist:"BMSG TRAINEE"}
+    {
+      time:"11:00",
+      artist:"BANVOX",
+      url:"https://youtube.com/@banvox?si=fWq-bQtXZYukLRxV"
+    },
+    {
+      time:"11:30",
+      artist:"ODORI",
+      url:"https://youtube.com/@odori-dancecrew?si=3MiD7wOtO9QH6QD_"
+    },
+    {
+      time:"11:50",
+      artist:"BANVOX",
+      url:"https://youtube.com/@banvox?si=fWq-bQtXZYukLRxV"
+    },
+    {
+      time:"12:20",
+      artist:"BMSG TRAINEE",
+      url:"https://youtube.com/@bmsg_trainee?si=Yn1ediwaokvz-SiY"
+    }
   ],
+
   "2026-10-11":[
-    {time:"11:00",artist:"BANVOX"},
-    {time:"11:30",artist:"RHT."},
-    {time:"11:50",artist:"BANVOX"},
-    {time:"12:20",artist:"BMSG TRAINEE"}
+    {
+      time:"11:00",
+      artist:"BANVOX",
+      url:"https://youtube.com/@banvox?si=fWq-bQtXZYukLRxV"
+    },
+    {
+      time:"11:30",
+      artist:"RHT.",
+      url:"https://youtube.com/@rht4life?si=hI6m5S-ZGkZpPLii"
+    },
+    {
+      time:"11:50",
+      artist:"BANVOX",
+      url:"https://youtube.com/@banvox?si=fWq-bQtXZYukLRxV"
+    },
+    {
+      time:"12:20",
+      artist:"BMSG TRAINEE",
+      url:"https://youtube.com/@bmsg_trainee?si=Yn1ediwaokvz-SiY"
+    }
   ],
+
   "2026-10-12":[
-    {time:"11:00",artist:"BANVOX"},
-    {time:"11:30",artist:"THE SPC BOYS CLUB"},
-    {time:"11:50",artist:"BANVOX"},
-    {time:"12:20",artist:"BMSG TRAINEE"}
+    {
+      time:"11:00",
+      artist:"BANVOX",
+      url:"https://youtube.com/@banvox?si=fWq-bQtXZYukLRxV"
+    },
+    {
+      time:"11:30",
+      artist:"THE SPC BOYS CLUB",
+      url:"https://www.tiktok.com/@thespcboysclub?lang=ja-JP&is_from_webapp=1&sender_device=mobile&sender_web_id=7691556555192075794"
+    },
+    {
+      time:"11:50",
+      artist:"BANVOX",
+      url:"https://youtube.com/@banvox?si=fWq-bQtXZYukLRxV"
+    },
+    {
+      time:"12:20",
+      artist:"BMSG TRAINEE",
+      url:"https://youtube.com/@bmsg_trainee?si=Yn1ediwaokvz-SiY"
+    }
   ]
 };
 
@@ -3372,18 +3422,61 @@ renderKeywordState();
 ========================================================= */
 
 function renderSubStage(dayIndex){
+
   const date=EVENT_DAYS[dayIndex];
   const artists=SUB_STAGE[date]||[];
   const content=document.getElementById("subStageContent");
+
   if(!content) return;
 
-  content.innerHTML=artists.map(item=>`
-    <div style="display:flex;gap:12px;align-items:baseline;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.10);">
-      <strong style="min-width:48px;color:#fff;">${escapeHtml(item.time)}〜</strong>
-      <span>${escapeHtml(item.artist)}</span>
+  content.innerHTML=artists.map(item=>{
+
+    const artistHtml=item.url
+      ? `
+        <a
+          href="${item.url}"
+          target="_blank"
+          rel="noopener"
+          style="
+            color:#fff;
+            font-weight:800;
+            text-decoration:none;
+            border-bottom:1px solid rgba(255,255,255,.35);
+          "
+        >
+          ${escapeHtml(item.artist)} ↗
+        </a>
+      `
+      : escapeHtml(item.artist);
+
+    return `
+      <div style="
+        display:flex;
+        gap:12px;
+        align-items:baseline;
+        padding:8px 0;
+        border-bottom:1px solid rgba(255,255,255,.10);
+      ">
+        <strong style="min-width:48px;color:#fff;">
+          ${escapeHtml(item.time)}〜
+        </strong>
+
+        <span>
+          ${artistHtml}
+        </span>
+      </div>
+    `;
+
+  }).join("")+
+  `
+    <div style="
+      margin-top:9px;
+      font-size:10px;
+      color:#888;
+    ">
+      ※タイムテーブル・出演者は変更となる場合があります。
     </div>
-  `).join("")+
-  `<div style="margin-top:9px;font-size:10px;color:#888;">※タイムテーブル・出演者は変更となる場合があります。</div>`;
+  `;
 }
 
 document.querySelectorAll("[data-subday]").forEach(button=>{
