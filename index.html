@@ -1,5 +1,4 @@
 
-
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -1468,6 +1467,14 @@ button:active{transform:scale(.98);}
 .goods-fold{border-top:1px solid rgba(255,255,255,.11);margin-top:10px;padding-top:2px}.goods-fold summary{display:flex;align-items:center;gap:8px;padding:10px 0;color:#fff;font-size:13px;font-weight:950;cursor:pointer;list-style:none}.goods-fold summary::-webkit-details-marker{display:none}.goods-fold summary::after{content:'＋';margin-left:auto;font-size:18px;font-weight:500}.goods-fold[open] summary::after{content:'−'}
 .goods-detail-text{padding:0 2px 8px;color:#ddd;font-size:11px;line-height:1.85;overflow-wrap:anywhere;word-break:normal}
 .goods-official-link{display:block;margin-top:10px;padding:10px;border:1px solid rgba(255,255,255,.32);border-radius:9px;background:#111;color:#fff;text-align:center;text-decoration:none;font-weight:900}
+.goods-line-btn-wide{width:100%;margin-top:10px}
+.goods-modal{position:fixed!important;inset:0!important;z-index:99999!important;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.94);padding:58px 14px 72px;overflow:hidden}
+.goods-modal.show{display:flex!important}
+.goods-modal-stage{position:relative;width:100%;height:100%;display:flex;align-items:center;justify-content:center;overflow:hidden;touch-action:none}
+.goods-modal-image{display:block;max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;transform-origin:center center;will-change:transform}
+.goods-modal-close{position:fixed;top:max(16px,env(safe-area-inset-top));right:16px;z-index:100001;width:44px;height:44px;border:0;border-radius:999px;background:#fff;color:#050505;font-size:26px;line-height:1;font-weight:800;cursor:pointer}
+.goods-modal-note{position:fixed;left:50%;bottom:max(18px,env(safe-area-inset-bottom));transform:translateX(-50%);z-index:100001;white-space:nowrap;padding:8px 12px;border-radius:999px;background:rgba(20,20,20,.88);color:#fff;font-size:12px;font-weight:800}
+body.goods-modal-open{overflow:hidden!important;touch-action:none}
 @media(max-width:560px){.goods-top-grid,.goods-ticket-grid{grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:7px}.goods-panel,.goods-ticket-card{padding:9px}.goods-panel-title,.goods-ticket-title{font-size:12px}.goods-info-block,.goods-ticket-body,.goods-detail-text,.goods-limit-content{font-size:10.5px;line-height:1.72}.goods-limit-details summary,.goods-limit-static{font-size:10.5px;padding:7px 6px}.goods-alert{padding:7px}.goods-line-btn{font-size:11px;padding:10px 6px}}
 </style>
 
@@ -1945,7 +1952,6 @@ button:active{transform:scale(.98);}
       <div class="goods-ticket-card">
         <div class="goods-ticket-title">グッズ整理券（事前抽選）</div>
         <div class="goods-ticket-body"><strong>申込期間：</strong><br>10月2日(金)18:00~<br>10月4日(日)23:59迄<br><br><strong>抽選結果：</strong><br>10月6日(火)18:00(予定)<br><br>①LINEにて『BMSG 整理券』追加<br>②会場物販orダイバーシティ物販を選択<br>③希望する日時を選択→応募<br><br>📱1公演につき1枚まで申し込み可能
-          <a class="goods-line-btn" href="https://lin.ee/hJ7UK4U" target="_blank" rel="noopener">LINE『BMSG 整理券』を追加 ↗</a>
         </div>
       </div>
       <div class="goods-ticket-card">
@@ -1953,6 +1959,7 @@ button:active{transform:scale(.98);}
         <div class="goods-ticket-body"><strong>配布開始：</strong><br>公演当日 9:00〜<br>定員に達し次第終了<br><br>※先着順での受付<br>※会場付近（1.5km圏内）でのみ取得可能<br>※おひとり様1日1枚まで取得可能<br>※当日限定のため、後日ECなどは無し</div>
       </div>
     </div>
+    <a class="goods-line-btn goods-line-btn-wide" href="https://lin.ee/hJ7UK4U" target="_blank" rel="noopener">LINE『BMSG 整理券』を追加 ↗</a>
 
     <div class="goods-detail-card">
       <div class="goods-detail-intro">■お支払い方法<br>現金・クレジットカード・QRコード決済</div>
@@ -5217,6 +5224,7 @@ function openGoodsImage(src){
   goodsModalImage.src=src;
   goodsModal.classList.add("show");
   goodsModal.setAttribute("aria-hidden","false");
+  document.body.classList.add("goods-modal-open");
   document.body.style.overflow="hidden";
 }
 
@@ -5224,6 +5232,7 @@ function closeGoodsImage(){
   if(!goodsModal) return;
   goodsModal.classList.remove("show");
   goodsModal.setAttribute("aria-hidden","true");
+  document.body.classList.remove("goods-modal-open");
   document.body.style.overflow="";
   if(goodsModalImage) goodsModalImage.src="";
   resetGoodsZoom();
