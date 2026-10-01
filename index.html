@@ -1180,8 +1180,9 @@ button:active{transform:scale(.98);}
   position:fixed;
   left:0;
   right:0;
-  bottom:0;
-  height:calc(14px + env(safe-area-inset-bottom));
+  /* Safariの下部ツールバー領域の裏まで黒を伸ばす */
+  bottom:-240px;
+  height:480px;
   z-index:3999;
   background:#050505;
   pointer-events:none;
@@ -4182,43 +4183,9 @@ document.querySelectorAll(".bottom-nav button,[data-page]").forEach(btn=>{
 
 
 /* NAV LOWER BLACK MASK
-   Safariの可視領域変化に左右されず、固定ナビより下だけを黒で覆う。
-   ナビ本体の位置・サイズは変更しない。
+   固定ナビより下は黒。Safari下部UIの裏側までマスク自体を延長する。
+   bottom-nav は z-index:4000 なので、ナビ本体は黒マスクの上にそのまま表示される。
 */
-function updateBottomNavLowerMask(){
-  const nav=document.querySelector(".bottom-nav");
-  const mask=document.getElementById("bottomNavLowerMask");
-  if(!nav||!mask)return;
-
-  const viewportHeight = window.visualViewport
-    ? window.visualViewport.height + window.visualViewport.offsetTop
-    : window.innerHeight;
-
-  const navBottom = nav.getBoundingClientRect().bottom;
-  const coverHeight = Math.max(
-    14,
-    Math.ceil(viewportHeight - navBottom) + 14
-  );
-
-  mask.style.height = coverHeight + "px";
-}
-
-function refreshBottomMask(){
-  requestAnimationFrame(updateBottomNavLowerMask);
-}
-
-window.addEventListener("load",()=>{
-  refreshBottomMask();
-  setTimeout(refreshBottomMask,100);
-  setTimeout(refreshBottomMask,500);
-});
-window.addEventListener("scroll",refreshBottomMask,{passive:true});
-window.addEventListener("resize",refreshBottomMask);
-window.addEventListener("orientationchange",()=>setTimeout(refreshBottomMask,150));
-if(window.visualViewport){
-  window.visualViewport.addEventListener("resize",refreshBottomMask);
-  window.visualViewport.addEventListener("scroll",refreshBottomMask);
-}
 
 </script>
 
