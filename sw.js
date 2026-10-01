@@ -1,4 +1,4 @@
-const CACHE_NAME = "bmsgfes26-v19-offline";
+const CACHE_NAME = "bmsgfes26-v18-offline";
 
 /*
   =========================================================
@@ -13,19 +13,18 @@ const CACHE_NAME = "bmsgfes26-v19-offline";
   =========================================================
 */
 
-
 /* =========================================================
    APP SHELL
 ========================================================= */
 
 const APP_SHELL = [
+  "./",
   "./index.html",
   "./Map.JPG",
   "./manifest.webmanifest",
   "./leaflet.css",
   "./leaflet.js"
 ];
-
 
 /* =========================================================
    INSTALL
@@ -85,7 +84,6 @@ self.addEventListener("install", event => {
 
 });
 
-
 /* =========================================================
    ACTIVATE
 ========================================================= */
@@ -121,7 +119,6 @@ self.addEventListener("activate", event => {
 
 });
 
-
 /* =========================================================
    FETCH
 ========================================================= */
@@ -135,7 +132,6 @@ self.addEventListener("fetch", event => {
   }
 
   const url = new URL(request.url);
-
 
   /* =====================================================
      PRIVATE API / WEATHER
@@ -152,143 +148,147 @@ self.addEventListener("fetch", event => {
 
   }
 
-
   /* =====================================================
-   PAGE NAVIGATION
+     PAGE NAVIGATION
 
-   index.html を唯一のオフライン起動本体として使用。
-   ルートURLのredirectレスポンスはキャッシュしない。
-===================================================== */
+     重要：
+     オフライン時にネットワーク失敗を長時間待たせない。
 
-if (request.mode === "navigate") {
+     1. 保存済みindex.htmlを確認
+     2. オンラインならネットワーク更新も試す
+     3. オフラインなら保存版を即返す
+  ===================================================== */
 
-  event.respondWith(
-    (async () => {
+  if (request.mode === "navigate") {
 
-      const cache = await caches.open(CACHE_NAME);
+    event.respondWith(
+      (async () => {
 
-      /*
-        保存済みindex.htmlを取得。
-      */
+        const cache = await caches.open(CACHE_NAME);
 
-      let cached =
-        await cache.match("./index.html");
+        /*
+          保存済みのアプリ本体を先に取得しておく。
+        */
 
+        let cached =
+          await cache.match("./index.html");
 
-      /*
-        明確にオフラインなら、
-        保存済みindex.htmlを即返す。
-      */
+        if (!cached) {
+          cached = await cache.match("./");
+        }
 
-      if (
-        typeof self.navigator !== "undefined" &&
-        self.navigator.onLine === false &&
-        cached
-      ) {
+        if (!cached) {
+          cached = await cache.match(request);
+        }
 
-        return cached;
-
-      }
-
-
-      /*
-        オンライン時は最新版を取得。
-      */
-
-      try {
-
-        const fresh = await fetch(request, {
-          cache: "no-store",
-          redirect: "follow"
-        });
+        /*
+          明確にオフラインなら、
+          ネットワークを試さず保存版を返す。
+        */
 
         if (
-          fresh &&
-          fresh.ok
+          typeof self.navigator !== "undefined" &&
+          self.navigator.onLine === false &&
+          cached
         ) {
 
-          /*
-            redirectを経由したnavigationレスポンスそのものを
-            オフライン用として保存せず、
-            index.htmlを直接取得して保存する。
-          */
-
-          try {
-
-            const freshIndex = await fetch(
-              new URL("./index.html", self.registration.scope).href,
-              {
-                cache: "no-store",
-                redirect: "follow"
-              }
-            );
-
-            if (
-              freshIndex &&
-              freshIndex.ok &&
-              !freshIndex.redirected
-            ) {
-
-              await cache.put(
-                "./index.html",
-                freshIndex.clone()
-              );
-
-            }
-
-          } catch (error) {}
-
-          return fresh;
+          return cached;
 
         }
 
-      } catch (error) {
-
         /*
-          ネットワーク失敗
-          ↓
-          保存済みindex.htmlへ
+          オンライン時は最新版を取得。
         */
 
-      }
+        try {
 
+          const fresh = await fetch(request, {
+            cache: "no-store"
+          });
 
-      /*
-        OFFLINE FALLBACK
-      */
+          if (
+            fresh &&
+            fresh.ok
+          ) {
 
-      cached =
-        await cache.match("./index.html");
+            /*
+              index.htmlとして保存
+            */
 
-      if (cached) {
-        return cached;
-      }
+            try {
 
+              await cache.put(
+                "./index.html",
+                fresh.clone()
+              );
 
-      /*
-        絶対URLでも最終確認。
-      */
+            } catch (error) {}
 
-      const absoluteIndex =
-        new URL(
-          "./index.html",
-          self.registration.scope
-        ).href;
+            /*
+              ルートとしても保存
+            */
 
-      cached =
-        await cache.match(absoluteIndex);
+            try {
 
-      if (cached) {
-        return cached;
-      }
+              await cache.put(
+                "./",
+                fresh.clone()
+              );
 
+            } catch (error) {}
 
-      /*
-        APP SHELL自体がまだ保存されていない場合。
-      */
+            return fresh;
 
-      return new Response(
-        `
+          }
+
+        } catch (error) {
+
+          /*
+            ネットワーク取得失敗。
+            下の保存版へフォールバック。
+          */
+
+        }
+
+        /*
+          OFFLINE FALLBACK
+        */
+
+        if (cached) {
+          return cached;
+        }
+
+        /*
+          最終確認：
+          絶対URLでも検索する。
+        */
+
+        const absoluteIndex =
+          new URL("./index.html", self.location.origin).href;
+
+        const absoluteRoot =
+          new URL("./", self.location.origin).href;
+
+        cached =
+          await cache.match(absoluteIndex);
+
+        if (cached) {
+          return cached;
+        }
+
+        cached =
+          await cache.match(absoluteRoot);
+
+        if (cached) {
+          return cached;
+        }
+
+        /*
+          本当にAPP SHELLが存在しない場合だけ表示。
+        */
+
+        return new Response(
+          `
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -352,23 +352,22 @@ p{
 
 </body>
 </html>
-        `,
-        {
-          status: 503,
-          headers: {
-            "Content-Type":
-              "text/html; charset=utf-8"
+          `,
+          {
+            status: 503,
+            headers: {
+              "Content-Type":
+                "text/html; charset=utf-8"
+            }
           }
-        }
-      );
+        );
 
-    })()
-  );
+      })()
+    );
 
-  return;
+    return;
 
-}
-
+  }
 
   /* =====================================================
      OPENSTREETMAP TILES
@@ -394,7 +393,6 @@ p{
         if (cached) {
           return cached;
         }
-
 
         try {
 
@@ -446,7 +444,6 @@ p{
 
   }
 
-
   /* =====================================================
      SAME ORIGIN FILES
 
@@ -466,14 +463,12 @@ p{
         const cache =
           await caches.open(CACHE_NAME);
 
-
         /*
           まず完全一致。
         */
 
         let cached =
           await cache.match(request);
-
 
         /*
           クエリ付きURL等の表記差にも対応。
@@ -491,7 +486,6 @@ p{
 
         }
 
-
         /*
           明確にオフラインで保存版があるなら
           即返す。
@@ -506,7 +500,6 @@ p{
           return cached;
 
         }
-
 
         /*
           オンライン時は最新版を取得。
@@ -539,7 +532,6 @@ p{
 
         } catch (error) {}
 
-
         /*
           ネットワーク失敗時は保存版。
         */
@@ -547,7 +539,6 @@ p{
         if (cached) {
           return cached;
         }
-
 
         /*
           pathnameでも確認。
@@ -559,7 +550,6 @@ p{
         if (pathnameCached) {
           return pathnameCached;
         }
-
 
         return new Response(
           "",
@@ -575,7 +565,6 @@ p{
 
   }
 
-
   /* =====================================================
      OTHER EXTERNAL FILES
   ===================================================== */
@@ -588,7 +577,6 @@ p{
 
       const cached =
         await cache.match(request);
-
 
       /*
         明確にオフラインなら
@@ -604,7 +592,6 @@ p{
         return cached;
 
       }
-
 
       try {
 
