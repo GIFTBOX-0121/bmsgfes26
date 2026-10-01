@@ -1284,6 +1284,100 @@ button:active{transform:scale(.98);}
   box-shadow:inset 0 1px 0 rgba(255,255,255,.9);
 }
 
+
+/* =========================================================
+   MY MEMO
+========================================================= */
+.memo-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+}
+.memo-add-btn{
+  flex:0 0 auto;
+  margin:0;
+  width:auto;
+  padding:8px 12px;
+}
+.memo-form{
+  display:none;
+  margin-top:12px;
+  padding-top:12px;
+  border-top:1px solid rgba(255,255,255,.12);
+}
+.memo-form.show{display:block;}
+.memo-form-actions{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:7px;
+  margin-top:10px;
+}
+.memo-card{
+  margin-top:10px;
+  padding:12px;
+  border:1px solid rgba(255,255,255,.16);
+  border-radius:13px;
+  background:rgba(255,255,255,.045);
+}
+.memo-card-title{
+  font-size:12px;
+  font-weight:950;
+  line-height:1.4;
+}
+.memo-card-body{
+  margin-top:7px;
+  color:#ddd;
+  font-size:10px;
+  line-height:1.65;
+  white-space:pre-wrap;
+  overflow-wrap:anywhere;
+}
+.memo-image{
+  display:block;
+  width:100%;
+  max-height:280px;
+  margin-top:9px;
+  object-fit:contain;
+  border-radius:10px;
+  background:#050505;
+  border:1px solid rgba(255,255,255,.12);
+}
+.memo-link{
+  display:block;
+  margin-top:9px;
+  padding:9px 10px;
+  border:1px solid rgba(255,255,255,.24);
+  border-radius:9px;
+  background:#111;
+  color:#fff;
+  font-size:9px;
+  font-weight:900;
+  text-decoration:none;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+.memo-actions{
+  display:flex;
+  justify-content:flex-end;
+  gap:12px;
+  margin-top:10px;
+}
+.memo-text-btn{
+  border:0;
+  background:transparent;
+  color:#aaa;
+  font-size:8px;
+  font-weight:900;
+}
+.memo-image-state{
+  margin-top:6px;
+  color:#999;
+  font-size:8px;
+  line-height:1.5;
+}
+
 </style>
 
 
@@ -1952,6 +2046,53 @@ button:active{transform:scale(.98);}
       </div>
 
       <div id="mySpots"></div>
+
+    </div>
+
+    <div class="card" id="myMemoCard">
+
+      <div class="memo-head">
+        <div>
+          <div class="card-title">📝 MY MEMO</div>
+          <div class="card-small">ホテル・交通・待ち合わせなど、自分用のメモ。</div>
+        </div>
+
+        <button class="action primary memo-add-btn" id="openMemoForm" type="button">
+          ＋ ADD
+        </button>
+      </div>
+
+      <div class="memo-form" id="memoForm">
+
+        <div class="card-title" id="memoFormTitle">NEW MEMO</div>
+
+        <label class="form-label">タイトル</label>
+        <input class="form-input" id="memoTitle" placeholder="例：🏨 ホテル">
+
+        <label class="form-label">メモ</label>
+        <textarea class="form-textarea" id="memoBody" placeholder="予約内容・チェックイン時間・待ち合わせなど"></textarea>
+
+        <label class="form-label">リンク（任意）</label>
+        <input class="form-input" id="memoLink" type="url" inputmode="url" autocapitalize="none" placeholder="https://...">
+
+        <label class="form-label">画像（任意・1枚）</label>
+        <input class="form-input" id="memoImage" type="file" accept="image/*">
+        <div class="memo-image-state" id="memoImageState">
+          画像は保存時に軽量化してPRIVATE DATAへ保存します。
+        </div>
+
+        <div class="trade-form-actions">
+          <button class="action" id="removeMemoImage" type="button">画像を外す</button>
+          <button class="action" id="cancelMemo" type="button">CANCEL</button>
+        </div>
+
+        <button class="action primary" id="saveMemo" type="button">
+          保存
+        </button>
+
+      </div>
+
+      <div id="memoList"></div>
 
     </div>
 
@@ -2877,6 +3018,11 @@ let trades=
     localStorage.getItem("bmsgfes_trades")||"[]"
   );
 
+let memos=
+  JSON.parse(
+    localStorage.getItem("bmsgfes_memos")||"[]"
+  );
+
 const tradeForm=document.getElementById("tradeForm");
 const tradeName=document.getElementById("tradeName");
 const tradeX=document.getElementById("tradeX");
@@ -3274,6 +3420,266 @@ function renderTrades(){
 }
 
 
+
+/* =========================================================
+   MY MEMO
+   本文・リンク・軽量化画像を端末保存し、PRIVATE KEY接続時は
+   既存の暗号化PRIVATE DATA payloadに含めて同期する。
+========================================================= */
+
+let editingMemoId=null;
+let editingMemoImage=null;
+let removeEditingMemoImage=false;
+
+const memoForm=document.getElementById("memoForm");
+const memoTitle=document.getElementById("memoTitle");
+const memoBody=document.getElementById("memoBody");
+const memoLink=document.getElementById("memoLink");
+const memoImage=document.getElementById("memoImage");
+const memoImageState=document.getElementById("memoImageState");
+
+function saveMemos(){
+  localStorage.setItem(
+    "bmsgfes_memos",
+    JSON.stringify(memos)
+  );
+  scheduleCloudSync();
+}
+
+function closeMemoForm(){
+  memoForm.classList.remove("show");
+  editingMemoId=null;
+  editingMemoImage=null;
+  removeEditingMemoImage=false;
+  memoImage.value="";
+}
+
+document.getElementById("openMemoForm")?.addEventListener("click",()=>{
+  editingMemoId=null;
+  editingMemoImage=null;
+  removeEditingMemoImage=false;
+  document.getElementById("memoFormTitle").textContent="NEW MEMO";
+  memoTitle.value="";
+  memoBody.value="";
+  memoLink.value="";
+  memoImage.value="";
+  memoImageState.textContent="画像は保存時に軽量化してPRIVATE DATAへ保存します。";
+  memoForm.classList.add("show");
+  memoTitle.focus();
+});
+
+document.getElementById("cancelMemo")?.addEventListener("click",closeMemoForm);
+
+document.getElementById("removeMemoImage")?.addEventListener("click",()=>{
+  memoImage.value="";
+  editingMemoImage=null;
+  removeEditingMemoImage=true;
+  memoImageState.textContent="画像なしで保存します。";
+});
+
+memoImage?.addEventListener("change",()=>{
+  if(memoImage.files?.[0]){
+    removeEditingMemoImage=false;
+    memoImageState.textContent="選択中："+memoImage.files[0].name;
+  }
+});
+
+function normalizeMemoUrl(value){
+  const raw=String(value||"").trim();
+  if(!raw) return "";
+  try{
+    const url=new URL(raw);
+    if(url.protocol!=="http:" && url.protocol!=="https:") return null;
+    return url.href;
+  }catch(error){
+    return null;
+  }
+}
+
+function compressMemoImage(file){
+  return new Promise((resolve,reject)=>{
+    if(!file){
+      resolve(null);
+      return;
+    }
+
+    if(!file.type.startsWith("image/")){
+      reject(new Error("not_image"));
+      return;
+    }
+
+    const reader=new FileReader();
+
+    reader.onerror=()=>reject(new Error("read_failed"));
+
+    reader.onload=()=>{
+      const img=new Image();
+
+      img.onerror=()=>reject(new Error("image_failed"));
+
+      img.onload=()=>{
+        const maxSide=1280;
+        const scale=Math.min(1,maxSide/Math.max(img.width,img.height));
+        const width=Math.max(1,Math.round(img.width*scale));
+        const height=Math.max(1,Math.round(img.height*scale));
+
+        const canvas=document.createElement("canvas");
+        canvas.width=width;
+        canvas.height=height;
+
+        const ctx=canvas.getContext("2d");
+        ctx.drawImage(img,0,0,width,height);
+
+        let dataUrl;
+        try{
+          dataUrl=canvas.toDataURL("image/jpeg",0.72);
+        }catch(error){
+          reject(new Error("encode_failed"));
+          return;
+        }
+
+        resolve(dataUrl);
+      };
+
+      img.src=reader.result;
+    };
+
+    reader.readAsDataURL(file);
+  });
+}
+
+document.getElementById("saveMemo")?.addEventListener("click",async()=>{
+  const title=memoTitle.value.trim();
+  const body=memoBody.value.trim();
+  const link=normalizeMemoUrl(memoLink.value);
+
+  if(!title){
+    showToast("タイトルを入力してください");
+    return;
+  }
+
+  if(link===null){
+    showToast("リンクは http:// または https:// で入力してください");
+    return;
+  }
+
+  const button=document.getElementById("saveMemo");
+  button.disabled=true;
+  button.textContent="保存中…";
+
+  try{
+    let imageData=editingMemoImage;
+
+    if(removeEditingMemoImage){
+      imageData="";
+    }
+
+    if(memoImage.files?.[0]){
+      imageData=await compressMemoImage(memoImage.files[0]);
+    }
+
+    if(editingMemoId){
+      const item=memos.find(m=>m.id===editingMemoId);
+      if(item){
+        item.title=title;
+        item.body=body;
+        item.link=link||"";
+        item.image=imageData||"";
+        item.updatedAt=Date.now();
+      }
+    }else{
+      memos.unshift({
+        id:Date.now(),
+        title,
+        body,
+        link:link||"",
+        image:imageData||"",
+        createdAt:Date.now(),
+        updatedAt:Date.now()
+      });
+    }
+
+    saveMemos();
+    renderMemos();
+    closeMemoForm();
+    showToast("メモを保存しました");
+
+  }catch(error){
+    showToast("画像を保存できませんでした");
+  }finally{
+    button.disabled=false;
+    button.textContent="保存";
+  }
+});
+
+function renderMemos(){
+  const container=document.getElementById("memoList");
+  if(!container) return;
+
+  container.innerHTML="";
+
+  if(!memos.length){
+    container.innerHTML='<div class="card-small" style="margin-top:12px;">まだメモはありません。</div>';
+    return;
+  }
+
+  [...memos]
+    .sort((a,b)=>(b.updatedAt||b.createdAt||0)-(a.updatedAt||a.createdAt||0))
+    .forEach(item=>{
+      const card=document.createElement("div");
+      card.className="memo-card";
+
+      const safeLink=normalizeMemoUrl(item.link);
+      const imageHtml=item.image
+        ? `<img class="memo-image" src="${item.image}" alt="メモ添付画像">`
+        : "";
+
+      const linkHtml=safeLink
+        ? `<a class="memo-link" href="${escapeHtml(safeLink)}" target="_blank" rel="noopener">🔗 LINKを開く ↗</a>`
+        : "";
+
+      card.innerHTML=`
+        <div class="memo-card-title">${escapeHtml(item.title)}</div>
+        ${item.body ? `<div class="memo-card-body">${escapeHtml(item.body)}</div>` : ""}
+        ${imageHtml}
+        ${linkHtml}
+        <div class="memo-actions">
+          <button class="memo-text-btn memo-edit" type="button">編集</button>
+          <button class="memo-text-btn memo-delete" type="button">削除</button>
+        </div>
+      `;
+
+      card.querySelector(".memo-edit").addEventListener("click",()=>{
+        editingMemoId=item.id;
+        editingMemoImage=item.image||"";
+        removeEditingMemoImage=false;
+
+        document.getElementById("memoFormTitle").textContent="EDIT MEMO";
+        memoTitle.value=item.title||"";
+        memoBody.value=item.body||"";
+        memoLink.value=item.link||"";
+        memoImage.value="";
+        memoImageState.textContent=item.image
+          ? "現在の画像あり。新しい画像を選ぶと差し替えます。"
+          : "画像はありません。";
+
+        memoForm.classList.add("show");
+        memoForm.scrollIntoView({behavior:"smooth",block:"start"});
+      });
+
+      card.querySelector(".memo-delete").addEventListener("click",()=>{
+        if(!confirm("このメモを削除しますか？")) return;
+        memos=memos.filter(m=>m.id!==item.id);
+        saveMemos();
+        renderMemos();
+        showToast("メモを削除しました");
+      });
+
+      container.appendChild(card);
+    });
+}
+
+
 /* =========================================================
    PRIVATE DATA — ENCRYPTED CLOUD SYNC
 ========================================================= */
@@ -3358,6 +3764,7 @@ function getPrivatePayload(){
     checklist,
     trades,
     mySpots,
+    memos,
     savedAt:Date.now()
   };
 }
@@ -3389,9 +3796,18 @@ function applyPrivatePayload(data){
     );
   }
 
+  if(Array.isArray(data.memos)){
+    memos = data.memos;
+    localStorage.setItem(
+      "bmsgfes_memos",
+      JSON.stringify(memos)
+    );
+  }
+
   renderChecklist();
   renderTrades();
   renderMySpots();
+  renderMemos();
 }
 
 function savePrivateSession(session){
@@ -3609,7 +4025,8 @@ async function syncPrivateData(force=false){
     version:payload.version,
     checklist:payload.checklist,
     trades:payload.trades,
-    mySpots:payload.mySpots
+    mySpots:payload.mySpots,
+    memos:payload.memos
   });
 
   const previous =
@@ -4236,6 +4653,7 @@ document.querySelectorAll("[data-info-jump]").forEach(button=>{
 renderMySpots();
 renderChecklist();
 renderTrades();
+renderMemos();
 renderKeywordState();
 renderSubStage(0);
 setupLinks();
