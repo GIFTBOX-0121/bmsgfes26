@@ -1175,45 +1175,12 @@ button:active{transform:scale(.98);}
 }
 
 
-
-
-
-/* =========================================================
-   BOTTOM NAV / SAFE AREA FIX
-   ナビの下を画面最下端まで完全に塞ぎ、
-   本文がナビの裏へ潜り込まないようにする。
-========================================================= */
-
-/* 本文の末尾が固定ナビの裏に入らないための余白 */
-#app{
-  padding-bottom:calc(132px + env(safe-area-inset-bottom));
+/* NAV LOWER BLACK MASK */
+#bottomNavLowerMask{
+  position:fixed;left:0;right:0;bottom:0;height:0;
+  z-index:3999;background:#050505;pointer-events:none;
 }
-
-/* ナビ本体の見た目はそのまま */
-.bottom-nav{
-  bottom:calc(7px + env(safe-area-inset-bottom));
-  z-index:4000;
-  isolation:isolate;
-}
-
-/* ナビの下端から画面最下端までを固定背景で埋める */
-.bottom-nav::after{
-  content:"";
-  position:absolute;
-  z-index:-1;
-  left:-7px;
-  right:-7px;
-  top:calc(100% - 1px);
-  height:calc(8px + env(safe-area-inset-bottom));
-  background:#050505;
-  pointer-events:none;
-}
-
-/* Safariで最下部まで確実に黒を維持 */
-html,
-body{
-  background-color:#050505;
-}
+.bottom-nav{z-index:4000;}
 
 </style>
 
@@ -1823,6 +1790,8 @@ body{
   </button>
 
 </nav>
+<div id="bottomNavLowerMask" aria-hidden="true"></div>
+
 
 </div>
 
@@ -4204,6 +4173,27 @@ document.querySelectorAll(".bottom-nav button,[data-page]").forEach(btn=>{
     });
   });
 });
+
+
+/* NAV LOWER BLACK MASK: keep nav exactly where it is; hide only below it */
+function updateBottomNavLowerMask(){
+  const nav=document.querySelector(".bottom-nav");
+  const mask=document.getElementById("bottomNavLowerMask");
+  if(!nav||!mask)return;
+  const bottom=nav.getBoundingClientRect().bottom;
+  mask.style.height=Math.max(0,Math.ceil(window.innerHeight-bottom))+"px";
+}
+window.addEventListener("load",()=>{
+  updateBottomNavLowerMask();
+  setTimeout(updateBottomNavLowerMask,100);
+  setTimeout(updateBottomNavLowerMask,500);
+});
+window.addEventListener("resize",updateBottomNavLowerMask);
+window.addEventListener("orientationchange",()=>setTimeout(updateBottomNavLowerMask,150));
+if(window.visualViewport){
+  window.visualViewport.addEventListener("resize",updateBottomNavLowerMask);
+  window.visualViewport.addEventListener("scroll",updateBottomNavLowerMask);
+}
 
 </script>
 
