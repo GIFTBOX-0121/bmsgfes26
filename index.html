@@ -1174,6 +1174,31 @@ button:active{transform:scale(.98);}
   font-weight:800;
 }
 
+
+/* =========================================================
+   BOTTOM NAV BACKDROP
+   下部ナビの背後〜画面最下部を隠す。
+   ナビ本体の位置・サイズ・デザインは変更しない。
+========================================================= */
+body::after{
+  content:"";
+  position:fixed;
+  left:0;
+  right:0;
+  bottom:0;
+  height:calc(98px + env(safe-area-inset-bottom));
+  z-index:3990;
+  pointer-events:none;
+  background:
+    linear-gradient(
+      to bottom,
+      rgba(5,5,5,0) 0,
+      rgba(5,5,5,.94) 18px,
+      #050505 34px,
+      #050505 100%
+    );
+}
+
 </style>
 
 
