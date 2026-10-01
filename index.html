@@ -4304,35 +4304,6 @@ function showToast(message){
 }
 
 /* =========================================================
-   INFORMATION QUICK NAV
-========================================================= */
-
-document.querySelectorAll("[data-info-jump]").forEach(button=>{
-
-  button.addEventListener("click",()=>{
-
-    const targetId=button.dataset.infoJump;
-    const target=document.getElementById(targetId);
-
-    if(target){
-
-      target.scrollIntoView({
-        behavior:"smooth",
-        block:"start"
-      });
-
-      return;
-    }
-
-    if(targetId==="ppvSection"){
-      showToast("PPV情報は準備中です");
-    }
-
-  });
-
-});
-
-/* =========================================================
    START
 ========================================================= */
 
