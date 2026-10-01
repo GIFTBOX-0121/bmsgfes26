@@ -1440,6 +1440,211 @@ button:active{transform:scale(.98);}
 
 
 
+
+<style id="goods-20261001-style">
+.goods-top-grid{
+  display:grid;
+  grid-template-columns:minmax(0,1.45fr) minmax(0,1fr);
+  gap:9px;
+  align-items:start;
+}
+.goods-panel{
+  min-width:0;
+  padding:11px;
+  border:1px solid rgba(255,255,255,.23);
+  border-radius:15px;
+  background:linear-gradient(135deg,rgba(120,120,120,.18),rgba(18,18,18,.98) 35%,rgba(5,5,5,.99));
+  box-shadow:0 8px 22px rgba(0,0,0,.28),inset 0 1px 0 rgba(255,255,255,.13);
+}
+.goods-panel-title{
+  margin-bottom:8px;
+  font-size:11px;
+  font-weight:950;
+  line-height:1.35;
+}
+.goods-images-two{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:5px;
+}
+.goods-image-button{
+  display:block;
+  width:100%;
+  padding:0;
+  overflow:hidden;
+  border:1px solid rgba(255,255,255,.16);
+  border-radius:9px;
+  background:#090909;
+}
+.goods-image-button img{
+  display:block;
+  width:100%;
+  height:auto;
+}
+.goods-info-block{
+  margin-top:10px;
+  padding-top:9px;
+  border-top:1px solid rgba(255,255,255,.11);
+  color:#ddd;
+  font-size:8px;
+  line-height:1.65;
+}
+.goods-info-block strong{color:#fff;}
+.goods-alert{
+  margin-top:7px;
+  padding:7px 8px;
+  border:1px solid rgba(255,255,255,.15);
+  border-radius:8px;
+  background:rgba(255,255,255,.045);
+}
+.goods-green{color:#9effb0;font-weight:950;}
+.goods-ec{
+  margin-top:8px;
+  color:#fff;
+  font-weight:950;
+  text-align:center;
+}
+.goods-ticket-grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:9px;
+  margin-top:10px;
+}
+.goods-ticket-card{
+  min-width:0;
+  padding:12px;
+  border:1px solid rgba(255,255,255,.23);
+  border-radius:15px;
+  background:linear-gradient(135deg,rgba(120,120,120,.18),rgba(18,18,18,.98) 35%,rgba(5,5,5,.99));
+}
+.goods-ticket-title{
+  font-size:11px;
+  font-weight:950;
+  line-height:1.35;
+}
+.goods-ticket-body{
+  margin-top:8px;
+  color:#ddd;
+  font-size:8px;
+  line-height:1.7;
+}
+.goods-line-btn{
+  display:block;
+  margin-top:9px;
+  padding:9px 7px;
+  border:1px solid rgba(255,255,255,.45);
+  border-radius:9px;
+  background:linear-gradient(135deg,#fff,#aaa);
+  color:#050505;
+  font-size:8px;
+  font-weight:950;
+  text-align:center;
+  text-decoration:none;
+}
+.goods-detail-card{
+  margin-top:10px;
+  padding:13px;
+  border:1px solid rgba(255,255,255,.23);
+  border-radius:15px;
+  background:linear-gradient(135deg,rgba(120,120,120,.18),rgba(18,18,18,.98) 35%,rgba(5,5,5,.99));
+}
+.goods-detail-title{
+  margin:0 0 7px;
+  font-size:11px;
+  font-weight:950;
+}
+.goods-detail-text{
+  color:#ccc;
+  font-size:8px;
+  line-height:1.75;
+}
+.goods-detail-divider{
+  height:1px;
+  margin:12px 0;
+  background:rgba(255,255,255,.11);
+}
+.goods-official-link{
+  display:block;
+  margin-top:10px;
+  padding:10px;
+  border:1px solid rgba(255,255,255,.32);
+  border-radius:9px;
+  background:#111;
+  color:#fff;
+  font-size:8px;
+  font-weight:950;
+  text-align:center;
+  text-decoration:none;
+}
+.goods-modal{
+  position:fixed;
+  inset:0;
+  z-index:10000;
+  display:none;
+  background:rgba(0,0,0,.94);
+  touch-action:none;
+}
+.goods-modal.show{display:block;}
+.goods-modal-stage{
+  position:absolute;
+  inset:0;
+  overflow:hidden;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.goods-modal-image{
+  max-width:92vw;
+  max-height:88vh;
+  object-fit:contain;
+  transform-origin:center center;
+  user-select:none;
+  -webkit-user-drag:none;
+  touch-action:none;
+}
+.goods-modal-close{
+  position:absolute;
+  top:calc(12px + env(safe-area-inset-top));
+  right:12px;
+  z-index:2;
+  width:40px;
+  height:40px;
+  border:1px solid rgba(255,255,255,.45);
+  border-radius:50%;
+  background:rgba(20,20,20,.82);
+  color:#fff;
+  font-size:21px;
+  font-weight:700;
+}
+.goods-modal-note{
+  position:absolute;
+  left:50%;
+  bottom:calc(16px + env(safe-area-inset-bottom));
+  z-index:2;
+  transform:translateX(-50%);
+  padding:6px 10px;
+  border-radius:999px;
+  background:rgba(0,0,0,.7);
+  color:#bbb;
+  font-size:8px;
+  white-space:nowrap;
+}
+.goods-news-card{
+  border-color:rgba(255,255,255,.34);
+}
+@media(max-width:390px){
+  .goods-top-grid,
+  .goods-ticket-grid{gap:6px;}
+  .goods-panel,
+  .goods-ticket-card{padding:8px;}
+  .goods-panel-title,
+  .goods-ticket-title{font-size:9px;}
+  .goods-info-block,
+  .goods-ticket-body,
+  .goods-detail-text{font-size:7px;}
+}
+</style>
+
 </head>
 
 <body>
@@ -1573,6 +1778,20 @@ button:active{transform:scale(.98);}
 
     <div class="section-title">INFORMATION</div>
     <div class="section-sub">配信・公式リンク・当日の案内</div>
+
+    <div class="card goods-news-card">
+      <div class="card-title">🛍️ GOODS / 10.01 UPDATE</div>
+      <div class="card-small">
+        BMSG FES’26 オフィシャルグッズ・MEGA CAPSULE・整理券情報が公開されました。
+      </div>
+      <button class="action primary" type="button" id="goodsNewsButton">
+        GOODS情報を見る
+      </button>
+      <a class="action" href="https://bmsgfes.tokyo/news/261001_2" target="_blank" rel="noopener" style="display:block;text-decoration:none;text-align:center;">
+        公式案内を開く ↗
+      </a>
+    </div>
+
 
 
     <div class="card ppv-card" id="ppvSection">
@@ -1794,13 +2013,158 @@ button:active{transform:scale(.98);}
   <div class="content">
 
     <div class="section-title">GOODS</div>
-    <div class="section-sub">BMSG FES 2026 GOODS LINEUP</div>
+    <div class="section-sub">BMSG FES 2026 GOODS LINEUP / 10.01 UPDATE</div>
 
-    <div class="goods-grid">
-      <div class="goods-item">
-        <div class="goods-placeholder">＋</div>
-        <div class="goods-name">グッズ情報を追加予定</div>
+    <div class="goods-top-grid">
+
+      <div class="goods-panel">
+        <div class="goods-panel-title">BMSG FES’26 OFFICIAL GOODS</div>
+
+        <div class="goods-images-two">
+          <button class="goods-image-button" type="button" data-goods-image="./goods01.JPG" aria-label="グッズ画像1を拡大">
+            <img src="./goods01.JPG" alt="BMSG FES’26 GOODS 1">
+          </button>
+          <button class="goods-image-button" type="button" data-goods-image="./goods02.JPG" aria-label="グッズ画像2を拡大">
+            <img src="./goods02.JPG" alt="BMSG FES’26 GOODS 2">
+          </button>
+        </div>
+
+        <div class="goods-info-block">
+          <strong>【購入制限】</strong><br>
+          「BMSG FES'26 ロゴＴシャツ WH」→ Architect会員様限定カラー<br>
+          「BMSG FES'26 ランダム マーカーチャーム 2P」：10点まで<br>
+          メンバー別商品：各メンバー3点まで<br>
+          「[Ayumu Imazu] Random Rubber Band」：5点まで<br>
+          上記以外の商品：3点まで
+
+          <div class="goods-alert">
+            <strong>🕘 9:30~ 販売開始（予定）</strong><br>
+            場所：BMSG FES’26 B-SIDE AREA内グッズブース<br>
+            ⚠️ グッズ整理券あり（事前抽選）<br>
+            ⚠️ 公演チケット所持者のみ購入可能
+          </div>
+
+          <div class="goods-alert">
+            <strong>🕙 10:00~ 販売開始（予定）</strong><br>
+            場所：ダイバーシティ東京 プラザ「BMSG FES’26 POP UP STORE」<br>
+            （4階 &amp;mallデスク横イベントスペース）<br>
+            ⚠️ グッズ整理券あり（事前抽選）<br>
+            <span class="goods-green">🟢 公演チケットなしでも購入可能</span>
+          </div>
+
+          <div class="goods-ec">✨️ 後日、数量限定にてEC販売予定 ✨️</div>
+        </div>
       </div>
+
+      <div class="goods-panel">
+        <div class="goods-panel-title">MEGA CAPSULE</div>
+
+        <button class="goods-image-button" type="button" data-goods-image="./goods03.JPG" aria-label="MEGA CAPSULE画像を拡大">
+          <img src="./goods03.JPG" alt="BMSG FES’26 MEGA CAPSULE">
+        </button>
+
+        <div class="goods-info-block">
+          <strong>【購入制限】1人3回まで</strong>
+
+          <div class="goods-alert">
+            <strong>🕘 9:30~ 販売開始（予定）</strong><br>
+            場所：当サイト内 REALMAP → GOODS → 📍CAPSULE<br>
+            （オフィシャルマップ内 → MEGA CAPSULE）<br>
+            ⚠️ 当日整理券あり（先着配布）
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="goods-ticket-grid">
+
+      <div class="goods-ticket-card">
+        <div class="goods-ticket-title">🎫 グッズ整理券（事前抽選）</div>
+        <div class="goods-ticket-body">
+          <strong>申込期間：</strong><br>
+          10月2日(金)18:00~10月4日(日)23:59迄<br>
+          <strong>抽選結果：</strong><br>
+          10月6日(火)18:00（予定）<br><br>
+
+          ① LINEにて『BMSG 整理券』追加<br>
+          ② 会場物販 or ダイバーシティ物販を選択<br>
+          ③ 希望する日時を選択 → 応募<br><br>
+
+          📱 1公演につき1枚まで申し込み可能
+        </div>
+
+        <a class="goods-line-btn" href="https://lin.ee/hJ7UK4U" target="_blank" rel="noopener">
+          LINE『BMSG 整理券』を追加 ↗
+        </a>
+      </div>
+
+      <div class="goods-ticket-card">
+        <div class="goods-ticket-title">🎰 MEGA CAPSULE<br>当日整理券配布（先着）</div>
+        <div class="goods-ticket-body">
+          <strong>配布開始：</strong><br>
+          公演当日 9:00〜定員に達し次第終了<br><br>
+
+          ※先着順での受付<br>
+          ※会場付近（1.5km圏内）でのみ取得可能<br>
+          ※おひとり様1日1枚まで取得可能<br>
+          ※当日限定のため、後日ECなどは無し
+        </div>
+      </div>
+
+    </div>
+
+    <div class="goods-detail-card">
+
+      <div class="goods-detail-title">■ お支払い方法</div>
+      <div class="goods-detail-text">
+        ・現金のほか、クレジットカード・QRコード決済が利用可能<br>
+        ・お支払いは一括払いのみ<br>
+        ・ご利用可能カード：VISA / MasterCard / American Express / JCB<br>
+        （※一部ご利用いただけない場合がございます）<br>
+        ・ご利用可能決済：PayPay / d払い / au PAY / 楽天ペイ / Alipay / WeChat Pay<br>
+        （※一部ご利用いただけない場合がございます）<br>
+        ・現金、クレジットカード、QRコード決済の併用は不可<br>
+        ・お会計後の合算は不可<br>
+        ・通信状況により決済にお時間がかかる場合あり
+      </div>
+
+      <div class="goods-detail-divider"></div>
+
+      <div class="goods-detail-title">📱 整理券に関する注意事項</div>
+      <div class="goods-detail-text">
+        ・整理券1枚につき、1名様のみ入場可能<br>
+        （サポートが必要な方、小学生以下のお客様は同伴入場が可能）<br>
+        ・入場可能になると、LINEにて通知メッセージおよびQRコードが表示<br>
+        ・LINE上で呼出番号の確認可能。番号が近くなったら会場付近へ<br>
+        ・早朝からの待機 ❌<br>
+        ・呼出時間に遅れると入場できない場合あり<br>
+        ・整理券の譲渡、転売 ❌<br>
+        ・混雑状況により待ち時間が長くなる可能性あり<br>
+        ・売り切れる場合あり<br>
+        ・当日の状況により購入制限が増える場合あり<br>
+        ・当日の状況により整理券の追加配布を行う場合あり
+      </div>
+
+      <div class="goods-detail-divider"></div>
+
+      <div class="goods-detail-title">■ グッズ販売に関する注意事項</div>
+      <div class="goods-detail-text">
+        ・全て数量限定のため、売り切れになる場合がある<br>
+        ・表示価格はすべて税込<br>
+        ・不良品以外の返品・交換は不可<br>
+        ・商品不良があった場合は、当日中に売場スタッフさんにお声掛けを<br>
+        ・購入商品、数量、お釣りは必ずその場で確認！<br>
+        ・売場離脱後の対応なし<br>
+        ・待機中は水分補給など体調管理にご注意ください<br>
+        ・列への後からの合流は禁止 ❌（待ち合わせは物販エリア外で）<br>
+        ・整理券がない方は整理券を持っている方の後に購入可能（売り切れの場合あり）
+      </div>
+
+      <a class="goods-official-link" href="https://bmsgfes.tokyo/news/261001_2" target="_blank" rel="noopener">
+        BMSG FES’26 公式GOODS案内 ↗
+      </a>
+
     </div>
 
   </div>
@@ -2217,6 +2581,16 @@ button:active{transform:scale(.98);}
 
 </div>
 
+
+
+<!-- GOODS IMAGE POPUP -->
+<div class="goods-modal" id="goodsModal" aria-hidden="true">
+  <button class="goods-modal-close" id="goodsModalClose" type="button" aria-label="閉じる">×</button>
+  <div class="goods-modal-stage" id="goodsModalStage">
+    <img class="goods-modal-image" id="goodsModalImage" alt="グッズ拡大画像">
+  </div>
+  <div class="goods-modal-note">ピンチで拡大 / ダブルタップでリセット</div>
+</div>
 
 <div class="toast" id="toast"></div>
 
@@ -4804,6 +5178,118 @@ document.querySelectorAll(".bottom-nav button,[data-page]").forEach(btn=>{
 /* INFO PPV */
 document.getElementById("ppvPrimeButton")?.addEventListener("click",()=>{
   window.open("https://bmsgfes.tokyo/news/261001","_blank","noopener");
+});
+
+
+
+/* =========================================================
+   GOODS 2026.10.01
+========================================================= */
+document.getElementById("goodsNewsButton")?.addEventListener("click",()=>{
+  switchPage("goods");
+});
+
+const goodsModal=document.getElementById("goodsModal");
+const goodsModalImage=document.getElementById("goodsModalImage");
+const goodsModalStage=document.getElementById("goodsModalStage");
+const goodsModalClose=document.getElementById("goodsModalClose");
+
+let goodsScale=1;
+let goodsX=0;
+let goodsY=0;
+let goodsStartDistance=0;
+let goodsStartScale=1;
+let goodsDragStart=null;
+
+function applyGoodsTransform(){
+  if(!goodsModalImage) return;
+  goodsModalImage.style.transform=
+    `translate(${goodsX}px,${goodsY}px) scale(${goodsScale})`;
+}
+
+function resetGoodsZoom(){
+  goodsScale=1;
+  goodsX=0;
+  goodsY=0;
+  applyGoodsTransform();
+}
+
+function openGoodsImage(src){
+  if(!goodsModal || !goodsModalImage) return;
+  resetGoodsZoom();
+  goodsModalImage.src=src;
+  goodsModal.classList.add("show");
+  goodsModal.setAttribute("aria-hidden","false");
+  document.body.style.overflow="hidden";
+}
+
+function closeGoodsImage(){
+  if(!goodsModal) return;
+  goodsModal.classList.remove("show");
+  goodsModal.setAttribute("aria-hidden","true");
+  document.body.style.overflow="";
+  if(goodsModalImage) goodsModalImage.src="";
+  resetGoodsZoom();
+}
+
+document.querySelectorAll("[data-goods-image]").forEach(button=>{
+  button.addEventListener("click",()=>{
+    openGoodsImage(button.dataset.goodsImage);
+  });
+});
+
+goodsModalClose?.addEventListener("click",closeGoodsImage);
+
+goodsModal?.addEventListener("click",event=>{
+  if(event.target===goodsModal || event.target===goodsModalStage){
+    closeGoodsImage();
+  }
+});
+
+goodsModalImage?.addEventListener("dblclick",event=>{
+  event.preventDefault();
+  resetGoodsZoom();
+});
+
+function goodsTouchDistance(t1,t2){
+  return Math.hypot(t2.clientX-t1.clientX,t2.clientY-t1.clientY);
+}
+
+goodsModalStage?.addEventListener("touchstart",event=>{
+  if(event.touches.length===2){
+    goodsStartDistance=goodsTouchDistance(event.touches[0],event.touches[1]);
+    goodsStartScale=goodsScale;
+    goodsDragStart=null;
+  }else if(event.touches.length===1 && goodsScale>1){
+    goodsDragStart={
+      x:event.touches[0].clientX-goodsX,
+      y:event.touches[0].clientY-goodsY
+    };
+  }
+},{passive:false});
+
+goodsModalStage?.addEventListener("touchmove",event=>{
+  if(event.touches.length===2 && goodsStartDistance){
+    event.preventDefault();
+    const distance=goodsTouchDistance(event.touches[0],event.touches[1]);
+    goodsScale=Math.min(5,Math.max(1,goodsStartScale*(distance/goodsStartDistance)));
+    if(goodsScale===1){
+      goodsX=0;
+      goodsY=0;
+    }
+    applyGoodsTransform();
+  }else if(event.touches.length===1 && goodsDragStart && goodsScale>1){
+    event.preventDefault();
+    goodsX=event.touches[0].clientX-goodsDragStart.x;
+    goodsY=event.touches[0].clientY-goodsDragStart.y;
+    applyGoodsTransform();
+  }
+},{passive:false});
+
+goodsModalStage?.addEventListener("touchend",event=>{
+  if(event.touches.length<2) goodsStartDistance=0;
+  if(event.touches.length===0) goodsDragStart=null;
+  if(goodsScale<=1) resetGoodsZoom();
 });
 
 </script>
