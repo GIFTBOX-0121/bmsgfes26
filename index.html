@@ -1066,6 +1066,114 @@ button:active{transform:scale(.98);}
   transform:translate(-50%,0);
 }
 
+
+
+/* INFO JUMP / MAIN STAGE */
+.info-jump-nav{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:6px;
+  margin:10px 0 12px;
+}
+.info-jump-btn{
+  min-width:0;
+  padding:10px 4px;
+  border:1px solid rgba(255,255,255,.32);
+  border-radius:9px;
+  background:linear-gradient(145deg,#626262,#111 65%);
+  color:#fff;
+  font-size:8px;
+  font-weight:950;
+  letter-spacing:.04em;
+}
+.main-headliners{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:7px;
+  margin-top:12px;
+}
+.main-headliner{
+  min-width:0;
+  padding:8px 6px;
+  border:1px solid rgba(255,255,255,.16);
+  border-radius:11px;
+  background:rgba(255,255,255,.035);
+  text-align:center;
+}
+.main-date{color:#aaa;font-size:8px;font-weight:900;}
+.main-artist{
+  margin:4px 0 7px;
+  overflow:hidden;
+  font-size:10px;
+  font-weight:950;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+.main-mv{display:block;text-decoration:none;}
+.main-mv img,
+.main-special-item img{
+  display:block;
+  width:100%;
+  aspect-ratio:16/9;
+  object-fit:cover;
+  border-radius:7px;
+  background:#111;
+}
+.main-song{
+  min-height:25px;
+  margin-top:6px;
+  display:flex;
+  align-items:flex-start;
+  justify-content:center;
+  color:#ddd;
+  font-size:7px;
+  font-weight:900;
+  line-height:1.35;
+}
+.main-links{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:4px;
+  margin-top:5px;
+}
+.main-links a{
+  display:block;
+  padding:6px 2px;
+  border:1px solid rgba(255,255,255,.24);
+  border-radius:6px;
+  background:#111;
+  color:#fff;
+  font-size:6px;
+  font-weight:900;
+  text-decoration:none;
+  white-space:nowrap;
+}
+.main-special{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:8px;
+  margin-top:12px;
+  padding-top:12px;
+  border-top:1px solid rgba(255,255,255,.12);
+}
+.main-special-item{
+  min-width:0;
+  color:#fff;
+  text-decoration:none;
+}
+.main-special-artist{
+  margin-top:6px;
+  font-size:8px;
+  font-weight:950;
+  line-height:1.3;
+}
+.main-special-song{
+  margin-top:2px;
+  color:#aaa;
+  font-size:7px;
+  font-weight:800;
+}
+
 </style>
 
 
@@ -1261,39 +1369,75 @@ button:active{transform:scale(.98);}
   <div class="content">
 
     <div class="section-title">INFORMATION</div>
-<div class="section-sub">当日の情報・SUB STAGE・公式リンク</div>
+    <div class="section-sub">当日の情報・SUB STAGE・公式リンク</div>
 
-<div class="info-jump-nav">
+    <div class="info-jump-nav">
+      <button class="info-jump-btn" type="button" data-info-jump="mainStageSection">MAIN STAGE</button>
+      <button class="info-jump-btn" type="button" data-info-jump="subStageSection">SUB STAGE</button>
+      <button class="info-jump-btn" type="button" data-info-jump="ppvSection">PPV</button>
+    </div>
 
-  <button
-    class="info-jump-btn"
-    type="button"
-    data-info-jump="mainStageSection"
-  >
-    MAIN STAGE
-  </button>
+    <div class="card" id="mainStageSection">
+      <div class="card-title">🎤 MAIN STAGE</div>
+      <div class="card-small">10/10 - 10/12 / HEADLINER & SPECIAL MV</div>
 
-  <button
-    class="info-jump-btn"
-    type="button"
-    data-info-jump="subStageSection"
-  >
-    SUB STAGE
-  </button>
+      <div class="main-headliners">
+        <div class="main-headliner">
+          <div class="main-date">10/10</div>
+          <div class="main-artist">STARGLOW</div>
+          <a class="main-mv" href="https://youtu.be/3gsVVVndUKM?si=dP2GEmIpb3wSRWZu" target="_blank" rel="noopener">
+            <img src="https://img.youtube.com/vi/3gsVVVndUKM/hqdefault.jpg" alt="STARGLOW WISHES">
+          </a>
+          <div class="main-song">WISHES</div>
+          <div class="main-links">
+            <a href="https://youtube.com/@starglow_bmsg?si=vihpvUmOr6YGpW7B" target="_blank" rel="noopener">YouTube ↗</a>
+            <a href="https://youtube.com/playlist?list=PLHFmDm0uNkWL8kOFVKwgG5rTFE18wGIAM&si=K4gM1ga74mIrFhoV" target="_blank" rel="noopener">MV LIST ↗</a>
+          </div>
+        </div>
 
-  <button
-    class="info-jump-btn"
-    type="button"
-    data-info-jump="ppvSection"
-  >
-    PPV
-  </button>
+        <div class="main-headliner">
+          <div class="main-date">10/11</div>
+          <div class="main-artist">MAZZEL</div>
+          <a class="main-mv" href="https://youtu.be/76lNhpUKrEc?si=bnFYxSmcgFyhk19g" target="_blank" rel="noopener">
+            <img src="https://img.youtube.com/vi/76lNhpUKrEc/hqdefault.jpg" alt="MAZZEL So Strawberry">
+          </a>
+          <div class="main-song">So Strawberry</div>
+          <div class="main-links">
+            <a href="https://youtube.com/@mazzel_official?si=WKxC74dpofLgPs1s" target="_blank" rel="noopener">YouTube ↗</a>
+            <a href="https://youtube.com/playlist?list=PLg4qb4PJvjA8naNbHh63tBjYrgczq_pIg&si=g-70BsvjEWJaUM-C" target="_blank" rel="noopener">MV LIST ↗</a>
+          </div>
+        </div>
 
-</div>
+        <div class="main-headliner">
+          <div class="main-date">10/12</div>
+          <div class="main-artist">BE:FIRST</div>
+          <a class="main-mv" href="https://youtu.be/uzsSnLLHx5M?si=BCvSfbHOXSoqJ6Wf" target="_blank" rel="noopener">
+            <img src="https://img.youtube.com/vi/uzsSnLLHx5M/hqdefault.jpg" alt="BE:FIRST WATCH ME feat.BIA">
+          </a>
+          <div class="main-song">WATCH ME feat.BIA</div>
+          <div class="main-links">
+            <a href="https://youtube.com/@befirstofficial?si=vRDsYyJUP9g14GQd" target="_blank" rel="noopener">YouTube ↗</a>
+            <a href="https://youtube.com/playlist?list=PLbnrvWONK6FdEWKeXArhrUMu53Xb7ruxl&si=RKUg8HYmsVEGocbD" target="_blank" rel="noopener">MV LIST ↗</a>
+          </div>
+        </div>
+      </div>
 
+      <div class="main-special">
+        <a class="main-special-item" href="https://youtu.be/cpP0SW8kFLY?si=PfC0ZS5heZ0SbPs9" target="_blank" rel="noopener">
+          <img src="https://img.youtube.com/vi/cpP0SW8kFLY/hqdefault.jpg" alt="BMSG ALLSTARS GRAND CHAMP">
+          <div class="main-special-artist">BMSG ALLSTARS</div>
+          <div class="main-special-song">GRAND CHAMP</div>
+        </a>
+        <a class="main-special-item" href="https://youtu.be/nn2V3mptPLg?si=UDUDu4BgqAzc8x9u" target="_blank" rel="noopener">
+          <img src="https://img.youtube.com/vi/nn2V3mptPLg/hqdefault.jpg" alt="MAZZEL × STARGLOW Nameless MythS">
+          <div class="main-special-artist">MAZZEL × STARGLOW</div>
+          <div class="main-special-song">Nameless MythS</div>
+        </a>
+      </div>
+    </div>
 
-    <div class="card">
-  <div class="card-title">🎤 SUB STAGE</div>
+    <div class="card" id="subStageSection">
+      <div class="card-title">🎤 SUB STAGE</div>
       <div class="card-small">10:30 OPEN / 出演タイムテーブル</div>
 
       <div class="day-tabs" style="margin-top:12px;">
@@ -1748,72 +1892,22 @@ const OFFICIAL_LINKS = {
 
 const SUB_STAGE = {
   "2026-10-10":[
-    {
-      time:"11:00",
-      artist:"BANVOX",
-      url:"https://youtube.com/@banvox?si=fWq-bQtXZYukLRxV"
-    },
-    {
-      time:"11:30",
-      artist:"ODORI",
-      url:"https://youtube.com/@odori-dancecrew?si=3MiD7wOtO9QH6QD_"
-    },
-    {
-      time:"11:50",
-      artist:"BANVOX",
-      url:"https://youtube.com/@banvox?si=fWq-bQtXZYukLRxV"
-    },
-    {
-      time:"12:20",
-      artist:"BMSG TRAINEE",
-      url:"https://youtube.com/@bmsg_trainee?si=Yn1ediwaokvz-SiY"
-    }
+    {time:"11:00",artist:"BANVOX",url:"https://youtube.com/@banvox?si=fWq-bQtXZYukLRxV"},
+    {time:"11:30",artist:"ODORI",url:"https://youtube.com/@odori-dancecrew?si=3MiD7wOtO9QH6QD_"},
+    {time:"11:50",artist:"BANVOX",url:"https://youtube.com/@banvox?si=fWq-bQtXZYukLRxV"},
+    {time:"12:20",artist:"BMSG TRAINEE",url:"https://youtube.com/@bmsg_trainee?si=Yn1ediwaokvz-SiY"}
   ],
-
   "2026-10-11":[
-    {
-      time:"11:00",
-      artist:"BANVOX",
-      url:"https://youtube.com/@banvox?si=fWq-bQtXZYukLRxV"
-    },
-    {
-      time:"11:30",
-      artist:"RHT.",
-      url:"https://youtube.com/@rht4life?si=hI6m5S-ZGkZpPLii"
-    },
-    {
-      time:"11:50",
-      artist:"BANVOX",
-      url:"https://youtube.com/@banvox?si=fWq-bQtXZYukLRxV"
-    },
-    {
-      time:"12:20",
-      artist:"BMSG TRAINEE",
-      url:"https://youtube.com/@bmsg_trainee?si=Yn1ediwaokvz-SiY"
-    }
+    {time:"11:00",artist:"BANVOX",url:"https://youtube.com/@banvox?si=fWq-bQtXZYukLRxV"},
+    {time:"11:30",artist:"RHT.",url:"https://youtube.com/@rht4life?si=hI6m5S-ZGkZpPLii"},
+    {time:"11:50",artist:"BANVOX",url:"https://youtube.com/@banvox?si=fWq-bQtXZYukLRxV"},
+    {time:"12:20",artist:"BMSG TRAINEE",url:"https://youtube.com/@bmsg_trainee?si=Yn1ediwaokvz-SiY"}
   ],
-
   "2026-10-12":[
-    {
-      time:"11:00",
-      artist:"BANVOX",
-      url:"https://youtube.com/@banvox?si=fWq-bQtXZYukLRxV"
-    },
-    {
-      time:"11:30",
-      artist:"THE SPC BOYS CLUB",
-      url:"https://www.tiktok.com/@thespcboysclub?lang=ja-JP&is_from_webapp=1&sender_device=mobile&sender_web_id=7691556555192075794"
-    },
-    {
-      time:"11:50",
-      artist:"BANVOX",
-      url:"https://youtube.com/@banvox?si=fWq-bQtXZYukLRxV"
-    },
-    {
-      time:"12:20",
-      artist:"BMSG TRAINEE",
-      url:"https://youtube.com/@bmsg_trainee?si=Yn1ediwaokvz-SiY"
-    }
+    {time:"11:00",artist:"BANVOX",url:"https://youtube.com/@banvox?si=fWq-bQtXZYukLRxV"},
+    {time:"11:30",artist:"THE SPC BOYS CLUB",url:"https://www.tiktok.com/@thespcboysclub?lang=ja-JP&is_from_webapp=1&sender_device=mobile&sender_web_id=7691556555192075794"},
+    {time:"11:50",artist:"BANVOX",url:"https://youtube.com/@banvox?si=fWq-bQtXZYukLRxV"},
+    {time:"12:20",artist:"BMSG TRAINEE",url:"https://youtube.com/@bmsg_trainee?si=Yn1ediwaokvz-SiY"}
   ]
 };
 
@@ -3451,61 +3545,18 @@ renderKeywordState();
 ========================================================= */
 
 function renderSubStage(dayIndex){
-
   const date=EVENT_DAYS[dayIndex];
   const artists=SUB_STAGE[date]||[];
   const content=document.getElementById("subStageContent");
-
   if(!content) return;
 
-  content.innerHTML=artists.map(item=>{
-
-    const artistHtml=item.url
-      ? `
-        <a
-          href="${item.url}"
-          target="_blank"
-          rel="noopener"
-          style="
-            color:#fff;
-            font-weight:800;
-            text-decoration:none;
-            border-bottom:1px solid rgba(255,255,255,.35);
-          "
-        >
-          ${escapeHtml(item.artist)} ↗
-        </a>
-      `
-      : escapeHtml(item.artist);
-
-    return `
-      <div style="
-        display:flex;
-        gap:12px;
-        align-items:baseline;
-        padding:8px 0;
-        border-bottom:1px solid rgba(255,255,255,.10);
-      ">
-        <strong style="min-width:48px;color:#fff;">
-          ${escapeHtml(item.time)}〜
-        </strong>
-
-        <span>
-          ${artistHtml}
-        </span>
-      </div>
-    `;
-
-  }).join("")+
-  `
-    <div style="
-      margin-top:9px;
-      font-size:10px;
-      color:#888;
-    ">
-      ※タイムテーブル・出演者は変更となる場合があります。
+  content.innerHTML=artists.map(item=>`
+    <div style="display:flex;gap:12px;align-items:baseline;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.10);">
+      <strong style="min-width:48px;color:#fff;">${escapeHtml(item.time)}〜</strong>
+      <span>${escapeHtml(item.artist)}</span>
     </div>
-  `;
+  `).join("")+
+  `<div style="margin-top:9px;font-size:10px;color:#888;">※タイムテーブル・出演者は変更となる場合があります。</div>`;
 }
 
 document.querySelectorAll("[data-subday]").forEach(button=>{
@@ -3898,6 +3949,24 @@ function showToast(message){
   },2200);
 
 }
+
+
+
+/* =========================================================
+   INFO JUMP NAV
+   MAIN / SUB only. PPV section is added in the next step.
+========================================================= */
+document.querySelectorAll("[data-info-jump]").forEach(button=>{
+  button.addEventListener("click",()=>{
+    const targetId=button.dataset.infoJump;
+    const target=document.getElementById(targetId);
+    if(!target){
+      if(targetId==="ppvSection") showToast("PPV情報は準備中です");
+      return;
+    }
+    target.scrollIntoView({behavior:"smooth",block:"start"});
+  });
+});
 
 /* =========================================================
    START
