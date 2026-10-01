@@ -1,17 +1,15 @@
-const CACHE_NAME = "bmsgfes26-v17-offline";
+const CACHE_NAME = "bmsgfes26-v18-offline";
 
 /*
   =========================================================
-  BMSG FES 2026 SERVICE WORKER
+  BMSG FES 2026 SERVICE WORKER / v18
 
-  方針
-  ---------------------------------------------------------
-  ・Service Worker の install を重くしない
-  ・地図タイルの大量取得を install 中に行わない
-  ・サイト本体はオフライン起動可能
-  ・一度表示した地図タイルは自動保存
-  ・PRIVATE API / 天気APIはSWキャッシュしない
-  ・localStorageには一切触れない
+  ・サイト本体をオフライン起動可能にする
+  ・Navigationはキャッシュを先に確認
+  ・Leaflet / Map.JPG 等もオフライン対応
+  ・表示したOpenStreetMapタイルを保存
+  ・PRIVATE API / 天気APIはキャッシュしない
+  ・localStorage / IndexedDBには一切触れない
   =========================================================
 */
 
@@ -36,31 +34,23 @@ const APP_SHELL = [
 
 self.addEventListener("install", event => {
 
-  /*
-    ここでは地図タイルを大量取得しない。
-
-    APP SHELLだけを保存する。
-
-    1ファイルの取得失敗によって
-    Service Worker全体のinstallが失敗しないよう、
-    個別に取得する。
-  */
-
   event.waitUntil(
     (async () => {
 
       const cache = await caches.open(CACHE_NAME);
 
+      /*
+        APP SHELLだけ保存。
+        1ファイル失敗してもSW全体を失敗させない。
+      */
+
       for (const url of APP_SHELL) {
 
         try {
 
-          const response = await fetch(
-            url,
-            {
-              cache: "reload"
-            }
-          );
+          const response = await fetch(url, {
+            cache: "reload"
+          });
 
           if (
             response &&
@@ -79,11 +69,6 @@ self.addEventListener("install", event => {
 
         } catch (error) {
 
-          /*
-            1ファイル取得できなくても
-            SW install自体は続行する。
-          */
-
           console.warn(
             "[SW] APP SHELL cache failed:",
             url,
@@ -96,11 +81,6 @@ self.addEventListener("install", event => {
 
     })()
   );
-
-  /*
-    古いSWのwaitingを待たず、
-    install完了後すぐ新SWへ移行。
-  */
 
   self.skipWaiting();
 
@@ -119,16 +99,8 @@ self.addEventListener("activate", event => {
       const keys = await caches.keys();
 
       /*
-        このサイトの古いSWキャッシュだけ削除。
-
-        localStorage
-        IndexedDB
-        PRIVATE DATA
-        持ち物
-        取引
-        MY SPOTS
-
-        には一切触れない。
+        BMSG FESの古いSWキャッシュだけ削除。
+        localStorage / IndexedDB等には触れない。
       */
 
       await Promise.all(
@@ -142,11 +114,6 @@ self.addEventListener("activate", event => {
             key => caches.delete(key)
           )
       );
-
-      /*
-        開いているページを
-        新しいSWの管理下にする。
-      */
 
       await self.clients.claim();
 
@@ -164,10 +131,6 @@ self.addEventListener("fetch", event => {
 
   const request = event.request;
 
-  /*
-    GET以外はSWで処理しない。
-  */
-
   if (request.method !== "GET") {
     return;
   }
@@ -178,8 +141,7 @@ self.addEventListener("fetch", event => {
   /* =====================================================
      PRIVATE API / WEATHER
 
-     個人データAPIと天気APIは
-     Service Workerではキャッシュしない。
+     SWではキャッシュしない。
   ===================================================== */
 
   if (
@@ -195,13 +157,12 @@ self.addEventListener("fetch", event => {
   /* =====================================================
      PAGE NAVIGATION
 
-     ONLINE
-       ↓
-     最新index.htmlを取得して保存
+     重要：
+     オフライン時にネットワーク失敗を長時間待たせない。
 
-     OFFLINE
-       ↓
-     保存済みindex.htmlを表示
+     1. 保存済みindex.htmlを確認
+     2. オンラインならネットワーク更新も試す
+     3. オフラインなら保存版を即返す
   ===================================================== */
 
   if (request.mode === "navigate") {
@@ -212,17 +173,46 @@ self.addEventListener("fetch", event => {
         const cache = await caches.open(CACHE_NAME);
 
         /*
-          ONLINE
+          保存済みのアプリ本体を先に取得しておく。
+        */
+
+        let cached =
+          await cache.match("./index.html");
+
+        if (!cached) {
+          cached = await cache.match("./");
+        }
+
+        if (!cached) {
+          cached = await cache.match(request);
+        }
+
+
+        /*
+          明確にオフラインなら、
+          ネットワークを試さず保存版を返す。
+        */
+
+        if (
+          typeof self.navigator !== "undefined" &&
+          self.navigator.onLine === false &&
+          cached
+        ) {
+
+          return cached;
+
+        }
+
+
+        /*
+          オンライン時は最新版を取得。
         */
 
         try {
 
-          const fresh = await fetch(
-            request,
-            {
-              cache: "no-store"
-            }
-          );
+          const fresh = await fetch(request, {
+            cache: "no-store"
+          });
 
           if (
             fresh &&
@@ -230,7 +220,7 @@ self.addEventListener("fetch", event => {
           ) {
 
             /*
-              最新ページをindex.htmlとして保存
+              index.htmlとして保存
             */
 
             try {
@@ -242,8 +232,9 @@ self.addEventListener("fetch", event => {
 
             } catch (error) {}
 
+
             /*
-              ルートURLとしても保存
+              ルートとしても保存
             */
 
             try {
@@ -255,6 +246,7 @@ self.addEventListener("fetch", event => {
 
             } catch (error) {}
 
+
             return fresh;
 
           }
@@ -262,23 +254,16 @@ self.addEventListener("fetch", event => {
         } catch (error) {
 
           /*
-            ネットワーク失敗
-            ↓
-            OFFLINEへ
+            ネットワーク取得失敗。
+            下の保存版へフォールバック。
           */
 
         }
 
 
         /*
-          OFFLINE
-
-          まずindex.html
+          OFFLINE FALLBACK
         */
-
-        let cached = await cache.match(
-          "./index.html"
-        );
 
         if (cached) {
           return cached;
@@ -286,12 +271,25 @@ self.addEventListener("fetch", event => {
 
 
         /*
-          次にルート
+          最終確認：
+          絶対URLでも検索する。
         */
 
-        cached = await cache.match(
-          "./"
-        );
+        const absoluteIndex =
+          new URL("./index.html", self.location.origin).href;
+
+        const absoluteRoot =
+          new URL("./", self.location.origin).href;
+
+        cached =
+          await cache.match(absoluteIndex);
+
+        if (cached) {
+          return cached;
+        }
+
+        cached =
+          await cache.match(absoluteRoot);
 
         if (cached) {
           return cached;
@@ -299,41 +297,22 @@ self.addEventListener("fetch", event => {
 
 
         /*
-          最後に現在URL
-        */
-
-        cached = await cache.match(
-          request
-        );
-
-        if (cached) {
-          return cached;
-        }
-
-
-        /*
-          初回オンライン起動前など、
-          何も保存されていない場合。
+          本当にAPP SHELLが存在しない場合だけ表示。
         */
 
         return new Response(
           `
 <!DOCTYPE html>
 <html lang="ja">
-
 <head>
-
 <meta charset="UTF-8">
-
 <meta
   name="viewport"
   content="width=device-width,initial-scale=1"
 >
-
 <title>BMSG FES 2026</title>
 
 <style>
-
 body{
   margin:0;
   min-height:100vh;
@@ -365,9 +344,7 @@ p{
   font-size:14px;
   line-height:1.8;
 }
-
 </style>
-
 </head>
 
 <body>
@@ -387,7 +364,6 @@ p{
 </div>
 
 </body>
-
 </html>
           `,
           {
@@ -412,19 +388,7 @@ p{
 
      CACHE FIRST
 
-     保存済み
-       ↓
-     即表示
-
-     未保存
-       ↓
-     ネット取得
-       ↓
-     自動保存
-
-     つまり、
-     一度表示した地図範囲は
-     次回オフラインでも表示できる。
+     一度取得したタイルは保存する。
   ===================================================== */
 
   if (
@@ -437,28 +401,18 @@ p{
 
         const cache = await caches.open(CACHE_NAME);
 
-        /*
-          まず保存済みタイル
-        */
-
-        const cached = await cache.match(
-          request
-        );
+        const cached =
+          await cache.match(request);
 
         if (cached) {
           return cached;
         }
 
 
-        /*
-          なければオンライン取得
-        */
-
         try {
 
-          const fresh = await fetch(
-            request
-          );
+          const fresh =
+            await fetch(request);
 
           if (
             fresh &&
@@ -475,14 +429,7 @@ p{
                 fresh.clone()
               );
 
-            } catch (error) {
-
-              /*
-                保存できなくても
-                オンライン表示は続ける。
-              */
-
-            }
+            } catch (error) {}
 
           }
 
@@ -491,7 +438,9 @@ p{
         } catch (error) {
 
           /*
-            未保存タイル＋OFFLINE
+            未保存タイル＋オフライン。
+            空レスポンスを返して、
+            アプリ本体は止めない。
           */
 
           return new Response(
@@ -514,21 +463,10 @@ p{
   /* =====================================================
      SAME ORIGIN FILES
 
-     index以外の
+     Leaflet / Map.JPG / manifest等。
 
-     Map.JPG
-     manifest
-     leaflet.css
-     leaflet.js
-     その他Pages内ファイル
-
-     ONLINE
-       ↓
-     最新版＋保存
-
-     OFFLINE
-       ↓
-     保存版
+     CACHE FIRST寄りにすることで、
+     オフライン起動時にネットワーク待ちを起こさない。
   ===================================================== */
 
   if (
@@ -538,21 +476,61 @@ p{
     event.respondWith(
       (async () => {
 
-        const cache = await caches.open(CACHE_NAME);
+        const cache =
+          await caches.open(CACHE_NAME);
 
 
         /*
-          ONLINE
+          まず完全一致。
+        */
+
+        let cached =
+          await cache.match(request);
+
+
+        /*
+          クエリ付きURL等の表記差にも対応。
+        */
+
+        if (!cached) {
+
+          const cleanUrl =
+            new URL(request.url);
+
+          cleanUrl.search = "";
+
+          cached =
+            await cache.match(cleanUrl.href);
+
+        }
+
+
+        /*
+          明確にオフラインで保存版があるなら
+          即返す。
+        */
+
+        if (
+          typeof self.navigator !== "undefined" &&
+          self.navigator.onLine === false &&
+          cached
+        ) {
+
+          return cached;
+
+        }
+
+
+        /*
+          オンライン時は最新版を取得。
         */
 
         try {
 
-          const fresh = await fetch(
-            request,
-            {
+          const fresh =
+            await fetch(request, {
               cache: "no-store"
-            }
-          );
+            });
 
           if (
             fresh &&
@@ -572,22 +550,12 @@ p{
 
           }
 
-        } catch (error) {
-
-          /*
-            OFFLINEへ
-          */
-
-        }
+        } catch (error) {}
 
 
         /*
-          OFFLINE
+          ネットワーク失敗時は保存版。
         */
-
-        const cached = await cache.match(
-          request
-        );
 
         if (cached) {
           return cached;
@@ -595,7 +563,7 @@ p{
 
 
         /*
-          URL表記差対策
+          pathnameでも確認。
         */
 
         const pathnameCached =
@@ -623,28 +591,38 @@ p{
 
   /* =====================================================
      OTHER EXTERNAL FILES
-
-     Leaflet CDNなど。
-
-     保存済みがあれば利用。
-     オンライン時は最新版を取得して保存。
   ===================================================== */
 
   event.respondWith(
     (async () => {
 
-      const cache = await caches.open(CACHE_NAME);
+      const cache =
+        await caches.open(CACHE_NAME);
 
-      const cached = await cache.match(
-        request
-      );
+      const cached =
+        await cache.match(request);
+
+
+      /*
+        明確にオフラインなら
+        保存済み外部ファイルを使用。
+      */
+
+      if (
+        typeof self.navigator !== "undefined" &&
+        self.navigator.onLine === false &&
+        cached
+      ) {
+
+        return cached;
+
+      }
 
 
       try {
 
-        const fresh = await fetch(
-          request
-        );
+        const fresh =
+          await fetch(request);
 
         if (
           fresh &&
