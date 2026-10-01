@@ -11,8 +11,7 @@
 <meta name="apple-mobile-web-app-title" content="BMSG FES 2026">
 <link rel="manifest" href="./manifest.webmanifest">
 
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css">
+<link rel="stylesheet" href="./leaflet.css">
 
 <style>
 *{
@@ -1693,14 +1692,8 @@ button:active{transform:scale(.98);}
 
 
 
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="./leaflet.js"></script>
 </div>
-
-<script>
-if(!window.L){
-  document.write('<script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"><\/script>');
-}
-</script>
 
 
 <script>
@@ -3803,7 +3796,7 @@ if("serviceWorker" in navigator){
   window.addEventListener("load", async ()=>{
     try{
       const registration = await navigator.serviceWorker.register(
-        "./sw.js?v=16-offline",
+        "./sw.js?v=17-offline",
         {
           updateViaCache:"none"
         }
