@@ -1419,7 +1419,7 @@ button:active{transform:scale(.98);}
   color:#fff;font-size:9px;font-weight:900;pointer-events:none;
 }
 .goods-calc-sheet{
-  position:fixed;inset:0;z-index:10002;display:none;
+  position:fixed;inset:0;z-index:100100;display:none;
   align-items:flex-end;justify-content:center;background:rgba(0,0,0,.72);
 }
 .goods-calc-sheet.show{display:flex}
@@ -5783,24 +5783,56 @@ document.querySelectorAll("[data-goods-image]").forEach(button=>{
 });
 
 let goodsTapStart=null;
+let goodsSingleTapTimer=null;
+let goodsLastTapAt=0;
+
 goodsModalImage?.addEventListener("pointerdown",e=>{
   goodsTapStart={x:e.clientX,y:e.clientY,t:Date.now()};
 });
+
 goodsModalImage?.addEventListener("pointerup",e=>{
   if(!goodsTapStart || !["goods01","goods02"].includes(goodsCurrentImageKey))return;
+
   const moved=Math.hypot(e.clientX-goodsTapStart.x,e.clientY-goodsTapStart.y);
   const elapsed=Date.now()-goodsTapStart.t;
   goodsTapStart=null;
+
   if(moved>12 || elapsed>650)return;
-  const r=goodsModalImage.getBoundingClientRect();
-  if(!r.width||!r.height)return;
-  const x=((e.clientX-r.left)/r.width)*100;
-  const y=((e.clientY-r.top)/r.height)*100;
-  const p=goodsHitProduct(goodsCurrentImageKey,x,y);
-  if(p){
-    e.preventDefault();e.stopPropagation();
-    goodsOpenProduct(p);
+
+  const now=Date.now();
+
+  /* Double tap = reset zoom. Never open a product on the second tap. */
+  if(now-goodsLastTapAt<320){
+    goodsLastTapAt=0;
+    if(goodsSingleTapTimer){
+      clearTimeout(goodsSingleTapTimer);
+      goodsSingleTapTimer=null;
+    }
+    e.preventDefault();
+    e.stopPropagation();
+    resetGoodsZoom();
+    return;
   }
+
+  goodsLastTapAt=now;
+
+  const clientX=e.clientX;
+  const clientY=e.clientY;
+
+  /* Wait briefly to distinguish a single tap from a double tap. */
+  goodsSingleTapTimer=setTimeout(()=>{
+    goodsSingleTapTimer=null;
+    goodsLastTapAt=0;
+
+    const r=goodsModalImage.getBoundingClientRect();
+    if(!r.width||!r.height)return;
+
+    const x=((clientX-r.left)/r.width)*100;
+    const y=((clientY-r.top)/r.height)*100;
+    const p=goodsHitProduct(goodsCurrentImageKey,x,y);
+
+    if(p) goodsOpenProduct(p);
+  },330);
 });
 
 goodsRenderTotals();
