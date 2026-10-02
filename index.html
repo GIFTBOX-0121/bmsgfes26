@@ -5872,18 +5872,44 @@ document.addEventListener("click", function(e){
 .crowd-btn{min-width:0;padding:10px 4px;border:1px solid rgba(255,255,255,.14);border-radius:12px;background:rgba(255,255,255,.07);color:inherit;font:inherit;font-size:10px;font-weight:900}
 .crowd-btn:disabled{opacity:.42}
 .crowd-note{margin-top:8px;font-size:9px;line-height:1.5;opacity:.55}
+.crowd-wait{margin-top:12px;padding-top:11px;border-top:1px solid rgba(255,255,255,.11)}
+.crowd-wait-current{font-size:12px;font-weight:900;line-height:1.5}
+.crowd-wait-meta{margin-top:3px;font-size:10px;opacity:.62}
+.crowd-wait-controls{display:grid;grid-template-columns:1fr auto;gap:7px;margin-top:8px}
+.crowd-wait-select{width:100%;min-width:0;padding:10px;border:1px solid rgba(255,255,255,.14);border-radius:11px;background:#17171d;color:inherit;font:inherit;font-size:10px;font-weight:800}
+.crowd-wait-btn{padding:10px 12px;border:1px solid rgba(255,255,255,.14);border-radius:11px;background:rgba(255,255,255,.09);color:inherit;font:inherit;font-size:10px;font-weight:900}
+.crowd-wait-btn:disabled,.crowd-wait-select:disabled{opacity:.42}
+.crowd-map-status{
+  padding:4px 7px;border:1px solid rgba(255,255,255,.22);border-radius:9px;
+  background:rgba(8,8,12,.88);box-shadow:0 3px 12px rgba(0,0,0,.28);
+  color:#fff;font-size:9px;font-weight:900;line-height:1.2;white-space:nowrap;
+  pointer-events:none;transform:translate(-50%,-100%);
+}
 </style>
 <script id="crowd-status-addon">
 (()=>{
 "use strict";
 const API="/api/crowd";
-const CACHE_KEY="bmsgfes_crowd_cache_v1";
+const CACHE_KEY="bmsgfes_crowd_cache_v2";
 const API_SPOT_BY_VENUE={wc1:"wc1",wc2:"wc2",wc3:"wc3",wc4:"wc4",wc5:"wc5",wcPremium:"wcPremium",photo1:"photoCentral"};
-let panel=null,currentVenueId=null,requestSerial=0;
+let panel=null,currentVenueId=null,requestSerial=0,mapStatusMarkers=[];
 
 function readCache(){try{return JSON.parse(localStorage.getItem(CACHE_KEY)||"{}")||{};}catch(_){return {};}}
-function writeCache(spots){try{localStorage.setItem(CACHE_KEY,JSON.stringify({saved_at:Date.now(),spots:spots||{}}));}catch(_){}}
-
+function writeCache(data){try{localStorage.setItem(CACHE_KEY,JSON.stringify({saved_at:Date.now(),spots:data?.spots||{},waits:data?.waits||{}}));}catch(_){}}
+function waitLabel(mins){
+ mins=Number(mins||0); if(!mins)return "";
+ if(mins<60)return `${mins}分`;
+ const h=Math.floor(mins/60),m=mins%60;
+ return m?`${h}時間${m}分`:`${h}時間`;
+}
+function statusLabel(s){return s==="empty"?"🟢 空いてる":s==="normal"?"🟡 普通":s==="busy"?"🔴 混んでる":"⚪ 情報なし";}
+function ageText(value){
+ if(!value)return ""; let iso=String(value).trim();
+ if(!/[zZ]|[+\-]\d\d:\d\d$/.test(iso))iso=iso.replace(" ","T")+"Z";
+ const t=Date.parse(iso); if(!Number.isFinite(t))return "";
+ const m=Math.max(0,Math.floor((Date.now()-t)/60000));
+ return m<1?"たった今":m<60?`${m}分前`:`${Math.floor(m/60)}時間前`;
+}
 function ensurePanel(){
  if(panel&&panel.isConnected)return panel;
  const desc=document.getElementById("sheetDesc"); if(!desc)return null;
@@ -5892,65 +5918,132 @@ function ensurePanel(){
  <div class="crowd-current" id="crowdCurrent">取得中…</div><div class="crowd-meta" id="crowdMeta"></div>
  <div class="crowd-question">いまの状況を教えて！</div>
  <div class="crowd-buttons"><button class="crowd-btn" type="button" data-crowd-status="empty">🟢 空いてる</button><button class="crowd-btn" type="button" data-crowd-status="normal">🟡 普通</button><button class="crowd-btn" type="button" data-crowd-status="busy">🔴 混んでる</button></div>
+ <div class="crowd-wait">
+  <div class="crowd-question" style="margin-top:0">⏱ もうどのくらい並んでる？</div>
+  <div class="crowd-wait-current" id="crowdWaitCurrent">待ち時間の共有はまだありません</div>
+  <div class="crowd-wait-meta" id="crowdWaitMeta"></div>
+  <div class="crowd-wait-controls">
+   <select class="crowd-wait-select" id="crowdWaitSelect">
+    <option value="">時間を選択</option><option value="5">5分</option><option value="10">10分</option><option value="15">15分</option><option value="20">20分</option><option value="30">30分</option><option value="45">45分</option><option value="60">1時間</option><option value="90">1時間30分</option><option value="120">2時間</option><option value="180">3時間</option>
+   </select>
+   <button class="crowd-wait-btn" type="button" id="crowdWaitSubmit">共有</button>
+  </div>
+ </div>
  <div class="crowd-note" id="crowdNote">直近15分の投稿から表示します</div>`;
  desc.insertAdjacentElement("afterend",panel);
  panel.querySelectorAll("[data-crowd-status]").forEach(btn=>btn.addEventListener("click",()=>submitCrowd(btn.dataset.crowdStatus)));
+ panel.querySelector("#crowdWaitSubmit")?.addEventListener("click",submitWait);
  return panel;
 }
-function label(s){return s==="empty"?"🟢 空いてる":s==="normal"?"🟡 普通":s==="busy"?"🔴 混んでる":"まだ報告がありません";}
-function ageText(value){
- if(!value)return ""; let iso=String(value).trim();
- if(!/[zZ]|[+\-]\d\d:\d\d$/.test(iso))iso=iso.replace(" ","T")+"Z";
- const t=Date.parse(iso); if(!Number.isFinite(t))return "";
- const m=Math.max(0,Math.floor((Date.now()-t)/60000));
- return m<1?"たった今":m<60?`${m}分前`:`${Math.floor(m/60)}時間前`;
+function disableInputs(x){
+ if(!panel)return;
+ panel.querySelectorAll("[data-crowd-status]").forEach(b=>b.disabled=x);
+ const s=panel.querySelector("#crowdWaitSelect"),b=panel.querySelector("#crowdWaitSubmit");
+ if(s)s.disabled=x;if(b)b.disabled=x;
 }
-function disableButtons(x){if(panel)panel.querySelectorAll("[data-crowd-status]").forEach(b=>b.disabled=x);}
-function renderSpot(spot,opt={}){
- const current=document.getElementById("crowdCurrent"),meta=document.getElementById("crowdMeta"),note=document.getElementById("crowdNote");
- if(!current||!meta||!note)return;
- if(!spot){current.textContent="まだ報告がありません";meta.textContent=opt.offline?"オフラインのため最新情報を取得できません":"";}
- else{
-  current.textContent=label(spot.status);
+function renderDetail(spot,wait,opt={}){
+ const current=document.getElementById("crowdCurrent"),meta=document.getElementById("crowdMeta");
+ const wc=document.getElementById("crowdWaitCurrent"),wm=document.getElementById("crowdWaitMeta"),note=document.getElementById("crowdNote");
+ if(!current||!meta||!wc||!wm||!note)return;
+ current.textContent=statusLabel(spot?.status);
+ if(spot){
   const a=ageText(spot.latest_report),c=Number(spot.report_count||0);
   meta.textContent=[a?`最終報告：${a}`:"",c?`直近15分 ${c}件`:"",opt.cached?"保存済み情報":""].filter(Boolean).join(" / ");
+ }else meta.textContent=opt.offline?"保存済みの混雑情報はありません":"";
+ if(wait){
+  const avg=Number(wait.average_minutes||0);
+  wc.textContent=avg?`⏱ 待ち時間目安：約${waitLabel(avg)}`:"待ち時間の共有はまだありません";
+  const a=ageText(wait.latest_report),c=Number(wait.report_count||0);
+  wm.textContent=[a?`最終共有：${a}`:"",c?`直近15分 ${c}件`:"",opt.cached?"保存済み情報":""].filter(Boolean).join(" / ");
+ }else{wc.textContent="待ち時間の共有はまだありません";wm.textContent="";}
+ note.textContent=opt.offline?"オフライン中は保存済み情報を表示しています。投稿は通信復帰後に利用できます。":"直近15分の投稿から表示します";
+ disableInputs(!!opt.offline);
+}
+function clearMapStatus(){
+ if(typeof map==="undefined")return;
+ mapStatusMarkers.forEach(m=>{try{map.removeLayer(m);}catch(_){}});
+ mapStatusMarkers=[];
+}
+function mapText(spot,wait){
+ let t=statusLabel(spot?.status);
+ const avg=Number(wait?.average_minutes||0);
+ if(avg)t+=`（約${waitLabel(avg)}待ち）`;
+ return t;
+}
+function renderMapStatuses(spots={},waits={}){
+ if(typeof map==="undefined"||typeof L==="undefined"||!Array.isArray(venueMarkers))return;
+ clearMapStatus();
+ venueMarkers.forEach(item=>{
+  const apiSpot=API_SPOT_BY_VENUE[item?.venue?.id]; if(!apiSpot)return;
+  const ll=item.marker.getLatLng();
+  const icon=L.divIcon({className:"",html:`<div class="crowd-map-status">${mapText(spots[apiSpot],waits[apiSpot])}</div>`,iconSize:[1,1],iconAnchor:[0,44]});
+  const m=L.marker(ll,{icon,interactive:false,zIndexOffset:1600}).addTo(map);
+  mapStatusMarkers.push(m);
+ });
+}
+async function fetchAll(){
+ if(!navigator.onLine){
+  const c=readCache(); renderMapStatuses(c.spots||{},c.waits||{});
+  return {spots:c.spots||{},waits:c.waits||{},offline:true,cached:true};
  }
- note.textContent=opt.offline?"オフライン中は閲覧のみです。投稿は通信復帰後に利用できます。":"直近15分の投稿から表示します";
- disableButtons(!!opt.offline);
+ try{
+  const r=await fetch(API,{method:"GET",cache:"no-store"});if(!r.ok)throw new Error();
+  const d=await r.json();if(!d||d.ok!==true)throw new Error();
+  writeCache(d);renderMapStatuses(d.spots||{},d.waits||{});
+  return {spots:d.spots||{},waits:d.waits||{}};
+ }catch(_){
+  const c=readCache();renderMapStatuses(c.spots||{},c.waits||{});
+  return {spots:c.spots||{},waits:c.waits||{},offline:true,cached:true};
+ }
 }
 async function loadCrowd(){
- const venueId=currentVenueId,apiSpot=API_SPOT_BY_VENUE[venueId]; if(!apiSpot||!panel)return;
- const serial=++requestSerial,current=document.getElementById("crowdCurrent"),meta=document.getElementById("crowdMeta");
- if(current)current.textContent="取得中…"; if(meta)meta.textContent="";
- if(!navigator.onLine){const c=readCache();renderSpot(c.spots?.[apiSpot]||null,{offline:true,cached:true});return;}
- try{
-  const r=await fetch(API,{method:"GET",cache:"no-store"}); if(!r.ok)throw new Error();
-  const d=await r.json(); if(!d||d.ok!==true)throw new Error();
-  if(serial!==requestSerial||venueId!==currentVenueId)return;
-  writeCache(d.spots||{}); renderSpot(d.spots?.[apiSpot]||null);
- }catch(_){if(serial!==requestSerial||venueId!==currentVenueId)return;const c=readCache();renderSpot(c.spots?.[apiSpot]||null,{offline:true,cached:true});}
+ const venueId=currentVenueId,apiSpot=API_SPOT_BY_VENUE[venueId];if(!apiSpot||!panel)return;
+ const serial=++requestSerial;
+ const current=document.getElementById("crowdCurrent"),meta=document.getElementById("crowdMeta");
+ if(current)current.textContent="取得中…";if(meta)meta.textContent="";
+ const d=await fetchAll();
+ if(serial!==requestSerial||venueId!==currentVenueId)return;
+ renderDetail(d.spots?.[apiSpot]||null,d.waits?.[apiSpot]||null,d);
 }
 async function submitCrowd(status){
- const apiSpot=API_SPOT_BY_VENUE[currentVenueId]; if(!apiSpot)return;
+ const apiSpot=API_SPOT_BY_VENUE[currentVenueId];if(!apiSpot)return;
  if(!navigator.onLine){if(typeof showToast==="function")showToast("オフライン中は混雑状況を投稿できません");return;}
- disableButtons(true);
+ disableInputs(true);
  try{
   const r=await fetch(API,{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({spot_id:apiSpot,status})});
-  const d=await r.json().catch(()=>null); if(!r.ok||!d||d.ok!==true)throw new Error();
-  if(typeof showToast==="function")showToast("混雑状況を共有しました"); await loadCrowd();
- }catch(_){if(typeof showToast==="function")showToast("送信できませんでした。通信状況を確認してください");disableButtons(false);}
+  const d=await r.json().catch(()=>null);if(!r.ok||!d||d.ok!==true)throw new Error();
+  if(typeof showToast==="function")showToast("混雑状況を共有しました");await loadCrowd();
+ }catch(_){if(typeof showToast==="function")showToast("送信できませんでした。通信状況を確認してください");disableInputs(false);}
+}
+async function submitWait(){
+ const apiSpot=API_SPOT_BY_VENUE[currentVenueId],sel=document.getElementById("crowdWaitSelect");
+ const waitMinutes=Number(sel?.value||0);if(!apiSpot)return;
+ if(!waitMinutes){if(typeof showToast==="function")showToast("並んでいる時間を選んでください");return;}
+ if(!navigator.onLine){if(typeof showToast==="function")showToast("オフライン中は待ち時間を共有できません");return;}
+ disableInputs(true);
+ try{
+  const r=await fetch(API,{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({spot_id:apiSpot,wait_minutes:waitMinutes})});
+  const d=await r.json().catch(()=>null);if(!r.ok||!d||d.ok!==true)throw new Error();
+  if(sel)sel.value="";
+  if(typeof showToast==="function")showToast(`「もう${waitLabel(waitMinutes)}並んでる！」を共有しました`);
+  await loadCrowd();
+ }catch(_){if(typeof showToast==="function")showToast("送信できませんでした。通信状況を確認してください");disableInputs(false);}
 }
 if(typeof openVenue==="function"){
  const originalOpenVenue=openVenue;
  openVenue=function(v){
   originalOpenVenue(v);
   try{
-   const p=ensurePanel(); currentVenueId=v&&v.id?v.id:null; const enabled=!!API_SPOT_BY_VENUE[currentVenueId];
-   if(!p)return; p.hidden=!enabled; if(enabled)loadCrowd();
+   const p=ensurePanel();currentVenueId=v&&v.id?v.id:null;const enabled=!!API_SPOT_BY_VENUE[currentVenueId];
+   if(!p)return;p.hidden=!enabled;if(enabled)loadCrowd();
   }catch(_){}
  };
 }
-window.addEventListener("online",()=>{try{if(panel&&!panel.hidden&&currentVenueId)loadCrowd();}catch(_){}});
+function startCrowd(){
+ try{ensurePanel();fetchAll();}catch(_){}
+}
+if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",startCrowd,{once:true});else startCrowd();
+window.addEventListener("online",()=>{try{fetchAll();if(panel&&!panel.hidden&&currentVenueId)loadCrowd();}catch(_){}});
 })();
 </script>
 
@@ -5962,15 +6055,15 @@ window.addEventListener("online",()=>{try{if(panel&&!panel.hidden&&currentVenueI
   border-radius:13px;background:rgba(255,255,255,.055);
   font-size:9px;line-height:1.15;cursor:pointer;color:inherit;
 }
-.traffic-mini-title{font-weight:900;white-space:nowrap}
-.traffic-mini-lines{display:flex;flex-direction:column;gap:2px;min-width:0;width:100%}
+.traffic-mini-title{font-weight:900;white-space:nowrap;width:100%;text-align:center}
+.traffic-mini-lines{display:flex;flex-direction:column;align-items:flex-start;gap:2px;min-width:0;width:100%;padding-left:3px}
 .traffic-mini-line{font-weight:800;white-space:nowrap}
 .traffic-mini .traffic-ok{opacity:.95}
 .traffic-mini .traffic-warn{opacity:1}
 .traffic-mini .traffic-unknown{opacity:.58}
 .traffic-map-hint{
   position:absolute;left:12px;bottom:12px;z-index:800;
-  max-width:min(265px,76%);padding:9px 11px;
+  display:flex;align-items:center;gap:10px;max-width:min(350px,92%);padding:9px 11px;
   border:1px solid rgba(255,255,255,.18);border-radius:14px;
   background:rgba(10,10,14,.82);backdrop-filter:blur(12px);
   -webkit-backdrop-filter:blur(12px);
@@ -5978,6 +6071,8 @@ window.addEventListener("online",()=>{try{if(panel&&!panel.hidden&&currentVenueI
   font-size:10px;font-weight:850;line-height:1.45;
   pointer-events:none;
 }
+.crowd-hint-targets{display:flex;flex-direction:column;gap:2px;white-space:nowrap;text-align:left}
+.crowd-hint-message{display:flex;align-items:center;align-self:stretch;text-align:left;line-height:1.35}
 .traffic-detail{
   position:fixed;inset:0;z-index:10050;display:none;
   align-items:flex-end;justify-content:center;background:rgba(0,0,0,.55);
@@ -6056,7 +6151,7 @@ function buildUI(){
     if(getComputedStyle(map).position==="static")map.style.position="relative";
     const hint=document.createElement("div");
     hint.id="crowdMapHint"; hint.className="traffic-map-hint";
-    hint.textContent="🚻 WC📍をタップ → 当日の混雑状況を共有できます！";
+    hint.innerHTML=`<span class="crowd-hint-targets"><span>🚻📍WC</span><span>📸 PHOTO（メイン）</span></span><span class="crowd-hint-message">→ タップで当日の混雑状況が共有可能！</span>`;
     map.appendChild(hint);
   }
 }
