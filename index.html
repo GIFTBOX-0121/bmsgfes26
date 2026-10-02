@@ -1583,6 +1583,36 @@ button:active{transform:scale(.98);}
   border-radius:10px;background:transparent;color:#aaa;font-size:9px;font-weight:900;
 }
 
+
+/* OFFLINE CHECK NOTICE */
+.offline-check-card{
+  margin:10px 12px 8px;padding:11px 13px;border:1px solid rgba(255,255,255,.20);
+  border-radius:14px;background:rgba(255,255,255,.06);color:inherit;
+  width:calc(100% - 24px);font:inherit;font-size:11px;font-weight:950;
+  line-height:1.4;text-align:center;cursor:pointer;
+}
+.offline-check-card:active{transform:scale(.99)}
+.offline-guide{
+  position:fixed;inset:0;z-index:12000;display:none;align-items:flex-end;
+  justify-content:center;background:rgba(0,0,0,.62);
+}
+.offline-guide.show{display:flex}
+.offline-guide-card{
+  width:min(calc(100% - 20px),540px);max-height:86dvh;overflow:auto;
+  margin:0 10px 10px;padding:20px 18px calc(20px + env(safe-area-inset-bottom));
+  border:1px solid rgba(255,255,255,.16);border-radius:24px;
+  background:linear-gradient(180deg,rgba(27,27,35,.98),rgba(12,12,17,.99));
+  color:#fff;box-shadow:0 22px 70px rgba(0,0,0,.55);
+}
+.offline-guide-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:5px}
+.offline-guide-title{font-size:15px;font-weight:950;letter-spacing:.02em}
+.offline-guide-close{width:38px;height:38px;border:0;border-radius:50%;font-size:20px;font-weight:900}
+.offline-guide-lead{margin:6px 0 15px;padding:10px 11px;border-radius:12px;background:rgba(255,255,255,.055);font-size:10px;line-height:1.6;opacity:.82}
+.offline-step{display:grid;grid-template-columns:29px 1fr;gap:10px;padding:11px 0;border-top:1px solid rgba(255,255,255,.09)}
+.offline-step-num{width:27px;height:27px;display:grid;place-items:center;border-radius:9px;background:rgba(255,255,255,.11);border:1px solid rgba(255,255,255,.11);font-size:10px;font-weight:950}
+.offline-step-text{font-size:10px;line-height:1.55}
+.offline-step-text strong{font-size:11px}
+.offline-guide-ok{margin-top:12px;padding:10px 11px;border-radius:12px;background:rgba(255,255,255,.07);font-size:10px;line-height:1.55;font-weight:850}
 </style>
 
 
@@ -1801,6 +1831,10 @@ body.goods-modal-open{overflow:hidden!important;touch-action:none}
 <section class="page active" id="page-map">
 
   <div class="map-section">
+
+    <button class="offline-check-card" id="offlineCheckOpen" type="button">
+      ⚠️ 会場に着く前にオフライン確認お願いします ⚠️
+    </button>
 
     <div class="map-shell">
 
@@ -6369,6 +6403,65 @@ function start(){
 }
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",start,{once:true});else start();
 window.addEventListener("online",()=>{try{loadTraffic(true);}catch(_){}});
+})();
+</script>
+
+
+<div class="offline-guide" id="offlineGuide" aria-hidden="true">
+  <div class="offline-guide-card" role="dialog" aria-modal="true" aria-label="オフライン確認方法">
+    <div class="offline-guide-head">
+      <div class="offline-guide-title">📱 会場に着く前のオフライン確認</div>
+      <button class="offline-guide-close" id="offlineGuideClose" type="button">×</button>
+    </div>
+
+    <div class="offline-guide-lead">
+      会場周辺で通信が混雑してもサイトを使えるよう、<strong>到着前に一度だけテスト</strong>をお願いします。
+    </div>
+
+    <div class="offline-step">
+      <div class="offline-step-num">1</div>
+      <div class="offline-step-text"><strong>このサイトをホーム画面に追加</strong><br><span style="opacity:.72;">※「ウェブアプリとして開く」は<strong>必ずOFFに</strong></span></div>
+    </div>
+
+    <div class="offline-step">
+      <div class="offline-step-num">2</div>
+      <div class="offline-step-text"><strong>通信できる場所で、各ページを開いて確認</strong></div>
+    </div>
+
+    <div class="offline-step">
+      <div class="offline-step-num">3</div>
+      <div class="offline-step-text"><strong>機内モードをONにする（Wi-Fiも切る）</strong></div>
+    </div>
+
+    <div class="offline-step">
+      <div class="offline-step-num">4</div>
+      <div class="offline-step-text"><strong>今開いているSafariページを閉じる</strong><br>オフライン確認のため、Safariで開いているこのサイトを閉じてください。</div>
+    </div>
+
+    <div class="offline-step">
+      <div class="offline-step-num">5</div>
+      <div class="offline-step-text"><strong>ホーム画面に追加したところからサイトを開く</strong><br>MAP・GOODS・TODO・MYなどが表示・操作できるか確認してください。</div>
+    </div>
+
+    <div class="offline-step">
+      <div class="offline-step-num">6</div>
+      <div class="offline-step-text"><strong>機内モードをOFFにして通常通信へ戻す</strong><br>確認が終わったら、普段の通信状態に戻してください。</div>
+    </div>
+
+    <div class="offline-guide-ok">✓ MAPなどがオフラインでも見られれば準備OK！<br><span style="opacity:.72;font-weight:700;">※オフライン中は交通情報・混雑状況の最新取得、新しい混雑／待ち時間の共有はできません。</span></div>
+  </div>
+</div>
+<script id="offline-guide-addon">
+(()=>{
+ const open=document.getElementById("offlineCheckOpen");
+ const modal=document.getElementById("offlineGuide");
+ const close=document.getElementById("offlineGuideClose");
+ if(!open||!modal||!close)return;
+ const show=()=>{modal.classList.add("show");modal.setAttribute("aria-hidden","false");};
+ const hide=()=>{modal.classList.remove("show");modal.setAttribute("aria-hidden","true");};
+ open.addEventListener("click",show);
+ close.addEventListener("click",hide);
+ modal.addEventListener("click",e=>{if(e.target===modal)hide();});
 })();
 </script>
 
