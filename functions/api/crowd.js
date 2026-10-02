@@ -1,5 +1,19 @@
 const ALLOWED_STATUS = new Set(["empty", "normal", "busy"]);
 
+// 待ち時間として投稿できる値（分）
+const ALLOWED_WAIT_MINUTES = new Set([
+  5,
+  10,
+  15,
+  20,
+  30,
+  45,
+  60,
+  90,
+  120,
+  180
+]);
+
 // 混雑情報として受け付ける場所
 const ALLOWED_SPOTS = new Set([
   "wc1",
@@ -21,8 +35,16 @@ function json(data, status = 200) {
   });
 }
 
+
+// ========================================
 // GET /api/crowd
-// 現在の混雑状況を取得
+//
+// ・現在の混雑状況
+// ・現在の待ち時間
+//
+// どちらも直近15分の投稿のみ使用
+// ========================================
+
 export async function onRequestGet(context) {
   try {
     const { env } = context;
@@ -34,17 +56,12 @@ export async function onRequestGet(context) {
       }, 500);
     }
 
-    /*
-      直近15分の投稿だけを使用。
 
-      判定：
-      empty  = 1
-      normal = 2
-      busy   = 3
+    // ------------------------------------
+    // 混雑状況
+    // ------------------------------------
 
-      平均値から現在の状態を決定する。
-    */
-    const result = await env.DB.prepare(`
+    const crowdResult = await env.DB.prepare(`
       SELECT
         spot_id,
         COUNT(*) AS report_count,
@@ -66,9 +83,10 @@ export async function onRequestGet(context) {
       GROUP BY spot_id
     `).all();
 
+
     const spots = {};
 
-    for (const row of result.results || []) {
+    for (const row of crowdResult.results || []) {
       let status = "normal";
 
       const average = Number(row.average_status);
@@ -86,10 +104,53 @@ export async function onRequestGet(context) {
       };
     }
 
+
+    // ------------------------------------
+    // 待ち時間
+    // ------------------------------------
+
+    const waitResult = await env.DB.prepare(`
+      SELECT
+        spot_id,
+        COUNT(*) AS report_count,
+        ROUND(AVG(wait_minutes)) AS average_wait_minutes,
+        MAX(wait_minutes) AS max_wait_minutes,
+        MIN(wait_minutes) AS min_wait_minutes,
+        MAX(created_at) AS latest_report
+
+      FROM crowd_wait_reports
+
+      WHERE created_at >= datetime('now', '-15 minutes')
+
+      GROUP BY spot_id
+    `).all();
+
+
+    const waits = {};
+
+    for (const row of waitResult.results || []) {
+      waits[row.spot_id] = {
+        average_minutes: Number(row.average_wait_minutes),
+        min_minutes: Number(row.min_wait_minutes),
+        max_minutes: Number(row.max_wait_minutes),
+        report_count: Number(row.report_count),
+        latest_report: row.latest_report
+      };
+    }
+
+
+    // ------------------------------------
+    // 返却
+    // ------------------------------------
+
     return json({
       ok: true,
+
       window_minutes: 15,
-      spots
+
+      spots,
+
+      waits
     });
 
   } catch (error) {
@@ -103,8 +164,24 @@ export async function onRequestGet(context) {
 }
 
 
+// ========================================
 // POST /api/crowd
-// 新しい混雑情報を投稿
+//
+// 2種類の投稿を受け付ける
+//
+// ① 混雑状況
+// {
+//   spot_id: "wc1",
+//   status: "busy"
+// }
+//
+// ② 待ち時間
+// {
+//   spot_id: "wc1",
+//   wait_minutes: 15
+// }
+// ========================================
+
 export async function onRequestPost(context) {
   try {
     const { request, env } = context;
@@ -115,6 +192,7 @@ export async function onRequestPost(context) {
         error: "DB binding not found"
       }, 500);
     }
+
 
     let body;
 
@@ -127,8 +205,13 @@ export async function onRequestPost(context) {
       }, 400);
     }
 
+
     const spotId = String(body?.spot_id || "");
-    const status = String(body?.status || "");
+
+
+    // ------------------------------------
+    // 場所チェック
+    // ------------------------------------
 
     if (!ALLOWED_SPOTS.has(spotId)) {
       return json({
@@ -137,12 +220,64 @@ export async function onRequestPost(context) {
       }, 400);
     }
 
+
+    // ====================================
+    // ① 待ち時間の投稿
+    // ====================================
+
+    if (body?.wait_minutes !== undefined) {
+
+      const waitMinutes = Number(body.wait_minutes);
+
+      if (!ALLOWED_WAIT_MINUTES.has(waitMinutes)) {
+        return json({
+          ok: false,
+          error: "Invalid wait_minutes"
+        }, 400);
+      }
+
+
+      await env.DB.prepare(`
+        INSERT INTO crowd_wait_reports (
+          spot_id,
+          wait_minutes,
+          created_at
+        )
+        VALUES (?, ?, CURRENT_TIMESTAMP)
+      `)
+        .bind(
+          spotId,
+          waitMinutes
+        )
+        .run();
+
+
+      return json({
+        ok: true,
+
+        type: "wait",
+
+        spot_id: spotId,
+
+        wait_minutes: waitMinutes
+      });
+    }
+
+
+    // ====================================
+    // ② 混雑状況の投稿
+    // ====================================
+
+    const status = String(body?.status || "");
+
+
     if (!ALLOWED_STATUS.has(status)) {
       return json({
         ok: false,
         error: "Invalid status"
       }, 400);
     }
+
 
     await env.DB.prepare(`
       INSERT INTO crowd_reports (
@@ -152,14 +287,23 @@ export async function onRequestPost(context) {
       )
       VALUES (?, ?, CURRENT_TIMESTAMP)
     `)
-      .bind(spotId, status)
+      .bind(
+        spotId,
+        status
+      )
       .run();
+
 
     return json({
       ok: true,
+
+      type: "crowd",
+
       spot_id: spotId,
+
       status
     });
+
 
   } catch (error) {
     console.error(error);
