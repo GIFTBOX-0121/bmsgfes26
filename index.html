@@ -1,6 +1,3 @@
-
-
-
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -1043,6 +1040,33 @@ button:active{transform:scale(.98);}
   color:#050505;
   background:linear-gradient(135deg,#fff,#aaa);
 }
+
+
+/* =========================================================
+   CROWD STATUS / REALMAP
+   Existing features are untouched. Online API only.
+========================================================= */
+.crowd-panel{
+  display:none;
+  margin-top:12px;
+  padding:12px;
+  border:1px solid rgba(255,255,255,.22);
+  border-radius:14px;
+  background:rgba(0,0,0,.24);
+}
+.crowd-panel.show{display:block;}
+.crowd-head{display:flex;align-items:center;justify-content:space-between;gap:10px;}
+.crowd-title{font-size:11px;font-weight:950;letter-spacing:.04em;}
+.crowd-current{font-size:11px;font-weight:950;white-space:nowrap;}
+.crowd-meta{margin-top:5px;color:#aaa;font-size:9px;line-height:1.5;}
+.crowd-report-label{margin-top:10px;color:#ddd;font-size:9px;font-weight:900;}
+.crowd-buttons{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:7px;}
+.crowd-btn{padding:9px 3px;border:1px solid rgba(255,255,255,.28);border-radius:10px;background:#111;color:#fff;font-size:9px;font-weight:950;}
+.crowd-btn:disabled{opacity:.45;}
+.crowd-btn.empty{background:rgba(31,150,90,.24);}
+.crowd-btn.normal{background:rgba(215,160,30,.24);}
+.crowd-btn.busy{background:rgba(205,55,55,.25);}
+.crowd-offline{color:#bbb;}
 
 /* TOAST */
 
@@ -2528,6 +2552,21 @@ body.goods-modal-open{overflow:hidden!important;touch-action:none}
     id="sheetDesc"
   ></div>
 
+
+  <div class="crowd-panel" id="crowdPanel">
+    <div class="crowd-head">
+      <div class="crowd-title">現在の混雑状況</div>
+      <div class="crowd-current" id="crowdCurrent">取得中…</div>
+    </div>
+    <div class="crowd-meta" id="crowdMeta">最新情報を確認しています</div>
+    <div class="crowd-report-label">いまの状況を教えて！</div>
+    <div class="crowd-buttons">
+      <button class="crowd-btn empty" type="button" data-crowd-status="empty">🟢 空いてる</button>
+      <button class="crowd-btn normal" type="button" data-crowd-status="normal">🟡 普通</button>
+      <button class="crowd-btn busy" type="button" data-crowd-status="busy">🔴 混んでる</button>
+    </div>
+  </div>
+
   <div class="sheet-actions">
 
     <button
@@ -3130,11 +3169,14 @@ function openVenue(v){
   document.getElementById("sheetDesc").textContent=v.description;
 
   updateSaveButton();
+  renderCrowdForVenue(v);
+  if(crowdApiSpotId(v)) loadCrowd();
 
   bottomSheet.classList.add("show");
   sheetBackdrop.classList.add("show");
 }
 
+\n\n/* =========================================================\n   CROWD STATUS / REALMAP\n   Targets: all WC pins + Central Plaza PHOTO (photo1).\n   API spot id for Central Plaza PHOTO is photoCentral.\n========================================================= */\nconst CROWD_API="/api/crowd";\nconst CROWD_TARGETS=new Map([\n  ["wc1","wc1"],["wc2","wc2"],["wc3","wc3"],\n  ["wc4","wc4"],["wc5","wc5"],["wcPremium","wcPremium"],\n  ["photo1","photoCentral"]\n]);\nlet crowdSnapshot={};\nlet crowdLoading=false;\n\nfunction crowdApiSpotId(venue){\n  return venue ? (CROWD_TARGETS.get(venue.id)||null) : null;\n}\nfunction crowdStatusLabel(status){\n  if(status==="empty")return "🟢 空いてる";\n  if(status==="normal")return "🟡 普通";\n  if(status==="busy")return "🔴 混んでる";\n  return "⚪ 情報なし";\n}\nfunction crowdTimeLabel(value){\n  if(!value)return "まだ報告がありません";\n  /* D1 CURRENT_TIMESTAMP is UTC without a timezone suffix. */\n  const d=new Date(String(value).replace(" ","T")+"Z");\n  if(Number.isNaN(d.getTime()))return "最新報告あり";\n  const min=Math.max(0,Math.floor((Date.now()-d.getTime())/60000));\n  if(min<1)return "たった今";\n  if(min<60)return `${min}分前`;\n  return "1時間以上前";\n}\nfunction renderCrowdForVenue(venue){\n  const panel=document.getElementById("crowdPanel");\n  const current=document.getElementById("crowdCurrent");\n  const meta=document.getElementById("crowdMeta");\n  if(!panel||!current||!meta)return;\n  const apiId=crowdApiSpotId(venue);\n  panel.classList.toggle("show",!!apiId);\n  if(!apiId)return;\n  const info=crowdSnapshot[apiId];\n  if(info){\n    current.textContent=crowdStatusLabel(info.status);\n    meta.textContent=`最終報告：${crowdTimeLabel(info.latest_report)} ・ 直近15分 ${Number(info.report_count)||0}件`;\n    meta.classList.remove("crowd-offline");\n  }else if(!navigator.onLine){\n    current.textContent="オフライン";\n    meta.textContent="混雑状況はオンライン時に確認できます";\n    meta.classList.add("crowd-offline");\n  }else{\n    current.textContent=crowdLoading ? "取得中…" : "⚪ 情報なし";\n    meta.textContent=crowdLoading ? "最新情報を確認しています" : "直近15分の報告はありません";\n    meta.classList.remove("crowd-offline");\n  }\n  panel.querySelectorAll("[data-crowd-status]").forEach(btn=>{btn.disabled=!navigator.onLine;});\n}\nasync function loadCrowd(){\n  if(crowdLoading||!navigator.onLine){\n    renderCrowdForVenue(activeVenue);\n    return;\n  }\n  crowdLoading=true;\n  renderCrowdForVenue(activeVenue);\n  try{\n    const res=await fetch(CROWD_API,{cache:"no-store"});\n    if(!res.ok)throw new Error("crowd fetch failed");\n    const data=await res.json();\n    if(!data?.ok)throw new Error("crowd api error");\n    crowdSnapshot=data.spots||{};\n  }catch(error){\n    console.warn("Crowd status unavailable",error);\n  }finally{\n    crowdLoading=false;\n    renderCrowdForVenue(activeVenue);\n  }\n}\nasync function sendCrowdReport(status){\n  const apiId=crowdApiSpotId(activeVenue);\n  if(!apiId)return;\n  if(!navigator.onLine){\n    showToast("混雑状況の投稿には通信が必要です");\n    renderCrowdForVenue(activeVenue);\n    return;\n  }\n  const buttons=[...document.querySelectorAll("#crowdPanel [data-crowd-status]")];\n  buttons.forEach(btn=>btn.disabled=true);\n  try{\n    const res=await fetch(CROWD_API,{\n      method:"POST",\n      headers:{"content-type":"application/json"},\n      body:JSON.stringify({spot_id:apiId,status})\n    });\n    const data=await res.json().catch(()=>null);\n    if(!res.ok||!data?.ok)throw new Error("crowd post failed");\n    showToast("混雑状況を送信しました");\n    await loadCrowd();\n  }catch(error){\n    console.warn("Crowd report failed",error);\n    showToast("送信できませんでした。通信状況を確認してください");\n  }finally{\n    buttons.forEach(btn=>btn.disabled=!navigator.onLine);\n  }\n}\ndocument.getElementById("crowdPanel")?.addEventListener("click",event=>{\n  const btn=event.target.closest("[data-crowd-status]");\n  if(btn)sendCrowdReport(btn.dataset.crowdStatus);\n});\nwindow.addEventListener("online",()=>loadCrowd());\nwindow.addEventListener("offline",()=>renderCrowdForVenue(activeVenue));\n\n
 function closeSheet(){
   bottomSheet.classList.remove("show");
   sheetBackdrop.classList.remove("show");
