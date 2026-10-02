@@ -1,4 +1,6 @@
 
+
+
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -1381,6 +1383,113 @@ button:active{transform:scale(.98);}
   line-height:1.5;
 }
 
+
+/* =========================================================
+   GOODS TAP CALCULATOR
+========================================================= */
+.goods-calc-bar{
+  position:sticky;
+  bottom:82px;
+  z-index:35;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  margin:12px 0 14px;
+  padding:12px 14px;
+  border:1px solid rgba(255,255,255,.28);
+  border-radius:14px;
+  background:rgba(8,8,10,.94);
+  box-shadow:0 8px 28px rgba(0,0,0,.35);
+  backdrop-filter:blur(12px);
+  -webkit-backdrop-filter:blur(12px);
+}
+.goods-calc-bar-main{min-width:0}
+.goods-calc-bar-label{font-size:8px;color:#aaa;font-weight:900;letter-spacing:.08em}
+.goods-calc-bar-total{margin-top:2px;font-size:16px;font-weight:950}
+.goods-calc-open{
+  flex:0 0 auto;padding:9px 12px;border:0;border-radius:10px;
+  background:#f3f3f3;color:#080808;font-size:9px;font-weight:950;
+}
+.goods-modal-hint{
+  position:absolute;left:50%;top:14px;transform:translateX(-50%);
+  z-index:8;width:max-content;max-width:78%;
+  padding:7px 10px;border-radius:999px;
+  background:rgba(0,0,0,.72);border:1px solid rgba(255,255,255,.22);
+  color:#fff;font-size:9px;font-weight:900;pointer-events:none;
+}
+.goods-calc-sheet{
+  position:fixed;inset:0;z-index:10002;display:none;
+  align-items:flex-end;justify-content:center;background:rgba(0,0,0,.72);
+}
+.goods-calc-sheet.show{display:flex}
+.goods-calc-card{
+  width:min(100%,560px);max-height:82dvh;overflow:auto;
+  border:1px solid rgba(255,255,255,.25);border-radius:22px 22px 0 0;
+  background:linear-gradient(145deg,#18181d,#08080b 58%);color:#fff;
+  padding:18px 16px calc(20px + env(safe-area-inset-bottom));
+  box-shadow:0 -16px 50px rgba(0,0,0,.55);
+}
+.goods-calc-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.goods-calc-title{font-size:15px;font-weight:950;line-height:1.35}
+.goods-calc-price{margin-top:4px;color:#bbb;font-size:11px;font-weight:800}
+.goods-calc-close{
+  width:34px;height:34px;border:0;border-radius:999px;background:#eee;color:#111;
+  font-size:20px;font-weight:900;line-height:1;
+}
+.goods-calc-limit{
+  display:inline-block;margin-top:10px;padding:6px 9px;border-radius:999px;
+  background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);
+  font-size:9px;font-weight:900;
+}
+.goods-calc-section{margin-top:16px}
+.goods-calc-section-title{margin-bottom:8px;color:#aaa;font-size:8px;font-weight:900;letter-spacing:.08em}
+.goods-calc-options{display:flex;flex-wrap:wrap;gap:7px}
+.goods-calc-option{
+  padding:9px 11px;border:1px solid rgba(255,255,255,.22);border-radius:10px;
+  background:#101014;color:#fff;font-size:10px;font-weight:900;
+}
+.goods-calc-option.active{background:#f2f2f2;color:#080808;border-color:#fff}
+.goods-calc-member-groups{display:grid;grid-template-columns:repeat(2,1fr);gap:7px}
+.goods-calc-member-group{
+  padding:9px;border:1px solid rgba(255,255,255,.18);border-radius:10px;
+  background:#0d0d11;color:#fff;font-size:9px;font-weight:900;
+}
+.goods-calc-member-group.active{background:#f2f2f2;color:#080808}
+.goods-calc-qty{display:flex;align-items:center;justify-content:center;gap:18px;margin-top:18px}
+.goods-calc-qty button{
+  width:42px;height:42px;border:1px solid rgba(255,255,255,.25);border-radius:12px;
+  background:#15151a;color:#fff;font-size:22px;font-weight:900;
+}
+.goods-calc-qty-num{min-width:30px;text-align:center;font-size:20px;font-weight:950}
+.goods-calc-add{
+  width:100%;margin-top:16px;padding:13px;border:0;border-radius:12px;
+  background:#f2f2f2;color:#080808;font-size:11px;font-weight:950;
+}
+.goods-calc-add:disabled{opacity:.35}
+.goods-cart-list{margin-top:14px}
+.goods-cart-row{
+  display:grid;grid-template-columns:1fr auto;gap:10px;padding:11px 0;
+  border-bottom:1px solid rgba(255,255,255,.11);
+}
+.goods-cart-name{font-size:10px;font-weight:900;line-height:1.45}
+.goods-cart-sub{margin-top:3px;color:#aaa;font-size:8px;line-height:1.4}
+.goods-cart-price{text-align:right;font-size:10px;font-weight:900}
+.goods-cart-actions{display:flex;justify-content:flex-end;gap:5px;margin-top:5px}
+.goods-cart-actions button{
+  min-width:28px;height:26px;border:1px solid rgba(255,255,255,.2);
+  border-radius:7px;background:#111;color:#fff;font-weight:900;
+}
+.goods-cart-summary{
+  display:flex;justify-content:space-between;gap:10px;margin-top:15px;padding-top:12px;
+  border-top:1px solid rgba(255,255,255,.22);font-size:13px;font-weight:950;
+}
+.goods-cart-empty{padding:22px 4px;text-align:center;color:#888;font-size:10px}
+.goods-cart-clear{
+  width:100%;margin-top:12px;padding:10px;border:1px solid rgba(255,255,255,.18);
+  border-radius:10px;background:transparent;color:#aaa;font-size:9px;font-weight:900;
+}
+
 </style>
 
 
@@ -1948,6 +2057,15 @@ body.goods-modal-open{overflow:hidden!important;touch-action:none}
       </div>
     </div>
 
+
+    <div class="goods-calc-bar" id="goodsCalcBar">
+      <div class="goods-calc-bar-main">
+        <div class="goods-calc-bar-label">🛒 買うものリスト</div>
+        <div class="goods-calc-bar-total"><span id="goodsCalcCount">0</span>点　¥<span id="goodsCalcTotal">0</span></div>
+      </div>
+      <button class="goods-calc-open" id="goodsCalcOpen" type="button">リストを見る</button>
+    </div>
+
     <div class="goods-ticket-grid">
       <div class="goods-ticket-card">
         <div class="goods-ticket-title">グッズ整理券（事前抽選）</div>
@@ -2430,9 +2548,50 @@ body.goods-modal-open{overflow:hidden!important;touch-action:none}
 <div class="goods-modal" id="goodsModal" aria-hidden="true">
   <button class="goods-modal-close" id="goodsModalClose" type="button" aria-label="閉じる">×</button>
   <div class="goods-modal-stage" id="goodsModalStage">
+    <div class="goods-modal-hint" id="goodsModalHint">商品をタップすると追加できます</div>
     <img class="goods-modal-image" id="goodsModalImage" alt="グッズ拡大画像">
   </div>
   <div class="goods-modal-note">ピンチで拡大 / ダブルタップでリセット</div>
+</div>
+
+
+<!-- GOODS CALCULATOR -->
+<div class="goods-calc-sheet" id="goodsPickSheet" aria-hidden="true">
+  <div class="goods-calc-card">
+    <div class="goods-calc-head">
+      <div>
+        <div class="goods-calc-title" id="goodsPickTitle"></div>
+        <div class="goods-calc-price" id="goodsPickPrice"></div>
+        <div class="goods-calc-limit" id="goodsPickLimit"></div>
+      </div>
+      <button class="goods-calc-close" id="goodsPickClose" type="button">×</button>
+    </div>
+    <div id="goodsPickBody"></div>
+    <div class="goods-calc-qty">
+      <button id="goodsQtyMinus" type="button">−</button>
+      <div class="goods-calc-qty-num" id="goodsQtyNum">1</div>
+      <button id="goodsQtyPlus" type="button">＋</button>
+    </div>
+    <button class="goods-calc-add" id="goodsAddButton" type="button">リストに追加</button>
+  </div>
+</div>
+
+<div class="goods-calc-sheet" id="goodsCartSheet" aria-hidden="true">
+  <div class="goods-calc-card">
+    <div class="goods-calc-head">
+      <div>
+        <div class="goods-calc-title">🛒 買うものリスト</div>
+        <div class="goods-calc-price">この端末に保存されます / オフラインで計算できます</div>
+      </div>
+      <button class="goods-calc-close" id="goodsCartClose" type="button">×</button>
+    </div>
+    <div class="goods-cart-list" id="goodsCartList"></div>
+    <div class="goods-cart-summary">
+      <span><span id="goodsCartCount">0</span>点</span>
+      <span>合計 ¥<span id="goodsCartTotal">0</span></span>
+    </div>
+    <button class="goods-cart-clear" id="goodsCartClear" type="button">リストをすべて消す</button>
+  </div>
 </div>
 
 <div class="toast" id="toast"></div>
@@ -5297,6 +5456,354 @@ goodsModalStage?.addEventListener("touchend",event=>{
   if(event.touches.length===0) goodsDragStart=null;
   if(goodsScale<=1) resetGoodsZoom();
 });
+
+
+
+/* =========================================================
+   GOODS TAP CALCULATOR
+   goods01: 25 items / goods02: 22 items
+   Cart is stored in localStorage and works offline.
+========================================================= */
+const GOODS_CART_KEY="bmsgfes26_goods_cart_v1";
+
+const GOODS_MEMBERS={
+  "SOLO ARTISTS":["SKY-HI","Novel Core","Aile The Shota","REIKO","ふみの"],
+  "BE:FIRST":["SOTA","SHUNTO","MANATO","RYUHEI","JUNON","LEO"],
+  "MAZZEL":["KAIRYU","NAOYA","RAN","SEITO","RYUKI","TAKUTO","HAYATO","EIKI"],
+  "STARGLOW":["RUI","TAIKI","KANON","GOICHI","ADAM"],
+  "HANA":["CHIKA","NAOKO","JISOO","YURI","MOMOKA","KOHARU","MAHINA"]
+};
+
+const GOODS_PRODUCTS={
+  goods01:[
+    {id:"01-01",name:"OFFICIAL LIGHT BAND",price:2500,limit:3},
+    {id:"01-02",name:"タオル",price:2500,limit:3},
+    {id:"01-03",name:"シリコンバンド",price:1000,limit:3},
+    {id:"01-04",name:"トートバッグ",price:5900,limit:3},
+    {id:"01-05",name:"ロゴTシャツ BK",price:4800,limit:3,options:["S","M","L","XL"],limitMode:"product"},
+    {id:"01-06",name:"ロゴTシャツ WH",price:4800,limit:3,options:["S","M","L","XL"],limitMode:"product",note:"Architect会員限定"},
+    {id:"01-07",name:"リンガーTシャツ",price:4000,limit:3,options:["M","L"],limitMode:"product"},
+    {id:"01-08",name:"リブラメソックス",price:2000,limit:3,options:["23–25cm","25–27cm"],limitMode:"product"},
+    {id:"01-09",name:"大判バンダナ",price:2000,limit:3},
+    {id:"01-10",name:"ショルダーマルチストラップ",price:2500,limit:3},
+    {id:"01-11",name:"ロゴカラビナ",price:1500,limit:3},
+    {id:"01-12",name:"ランダム マーカーチャーム 2P",price:800,limit:10,note:"全31種・ランダム"},
+    {id:"01-13",name:"合皮ダイカットKC",price:1600,limit:3,options:["BMSG","BE:FIRST","MAZZEL","HANA","STARGLOW"],limitMode:"option"},
+    {id:"01-14",name:"リング 2P",price:2500,limit:3,options:["BMSG","BE:FIRST","MAZZEL","HANA","STARGLOW"],limitMode:"option"},
+    {id:"01-15",name:"エコバッグ",price:2500,limit:3,options:["BMSG","BE:FIRST","MAZZEL","HANA","STARGLOW"],limitMode:"option"},
+    {id:"01-16",name:"バックパック",price:6800,limit:3},
+    {id:"01-17",name:"ボディバッグ",price:3500,limit:3},
+    {id:"01-18",name:"保冷ポーチ",price:2500,limit:3},
+    {id:"01-19",name:"フォトカード・缶バッジセット",price:1400,limit:3,members:true,limitMode:"option",note:"全31種類"},
+    {id:"01-20",name:"クッキー",price:3800,limit:3},
+    {id:"01-21",name:"Baseball Shirt",price:9800,limit:3,options:["M","L"],limitMode:"product"},
+    {id:"01-22",name:"Zip Windbreaker Jacket",price:13000,limit:3,options:["M","L"],limitMode:"product"},
+    {id:"01-23",name:"Baseball Cap",price:3800,limit:3},
+    {id:"01-24",name:"タートルネックセーター",price:6500,limit:3,options:["S","M","L"],limitMode:"product"},
+    {id:"01-25",name:"Diffuser",price:7000,limit:3,options:["TYPE 1","TYPE 2","TYPE 3","TYPE 4"],limitMode:"option",note:"全4種"}
+  ],
+  goods02:[
+    {id:"02-01",name:"Ombre Check Jacket",price:12000,limit:3},
+    {id:"02-02",name:"Beanie",price:3300,limit:3},
+    {id:"02-03",name:"Sacoche",price:4400,limit:3},
+    {id:"02-04",name:"Pin Set",price:2400,limit:3,options:["XS","M","L","XL"],limitMode:"product"},
+    {id:"02-05",name:"ロゴTシャツ",price:2400,limit:3,options:["S","M","L","XL"],limitMode:"product"},
+    {id:"02-06",name:"まにゃあーくんのタオル",price:2500,limit:3},
+    {id:"02-07",name:"タトゥーステッカー",price:1600,limit:3},
+    {id:"02-08",name:"キラキラ★ホロッステッカー",price:1500,limit:3},
+    {id:"02-09",name:"壱万宝ポーチ",price:2300,limit:3},
+    {id:"02-10",name:"Muffler Towel (BMSG FES'26 Ver.)",price:2500,limit:3},
+    {id:"02-11",name:"Random Rubber Band",price:700,limit:5,options:["Brown","White"],limitMode:"product"},
+    {id:"02-12",name:"[CLASSIC] S/S Tee -Bassline-",price:4000,limit:3,options:["S","M","L","XL"],limitMode:"product"},
+    {id:"02-13",name:"[CLASSIC] Shoulder Bag",price:4500,limit:3},
+    {id:"02-14",name:"[CLASSIC] Rubber Keyring",price:1600,limit:3},
+    {id:"02-15",name:"[CLASSIC] Sticker Set",price:2000,limit:3},
+    {id:"02-16",name:'SALU Graphic T Shirts "In My Yours"',price:5000,limit:3,options:["S","M","L"],limitMode:"product"},
+    {id:"02-17",name:"SALU TRAVEL STICKER SET [5PIECE]",price:1700,limit:3},
+    {id:"02-18",name:"BANVOX カラビナ付きキーホルダー",price:1800,limit:3},
+    {id:"02-19",name:"BMSG TRAINEE ロゴタオル",price:2500,limit:3},
+    {id:"02-20",name:"BMSG TRAINEE ロゴTシャツ",price:3500,limit:3},
+    {id:"02-21",name:"BMSG TRAINEE フォトカードホルダーキーリング",price:1800,limit:3},
+    {id:"02-22",name:"BMSG TRAINEE プロフィール帳 2026",price:3800,limit:3}
+  ]
+};
+
+/* Image hit areas are percentages of the original image.
+   This keeps the same product coordinates while zooming. */
+const GOODS_HIT_ROWS={
+  goods01:[
+    {y1:27.0,y2:37.3,count:5},
+    {y1:37.3,y2:48.5,count:5},
+    {y1:48.5,y2:59.5,count:5},
+    {y1:59.5,y2:70.7,count:5},
+    {y1:70.7,y2:82.0,count:5}
+  ],
+  goods02:[
+    {y1:27.2,y2:38.2,count:4,x1:21.0,x2:79.5},
+    {y1:38.2,y2:49.0,count:5,x1:13.8,x2:86.0},
+    {y1:49.0,y2:60.4,count:6,x1:6.5,x2:93.5},
+    {y1:60.4,y2:70.2,count:3,x1:28.5,x2:71.5},
+    {y1:70.2,y2:81.4,count:4,x1:21.0,x2:79.5}
+  ]
+};
+
+let goodsCart=[];
+try{ goodsCart=JSON.parse(localStorage.getItem(GOODS_CART_KEY)||"[]"); }
+catch(e){ goodsCart=[]; }
+
+let goodsCurrentProduct=null;
+let goodsCurrentOption="";
+let goodsCurrentGroup="";
+let goodsPickQty=1;
+let goodsCurrentImageKey="";
+
+const goodsPickSheet=document.getElementById("goodsPickSheet");
+const goodsCartSheet=document.getElementById("goodsCartSheet");
+const goodsPickTitle=document.getElementById("goodsPickTitle");
+const goodsPickPrice=document.getElementById("goodsPickPrice");
+const goodsPickLimit=document.getElementById("goodsPickLimit");
+const goodsPickBody=document.getElementById("goodsPickBody");
+const goodsQtyNum=document.getElementById("goodsQtyNum");
+const goodsAddButton=document.getElementById("goodsAddButton");
+
+function goodsMoney(n){ return Number(n||0).toLocaleString("ja-JP"); }
+function goodsSave(){
+  localStorage.setItem(GOODS_CART_KEY,JSON.stringify(goodsCart));
+  goodsRenderTotals();
+}
+function goodsTotalCount(){ return goodsCart.reduce((a,x)=>a+x.qty,0); }
+function goodsTotalPrice(){ return goodsCart.reduce((a,x)=>a+x.qty*x.price,0); }
+
+function goodsRenderTotals(){
+  const c=goodsTotalCount(), t=goodsTotalPrice();
+  ["goodsCalcCount","goodsCartCount"].forEach(id=>{const e=document.getElementById(id);if(e)e.textContent=c;});
+  ["goodsCalcTotal","goodsCartTotal"].forEach(id=>{const e=document.getElementById(id);if(e)e.textContent=goodsMoney(t);});
+}
+
+function goodsLimitText(p){
+  if(p.id==="01-12") return "購入制限：10点まで";
+  if(p.limitMode==="option") return "購入制限：各種類3点まで";
+  return `購入制限：${p.limit}点まで`;
+}
+
+function goodsProductUsed(p,option){
+  if(p.limitMode==="option"){
+    return goodsCart.filter(x=>x.productId===p.id && x.option===option).reduce((a,x)=>a+x.qty,0);
+  }
+  return goodsCart.filter(x=>x.productId===p.id).reduce((a,x)=>a+x.qty,0);
+}
+function goodsRemaining(p,option){
+  return Math.max(0,p.limit-goodsProductUsed(p,option));
+}
+
+function goodsCloseSheet(sheet){
+  sheet?.classList.remove("show");
+  sheet?.setAttribute("aria-hidden","true");
+}
+function goodsShowSheet(sheet){
+  sheet?.classList.add("show");
+  sheet?.setAttribute("aria-hidden","false");
+}
+
+function goodsRenderPicker(){
+  const p=goodsCurrentProduct;
+  if(!p)return;
+  goodsPickTitle.textContent=p.name;
+  goodsPickPrice.textContent=`¥${goodsMoney(p.price)}${p.note?" / "+p.note:""}`;
+  goodsPickLimit.textContent=goodsLimitText(p);
+  goodsPickBody.innerHTML="";
+  goodsPickQty=1;
+
+  if(p.members){
+    const sec=document.createElement("div");
+    sec.className="goods-calc-section";
+    sec.innerHTML='<div class="goods-calc-section-title">ARTIST</div>';
+    const groups=document.createElement("div");
+    groups.className="goods-calc-member-groups";
+    Object.keys(GOODS_MEMBERS).forEach(g=>{
+      const b=document.createElement("button");
+      b.type="button"; b.className="goods-calc-member-group"; b.textContent=g;
+      b.addEventListener("click",()=>{
+        goodsCurrentGroup=g; goodsCurrentOption="";
+        groups.querySelectorAll("button").forEach(x=>x.classList.toggle("active",x===b));
+        renderMembers();
+      });
+      groups.appendChild(b);
+    });
+    sec.appendChild(groups);
+    const memberSec=document.createElement("div");
+    memberSec.className="goods-calc-section";
+    memberSec.innerHTML='<div class="goods-calc-section-title">MEMBER</div><div class="goods-calc-options" id="goodsMemberOptions"></div>';
+    goodsPickBody.append(sec,memberSec);
+
+    function renderMembers(){
+      const box=memberSec.querySelector("#goodsMemberOptions");
+      box.innerHTML="";
+      (GOODS_MEMBERS[goodsCurrentGroup]||[]).forEach(m=>{
+        const b=document.createElement("button");
+        b.type="button";b.className="goods-calc-option";b.textContent=m;
+        b.addEventListener("click",()=>{
+          goodsCurrentOption=m;
+          box.querySelectorAll("button").forEach(x=>x.classList.toggle("active",x===b));
+          goodsUpdatePickerState();
+        });
+        box.appendChild(b);
+      });
+      goodsUpdatePickerState();
+    }
+  }else if(p.options?.length){
+    const sec=document.createElement("div");
+    sec.className="goods-calc-section";
+    sec.innerHTML='<div class="goods-calc-section-title">'+(p.limitMode==="option"?"種類":"サイズ / 種類")+'</div>';
+    const box=document.createElement("div");
+    box.className="goods-calc-options";
+    p.options.forEach(o=>{
+      const b=document.createElement("button");
+      b.type="button";b.className="goods-calc-option";b.textContent=o;
+      b.addEventListener("click",()=>{
+        goodsCurrentOption=o;
+        box.querySelectorAll("button").forEach(x=>x.classList.toggle("active",x===b));
+        goodsUpdatePickerState();
+      });
+      box.appendChild(b);
+    });
+    sec.appendChild(box); goodsPickBody.appendChild(sec);
+  }
+  goodsUpdatePickerState();
+}
+
+function goodsUpdatePickerState(){
+  const p=goodsCurrentProduct;
+  if(!p)return;
+  const needsOption=!!(p.members || p.options?.length);
+  const ready=!needsOption || !!goodsCurrentOption;
+  const remaining=ready?goodsRemaining(p,goodsCurrentOption):0;
+  if(goodsPickQty>remaining) goodsPickQty=Math.max(1,remaining);
+  goodsQtyNum.textContent=goodsPickQty;
+  goodsAddButton.disabled=!ready || remaining<=0;
+  goodsAddButton.textContent=remaining<=0 && ready ? "購入制限に達しています" : "リストに追加";
+}
+
+function goodsOpenProduct(p){
+  goodsCurrentProduct=p;
+  goodsCurrentOption="";
+  goodsCurrentGroup="";
+  goodsPickQty=1;
+  goodsRenderPicker();
+  goodsShowSheet(goodsPickSheet);
+}
+
+document.getElementById("goodsQtyMinus")?.addEventListener("click",()=>{
+  goodsPickQty=Math.max(1,goodsPickQty-1); goodsQtyNum.textContent=goodsPickQty;
+});
+document.getElementById("goodsQtyPlus")?.addEventListener("click",()=>{
+  const p=goodsCurrentProduct;if(!p)return;
+  const needsOption=!!(p.members || p.options?.length);
+  if(needsOption && !goodsCurrentOption)return;
+  goodsPickQty=Math.min(goodsRemaining(p,goodsCurrentOption),goodsPickQty+1);
+  goodsQtyNum.textContent=goodsPickQty;
+});
+goodsAddButton?.addEventListener("click",()=>{
+  const p=goodsCurrentProduct;if(!p)return;
+  const needsOption=!!(p.members || p.options?.length);
+  if(needsOption && !goodsCurrentOption)return;
+  const remaining=goodsRemaining(p,goodsCurrentOption);
+  const add=Math.min(goodsPickQty,remaining);
+  if(add<=0)return;
+  const key=p.id+"||"+goodsCurrentOption;
+  const row=goodsCart.find(x=>x.key===key);
+  if(row) row.qty+=add;
+  else goodsCart.push({key,productId:p.id,name:p.name,price:p.price,option:goodsCurrentOption||"",qty:add});
+  goodsSave(); goodsCloseSheet(goodsPickSheet);
+});
+document.getElementById("goodsPickClose")?.addEventListener("click",()=>goodsCloseSheet(goodsPickSheet));
+goodsPickSheet?.addEventListener("click",e=>{if(e.target===goodsPickSheet)goodsCloseSheet(goodsPickSheet);});
+
+function goodsRenderCart(){
+  const box=document.getElementById("goodsCartList"); if(!box)return;
+  box.innerHTML="";
+  if(!goodsCart.length){
+    box.innerHTML='<div class="goods-cart-empty">まだ商品が追加されていません。<br>グッズ画像を拡大して、欲しい商品をタップしてください。</div>';
+  }else{
+    goodsCart.forEach(row=>{
+      const div=document.createElement("div"); div.className="goods-cart-row";
+      div.innerHTML=`<div><div class="goods-cart-name">${row.name}</div><div class="goods-cart-sub">${row.option?row.option+" / ":""}¥${goodsMoney(row.price)} × ${row.qty}</div></div><div><div class="goods-cart-price">¥${goodsMoney(row.price*row.qty)}</div><div class="goods-cart-actions"><button type="button" data-cart-minus="${row.key}">−</button><button type="button" data-cart-plus="${row.key}">＋</button><button type="button" data-cart-del="${row.key}">×</button></div></div>`;
+      box.appendChild(div);
+    });
+  }
+  goodsRenderTotals();
+}
+document.getElementById("goodsCalcOpen")?.addEventListener("click",()=>{goodsRenderCart();goodsShowSheet(goodsCartSheet);});
+document.getElementById("goodsCartClose")?.addEventListener("click",()=>goodsCloseSheet(goodsCartSheet));
+goodsCartSheet?.addEventListener("click",e=>{if(e.target===goodsCartSheet)goodsCloseSheet(goodsCartSheet);});
+document.getElementById("goodsCartClear")?.addEventListener("click",()=>{
+  if(!goodsCart.length)return;
+  if(confirm("買うものリストをすべて消しますか？")){goodsCart=[];goodsSave();goodsRenderCart();}
+});
+document.getElementById("goodsCartList")?.addEventListener("click",e=>{
+  const minus=e.target.closest("[data-cart-minus]");
+  const plus=e.target.closest("[data-cart-plus]");
+  const del=e.target.closest("[data-cart-del]");
+  const key=(minus||plus||del)?.dataset.cartMinus || (minus||plus||del)?.dataset.cartPlus || (minus||plus||del)?.dataset.cartDel;
+  if(!key)return;
+  const row=goodsCart.find(x=>x.key===key);if(!row)return;
+  const p=[...GOODS_PRODUCTS.goods01,...GOODS_PRODUCTS.goods02].find(x=>x.id===row.productId);
+  if(del){goodsCart=goodsCart.filter(x=>x.key!==key);}
+  else if(minus){row.qty--;if(row.qty<=0)goodsCart=goodsCart.filter(x=>x.key!==key);}
+  else if(plus && p){
+    const remain=goodsRemaining(p,row.option);
+    if(remain>0)row.qty++;
+  }
+  goodsSave();goodsRenderCart();
+});
+
+/* Detect which product was tapped in the zoomed image. */
+function goodsHitProduct(imageKey,xPct,yPct){
+  const rows=GOODS_HIT_ROWS[imageKey]; if(!rows)return null;
+  let offset=0;
+  for(const row of rows){
+    const count=row.count, x1=row.x1??12.5, x2=row.x2??87.5;
+    if(yPct>=row.y1 && yPct<row.y2 && xPct>=x1 && xPct<x2){
+      const col=Math.min(count-1,Math.floor((xPct-x1)/((x2-x1)/count)));
+      return GOODS_PRODUCTS[imageKey][offset+col]||null;
+    }
+    offset+=count;
+  }
+  return null;
+}
+
+/* Remember which of goods01 / goods02 / goods03 is open. */
+document.querySelectorAll("[data-goods-image]").forEach(button=>{
+  button.addEventListener("click",()=>{
+    const src=(button.dataset.goodsImage||"").toLowerCase();
+    goodsCurrentImageKey=src.includes("goods01")?"goods01":src.includes("goods02")?"goods02":"goods03";
+    const hint=document.getElementById("goodsModalHint");
+    if(hint) hint.style.display=goodsCurrentImageKey==="goods03"?"none":"block";
+  });
+});
+
+let goodsTapStart=null;
+goodsModalImage?.addEventListener("pointerdown",e=>{
+  goodsTapStart={x:e.clientX,y:e.clientY,t:Date.now()};
+});
+goodsModalImage?.addEventListener("pointerup",e=>{
+  if(!goodsTapStart || !["goods01","goods02"].includes(goodsCurrentImageKey))return;
+  const moved=Math.hypot(e.clientX-goodsTapStart.x,e.clientY-goodsTapStart.y);
+  const elapsed=Date.now()-goodsTapStart.t;
+  goodsTapStart=null;
+  if(moved>12 || elapsed>650)return;
+  const r=goodsModalImage.getBoundingClientRect();
+  if(!r.width||!r.height)return;
+  const x=((e.clientX-r.left)/r.width)*100;
+  const y=((e.clientY-r.top)/r.height)*100;
+  const p=goodsHitProduct(goodsCurrentImageKey,x,y);
+  if(p){
+    e.preventDefault();e.stopPropagation();
+    goodsOpenProduct(p);
+  }
+});
+
+goodsRenderTotals();
 
 </script>
 
