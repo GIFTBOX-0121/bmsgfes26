@@ -5882,8 +5882,12 @@ document.addEventListener("click", function(e){
 .crowd-map-status{
   padding:4px 7px;border:1px solid rgba(255,255,255,.22);border-radius:9px;
   background:rgba(8,8,12,.88);box-shadow:0 3px 12px rgba(0,0,0,.28);
-  color:#fff;font-size:9px;font-weight:900;line-height:1.2;white-space:nowrap;
-  pointer-events:none;transform:translate(-50%,-100%);
+  color:#fff;font-size:9px;font-weight:900;line-height:1.25;white-space:nowrap;
+  text-align:center;pointer-events:none;transform:translate(-50%,-100%);
+}
+.crowd-map-wait{display:block;margin-top:2px;font-size:8px;opacity:.9}
+.crowd-status-divicon{
+  background:transparent!important;border:0!important;box-shadow:none!important;
 }
 </style>
 <script id="crowd-status-addon">
@@ -5965,10 +5969,9 @@ function clearMapStatus(){
  mapStatusMarkers=[];
 }
 function mapText(spot,wait){
- let t=statusLabel(spot?.status);
+ const t=spot?.status ? statusLabel(spot.status) : "共有待ち";
  const avg=Number(wait?.average_minutes||0);
- if(avg)t+=`（約${waitLabel(avg)}待ち）`;
- return t;
+ return avg ? `${t}<br><span class="crowd-map-wait">（約${waitLabel(avg)}待ち）</span>` : t;
 }
 function renderMapStatuses(spots={},waits={}){
  if(typeof map==="undefined"||typeof L==="undefined"||!Array.isArray(venueMarkers))return;
@@ -5976,7 +5979,7 @@ function renderMapStatuses(spots={},waits={}){
  venueMarkers.forEach(item=>{
   const apiSpot=API_SPOT_BY_VENUE[item?.venue?.id]; if(!apiSpot)return;
   const ll=item.marker.getLatLng();
-  const icon=L.divIcon({className:"",html:`<div class="crowd-map-status">${mapText(spots[apiSpot],waits[apiSpot])}</div>`,iconSize:[1,1],iconAnchor:[0,44]});
+  const icon=L.divIcon({className:"crowd-status-divicon",html:`<div class="crowd-map-status">${mapText(spots[apiSpot],waits[apiSpot])}</div>`,iconSize:[1,1],iconAnchor:[0,44]});
   const m=L.marker(ll,{icon,interactive:false,zIndexOffset:1600}).addTo(map);
   mapStatusMarkers.push(m);
  });
@@ -6151,7 +6154,7 @@ function buildUI(){
     if(getComputedStyle(map).position==="static")map.style.position="relative";
     const hint=document.createElement("div");
     hint.id="crowdMapHint"; hint.className="traffic-map-hint";
-    hint.innerHTML=`<span class="crowd-hint-targets"><span>🚻📍WC</span><span>📸 PHOTO（メイン）</span></span><span class="crowd-hint-message">→ タップで当日の混雑状況が共有可能！</span>`;
+    hint.innerHTML=`<span class="crowd-hint-targets"><span>🚻📍WC</span><span>📸📍PHOTO（メイン）</span></span><span class="crowd-hint-message">→ タップで当日の混雑状況が共有可能！</span>`;
     map.appendChild(hint);
   }
 }
