@@ -208,9 +208,36 @@ self.addEventListener("fetch", event => {
 
         try {
 
-          const fresh = await fetch(request, {
-            cache: "no-store"
+          const networkResponse = await fetch(request, {
+            cache: "no-store",
+            redirect: "follow"
           });
+
+          /*
+            iOS Safari:
+            redirect履歴付きResponseをService Workerからnavigationへ返すと
+            "Response served by service worker has redirections" になるため、
+            redirect済みの場合だけ同じ本文を新しいResponseへ詰め直す。
+          */
+          let fresh = networkResponse;
+
+          if (
+            networkResponse &&
+            networkResponse.ok &&
+            networkResponse.redirected
+          ) {
+            const body = await networkResponse.arrayBuffer();
+            const headers = new Headers(networkResponse.headers);
+
+            headers.delete("content-encoding");
+            headers.delete("content-length");
+
+            fresh = new Response(body, {
+              status: 200,
+              statusText: "OK",
+              headers
+            });
+          }
 
           if (
             fresh &&
