@@ -1580,13 +1580,90 @@ button:active{transform:scale(.98);}
 
 
 /* OFFLINE CHECK NOTICE */
-.offline-check-card{
-  margin:10px 12px 8px;padding:11px 13px;border:1px solid rgba(255,255,255,.20);
-  border-radius:14px;background:rgba(255,255,255,.06);color:inherit;
-  width:calc(100% - 24px);font:inherit;font-size:11px;font-weight:950;
-  line-height:1.4;text-align:center;cursor:pointer;
+.preflight-tools{
+  margin:10px 12px 8px;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
 }
+.site-update-card,
+.offline-check-card{
+  min-width:0;
+  min-height:66px;
+  margin:0;
+  padding:10px 8px;
+  border:1px solid rgba(255,255,255,.20);
+  border-radius:14px;
+  background:rgba(255,255,255,.06);
+  color:inherit;
+  width:100%;
+  font:inherit;
+  line-height:1.35;
+  text-align:center;
+  cursor:pointer;
+}
+.site-update-card:active,
 .offline-check-card:active{transform:scale(.99)}
+.site-update-title,
+.offline-check-title{
+  display:block;
+  font-size:10.5px;
+  font-weight:950;
+}
+.site-update-time,
+.offline-check-sub{
+  display:block;
+  margin-top:5px;
+  color:#aaa;
+  font-size:8.5px;
+  font-weight:850;
+}
+.site-update-card{
+  background:linear-gradient(180deg,rgba(255,255,255,.085),rgba(255,255,255,.045));
+}
+.site-update-guide{
+  position:fixed;inset:0;z-index:12020;display:none;align-items:flex-end;
+  justify-content:center;background:rgba(0,0,0,.64);
+}
+.site-update-guide.show{display:flex}
+.site-update-guide-card{
+  width:min(calc(100% - 20px),540px);
+  margin:0 10px 10px;
+  padding:20px 18px calc(20px + env(safe-area-inset-bottom));
+  border:1px solid rgba(255,255,255,.16);
+  border-radius:24px;
+  background:linear-gradient(180deg,rgba(27,27,27,.99),rgba(12,12,12,.99));
+  box-shadow:0 24px 70px rgba(0,0,0,.48);
+}
+.site-update-head{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.site-update-heading{font-size:15px;font-weight:950}
+.site-update-close{
+  width:34px;height:34px;border:1px solid rgba(255,255,255,.15);
+  border-radius:50%;background:rgba(255,255,255,.06);color:#fff;
+  font-size:20px;line-height:1;cursor:pointer;
+}
+.site-update-lead{
+  margin-top:12px;padding:12px;border:1px solid rgba(255,255,255,.11);
+  border-radius:14px;background:rgba(255,255,255,.04);
+  color:#ddd;font-size:11px;line-height:1.75;
+}
+.site-update-version{
+  margin-top:12px;text-align:center;color:#aaa;font-size:10px;font-weight:850;
+}
+.site-update-action{
+  width:100%;margin-top:14px;padding:13px 12px;border:0;border-radius:13px;
+  background:#fff;color:#080808;font:inherit;font-size:12px;font-weight:950;cursor:pointer;
+}
+.site-update-action:disabled{opacity:.55;cursor:default}
+.site-update-status{
+  min-height:20px;margin-top:10px;text-align:center;color:#bbb;
+  font-size:10px;font-weight:850;line-height:1.6;
+}
+@media(max-width:360px){
+  .preflight-tools{gap:6px}
+  .site-update-title,.offline-check-title{font-size:9.5px}
+  .site-update-time,.offline-check-sub{font-size:7.8px}
+}
 .offline-guide{
   position:fixed;inset:0;z-index:12000;display:none;align-items:flex-end;
   justify-content:center;background:rgba(0,0,0,.62);
@@ -1862,9 +1939,17 @@ body.goods-modal-open{overflow:hidden!important;touch-action:none}
 
   <div class="map-section">
 
-    <button class="offline-check-card" id="offlineCheckOpen" type="button">
-      ⚠️ 会場に着く前にオフライン確認お願いします ⚠️
-    </button>
+    <div class="preflight-tools">
+      <button class="site-update-card" id="siteUpdateOpen" type="button">
+        <span class="site-update-title">🔄 サイトを最新情報に更新</span>
+        <span class="site-update-time">最終更新 2026/10/03 15:00</span>
+      </button>
+
+      <button class="offline-check-card" id="offlineCheckOpen" type="button">
+        <span class="offline-check-title">⚠️ オフライン確認 ⚠️</span>
+        <span class="offline-check-sub">会場につく直前にお願いします</span>
+      </button>
+    </div>
 
     <div class="map-shell">
 
@@ -5442,25 +5527,19 @@ setupLinks();
 setupOfficialInfoLinks();
 loadWeather();
 
-/* PWA / OFFLINE */
+/* PWA / OFFLINE
+   安全更新版：
+   ・SW更新時に自動reloadしない（白画面競合を避ける）
+   ・オンライン時は裏でSW更新確認だけ行う
+*/
 if("serviceWorker" in navigator){
   window.addEventListener("load", async ()=>{
     try{
       const registration = await navigator.serviceWorker.register(
-        "./sw.js?v=20-hard-fix",
-        {
-          updateViaCache:"none"
-        }
+        "./sw.js?v=21-safe-update",
+        { updateViaCache:"none" }
       );
-
       registration.update().catch(()=>{});
-
-      navigator.serviceWorker.addEventListener("controllerchange",()=>{
-        if(sessionStorage.getItem("bmsgfes_sw_reloaded_v20")) return;
-        sessionStorage.setItem("bmsgfes_sw_reloaded_v20","1");
-        location.reload();
-      });
-
     }catch(error){
       console.warn("Service Worker registration failed:", error);
     }
@@ -6516,6 +6595,25 @@ window.addEventListener("online",()=>{try{loadTraffic(true);}catch(_){}});
 </script>
 
 
+<div class="site-update-guide" id="siteUpdateGuide" aria-hidden="true">
+  <div class="site-update-guide-card" role="dialog" aria-modal="true" aria-label="サイトを最新版に更新">
+    <div class="site-update-head">
+      <div class="site-update-heading">🔄 サイトを最新版に更新</div>
+      <button class="site-update-close" id="siteUpdateClose" type="button">×</button>
+    </div>
+
+    <div class="site-update-lead">
+      最新のサイトデータを取得し、<strong>オフライン用データも更新</strong>します。<br>
+      TODO・持ち物・取引など、端末に保存した内容は消えません。
+    </div>
+
+    <div class="site-update-version">サイト最終更新：2026/10/03 15:00</div>
+
+    <button class="site-update-action" id="siteUpdateRun" type="button">最新版に更新する</button>
+    <div class="site-update-status" id="siteUpdateStatus" aria-live="polite"></div>
+  </div>
+</div>
+
 <div class="offline-guide" id="offlineGuide" aria-hidden="true">
   <div class="offline-guide-card" role="dialog" aria-modal="true" aria-label="オフライン確認方法">
     <div class="offline-guide-head">
@@ -6560,6 +6658,113 @@ window.addEventListener("online",()=>{try{loadTraffic(true);}catch(_){}});
     <div class="offline-guide-ok">✓ MAPなどがオフラインでも見られれば準備OK！<br><span style="opacity:.72;font-weight:700;">※オフライン中は交通情報・混雑状況の最新取得、新しい混雑／待ち時間の共有はできません。</span></div>
   </div>
 </div>
+<script id="site-update-addon">
+(()=>{
+  const SITE_VERSION="2026/10/03 15:00";
+  const CACHE_NAME="bmsgfes26-v18-offline";
+  const CORE_FILES=[
+    "./index.html",
+    "./Map.JPG",
+    "./manifest.webmanifest",
+    "./leaflet.css",
+    "./leaflet.js",
+    "./goods01.JPG",
+    "./goods02.JPG",
+    "./goods03.JPG"
+  ];
+
+  const open=document.getElementById("siteUpdateOpen");
+  const modal=document.getElementById("siteUpdateGuide");
+  const close=document.getElementById("siteUpdateClose");
+  const run=document.getElementById("siteUpdateRun");
+  const status=document.getElementById("siteUpdateStatus");
+
+  if(!open||!modal||!close||!run||!status)return;
+
+  const show=()=>{
+    modal.classList.add("show");
+    modal.setAttribute("aria-hidden","false");
+    status.textContent="";
+    run.disabled=false;
+    run.textContent="最新版に更新する";
+  };
+  const hide=()=>{
+    if(run.disabled)return;
+    modal.classList.remove("show");
+    modal.setAttribute("aria-hidden","true");
+  };
+
+  open.addEventListener("click",show);
+  close.addEventListener("click",hide);
+  modal.addEventListener("click",e=>{if(e.target===modal)hide();});
+
+  run.addEventListener("click",async()=>{
+    if(!navigator.onLine){
+      status.textContent="通信できる場所で更新してください。";
+      return;
+    }
+
+    run.disabled=true;
+    run.textContent="更新しています…";
+    status.textContent="最新版を取得しています。画面を閉じずにお待ちください。";
+
+    try{
+      /* 1) SWそのものの更新確認。自動reloadはしない */
+      if("serviceWorker" in navigator){
+        try{
+          const reg=await navigator.serviceWorker.getRegistration();
+          if(reg)await reg.update();
+        }catch(_){}
+      }
+
+      /* 2) 現在のオフラインキャッシュへ、必要ファイルだけ安全に上書き */
+      const cache=await caches.open(CACHE_NAME);
+
+      for(const path of CORE_FILES){
+        const url=new URL(path,location.href);
+        url.searchParams.set("site_update",Date.now().toString());
+
+        const response=await fetch(url.toString(),{
+          cache:"no-store",
+          credentials:"same-origin"
+        });
+
+        if(!response.ok){
+          throw new Error("update fetch failed: "+path);
+        }
+
+        const key=(path==="./index.html") ? "./index.html" : path;
+        await cache.put(key,response.clone());
+
+        if(path==="./index.html"){
+          await cache.put("./",response.clone());
+        }
+      }
+
+      /* localStorage / IndexedDB / 他キャッシュは削除しない */
+      localStorage.setItem("bmsgfes_last_manual_update",new Date().toISOString());
+      localStorage.setItem("bmsgfes_site_version",SITE_VERSION);
+
+      status.textContent="✓ 最新版への更新が完了しました。最新版を表示します。";
+      run.textContent="更新完了 ✓";
+
+      /* 保存完了後だけ通常navigation。SW側が最新版を返す */
+      setTimeout(()=>{
+        const u=new URL(location.href);
+        u.searchParams.set("updated",Date.now().toString());
+        location.replace(u.toString());
+      },700);
+
+    }catch(error){
+      console.warn("Site update failed:",error);
+      run.disabled=false;
+      run.textContent="もう一度更新する";
+      status.textContent="更新に失敗しました。通信状態を確認して、もう一度お試しください。";
+    }
+  });
+})();
+</script>
+
 <script id="offline-guide-addon">
 (()=>{
  const open=document.getElementById("offlineCheckOpen");
