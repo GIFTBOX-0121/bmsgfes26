@@ -2,7 +2,7 @@ const CACHE_NAME = "bmsgfes26-v18-offline";
 
 /*
   =========================================================
-  BMSG FES 2026 SERVICE WORKER / v18
+  BMSG FES 2026 SERVICE WORKER / v18 / GOODS REFRESH 2026-10-03
 
   ・サイト本体をオフライン起動可能にする
   ・Navigationはキャッシュを先に確認
