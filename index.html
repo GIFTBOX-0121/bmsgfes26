@@ -1711,9 +1711,33 @@ body.goods-modal-open{overflow:hidden!important;touch-action:none}
 .goods-modal-star{position:fixed;z-index:100000;transform:translate(-50%,-50%);color:#ff4fa3;font-size:24px;line-height:1;text-shadow:0 2px 4px #000,0 0 8px rgba(255,79,163,.95);pointer-events:none}
 @media(max-width:560px){.goods-top-grid,.goods-ticket-grid{grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:7px}.goods-panel,.goods-ticket-card{padding:9px}.goods-panel-title,.goods-ticket-title{font-size:12px}.goods-info-block,.goods-ticket-body,.goods-detail-text,.goods-limit-content{font-size:10.5px;line-height:1.72}.goods-limit-details summary,.goods-limit-static{font-size:10.5px;padding:7px 6px}.goods-alert{padding:7px}.goods-line-btn{font-size:11px;padding:10px 6px}}
 
-.goods-divercity-notes{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;margin-top:7px}
-.goods-divercity-notes .goods-divercity-note{margin:0;display:flex;align-items:center;justify-content:center;min-height:52px;padding:7px 6px;text-align:center;font-size:9px;line-height:1.45}
-.goods-divercity-note-none{border-color:rgba(255,255,255,.16)!important;background:rgba(255,255,255,.035)!important}
+
+
+/* GOODS DIVER CITY OVERLAY / SALE PLACE */
+.goods-star{
+  font-size:clamp(8px,2.15vw,13px);
+}
+.goods-image-location-note{
+  position:absolute;left:4px;right:4px;bottom:4px;z-index:5;
+  padding:4px 5px;border-radius:6px;
+  background:rgba(0,0,0,.78);border:1px solid rgba(255,255,255,.18);
+  color:#fff;font-size:clamp(6px,1.45vw,8px);font-weight:900;line-height:1.35;
+  text-align:center;pointer-events:none;
+}
+.goods-modal-location-note{
+  position:fixed;z-index:100000;display:none;box-sizing:border-box;
+  padding:7px 9px;background:rgba(0,0,0,.80);
+  border-top:1px solid rgba(255,255,255,.20);color:#fff;
+  font-weight:900;line-height:1.4;text-align:center;pointer-events:none;
+}
+.goods-sale-place{display:flex;align-items:center;flex-wrap:wrap;gap:5px;margin-top:8px}
+.goods-sale-place-label{font-size:9px;color:#aaa;font-weight:900}
+.goods-place-tag{
+  display:inline-flex;align-items:center;min-height:24px;padding:4px 7px;
+  border:1px solid rgba(255,255,255,.20);border-radius:999px;
+  background:rgba(255,255,255,.07);color:#fff;font-size:9px;font-weight:900;
+}
+.goods-place-tag-diver{border-color:rgba(255,79,163,.48);background:rgba(255,79,163,.12)}
 </style>
 
 
@@ -2172,12 +2196,8 @@ body.goods-modal-open{overflow:hidden!important;touch-action:none}
       <div class="goods-panel">
         <div class="goods-panel-title">BMSG FES’26 OFFICIAL GOODS</div>
         <div class="goods-images-two">
-          <button class="goods-image-button" type="button" data-goods-image="./goods01.JPG" aria-label="グッズ画像1を拡大"><img src="./goods01.JPG" alt="BMSG FES’26 GOODS 1"><span class="goods-star" style="left:14.5%;top:28.8%">★</span><span class="goods-star" style="left:59%;top:61.2%">★</span><span class="goods-star" style="left:74%;top:61.2%">★</span><span class="goods-star" style="left:14.5%;top:72.5%">★</span><span class="goods-star" style="left:29.5%;top:72.5%">★</span><span class="goods-star" style="left:44.5%;top:72.5%">★</span><span class="goods-star" style="left:59.5%;top:72.5%">★</span><span class="goods-star" style="left:74.5%;top:72.5%">★</span></button>
-          <button class="goods-image-button" type="button" data-goods-image="./goods02.JPG" aria-label="グッズ画像2を拡大"><img src="./goods02.JPG" alt="BMSG FES’26 GOODS 2"></button>
-        </div>
-        <div class="goods-divercity-notes">
-          <div class="goods-divercity-note">ダイバーシティ東京 プラザ「BMSG FES'26 POP UP STORE」では★（ピンク）付き商品のみ販売</div>
-          <div class="goods-divercity-note goods-divercity-note-none">ダイバーシティ東京 プラザ「BMSG FES'26 POP UP STORE」での販売はありません</div>
+          <button class="goods-image-button" type="button" data-goods-image="./goods01.JPG" aria-label="グッズ画像1を拡大"><img src="./goods01.JPG" alt="BMSG FES’26 GOODS 1"><span class="goods-star" style="left:14.5%;top:28.8%">★</span><span class="goods-star" style="left:59%;top:59.7%">★</span><span class="goods-star" style="left:74%;top:59.7%">★</span><span class="goods-star" style="left:14.5%;top:70.9%">★</span><span class="goods-star" style="left:29.5%;top:70.9%">★</span><span class="goods-star" style="left:44.5%;top:70.9%">★</span><span class="goods-star" style="left:59.5%;top:70.9%">★</span><span class="goods-star" style="left:74.5%;top:70.9%">★</span><span class="goods-image-location-note">ダイバーシティ東京 プラザ「BMSG FES'26 POP UP STORE」では★（ピンク）付き商品のみ販売</span></button>
+          <button class="goods-image-button" type="button" data-goods-image="./goods02.JPG" aria-label="グッズ画像2を拡大"><img src="./goods02.JPG" alt="BMSG FES’26 GOODS 2"><span class="goods-image-location-note">ダイバーシティ東京 プラザ「BMSG FES'26 POP UP STORE」での販売はありません</span></button>
         </div>
         <details class="goods-limit-details">
           <summary>購入制限</summary>
@@ -2691,6 +2711,7 @@ body.goods-modal-open{overflow:hidden!important;touch-action:none}
   <div class="goods-modal-stage" id="goodsModalStage">
     <div class="goods-modal-hint" id="goodsModalHint">商品をタップすると追加できます</div>
     <img class="goods-modal-image" id="goodsModalImage" alt="グッズ拡大画像">
+    <div class="goods-modal-location-note" id="goodsModalLocationNote"></div>
   </div>
   <div class="goods-modal-note">ピンチで拡大 / ダブルタップでリセット</div>
 </div>
@@ -2704,6 +2725,7 @@ body.goods-modal-open{overflow:hidden!important;touch-action:none}
         <div class="goods-calc-title" id="goodsPickTitle"></div>
         <div class="goods-calc-price" id="goodsPickPrice"></div>
         <div class="goods-calc-limit" id="goodsPickLimit"></div>
+        <div class="goods-sale-place" id="goodsSalePlace"></div>
       </div>
       <button class="goods-calc-close" id="goodsPickClose" type="button">×</button>
     </div>
@@ -5594,8 +5616,8 @@ let goodsStartScale=1;
 let goodsDragStart=null;
 
 const GOODS01_DIVER_CITY_STARS=[
-  [14.5,28.8],[59,61.2],[74,61.2],[14.5,72.5],
-  [29.5,72.5],[44.5,72.5],[59.5,72.5],[74.5,72.5]
+  [14.5,28.8],[59,59.7],[74,59.7],[14.5,70.9],
+  [29.5,70.9],[44.5,70.9],[59.5,70.9],[74.5,70.9]
 ];
 
 function clearGoodsModalStars(){
@@ -5613,15 +5635,37 @@ function renderGoodsModalStars(){
     star.textContent="★";
     star.style.left=(rect.left+rect.width*x/100)+"px";
     star.style.top=(rect.top+rect.height*y/100)+"px";
+    star.style.fontSize=Math.max(13,Math.min(24,rect.width*0.045))+"px";
     goodsModal.appendChild(star);
   });
+}
+
+function renderGoodsModalLocationNote(){
+  const note=document.getElementById("goodsModalLocationNote");
+  if(!note || !goodsModalImage || !goodsModal?.classList.contains("show"))return;
+  const rect=goodsModalImage.getBoundingClientRect();
+  if(!rect.width || !rect.height)return;
+  note.textContent=goodsCurrentImageKey==="goods01"
+    ? "ダイバーシティ東京 プラザ「BMSG FES'26 POP UP STORE」では★（ピンク）付き商品のみ販売"
+    : goodsCurrentImageKey==="goods02"
+      ? "ダイバーシティ東京 プラザ「BMSG FES'26 POP UP STORE」での販売はありません"
+      : "";
+  note.style.display=note.textContent?"block":"none";
+  note.style.left=rect.left+"px";
+  note.style.width=rect.width+"px";
+  note.style.top=(rect.bottom-Math.max(34,rect.height*0.065))+"px";
+  note.style.fontSize=Math.max(8,Math.min(11,rect.width*0.021))+"px";
+}
+function renderGoodsModalDecorations(){
+  renderGoodsModalStars();
+  renderGoodsModalLocationNote();
 }
 
 function applyGoodsTransform(){
   if(!goodsModalImage) return;
   goodsModalImage.style.transform=
     `translate(${goodsX}px,${goodsY}px) scale(${goodsScale})`;
-  requestAnimationFrame(renderGoodsModalStars);
+  requestAnimationFrame(renderGoodsModalDecorations);
 }
 
 function resetGoodsZoom(){
@@ -5635,7 +5679,7 @@ function openGoodsImage(src){
   if(!goodsModal || !goodsModalImage) return;
   resetGoodsZoom();
   goodsModalImage.src=src;
-  goodsModalImage.onload=()=>requestAnimationFrame(renderGoodsModalStars);
+  goodsModalImage.onload=()=>requestAnimationFrame(renderGoodsModalDecorations);
   goodsModal.classList.add("show");
   goodsModal.setAttribute("aria-hidden","false");
   document.body.classList.add("goods-modal-open");
@@ -5830,6 +5874,7 @@ const goodsCartSheet=document.getElementById("goodsCartSheet");
 const goodsPickTitle=document.getElementById("goodsPickTitle");
 const goodsPickPrice=document.getElementById("goodsPickPrice");
 const goodsPickLimit=document.getElementById("goodsPickLimit");
+const goodsSalePlace=document.getElementById("goodsSalePlace");
 const goodsPickBody=document.getElementById("goodsPickBody");
 const goodsQtyNum=document.getElementById("goodsQtyNum");
 const goodsAddButton=document.getElementById("goodsAddButton");
@@ -5879,6 +5924,11 @@ function goodsRenderPicker(){
   goodsPickTitle.textContent=p.name;
   goodsPickPrice.textContent=`¥${goodsMoney(p.price)}${p.note?" / "+p.note:""}`;
   goodsPickLimit.textContent=goodsLimitText(p);
+  const diverCityIds=new Set(["01-01","01-19","01-20","01-21","01-22","01-23","01-24","01-25"]);
+  if(goodsSalePlace){
+    goodsSalePlace.innerHTML='<span class="goods-sale-place-label">販売場所：</span><span class="goods-place-tag">B-SIDE AREA内 グッズブース</span>'+
+      (diverCityIds.has(p.id)?'<span class="goods-place-tag goods-place-tag-diver">ダイバーシティ東京 プラザ</span>':'');
+  }
   goodsPickBody.innerHTML="";
   goodsPickQty=1;
 
@@ -6045,7 +6095,7 @@ document.querySelectorAll("[data-goods-image]").forEach(button=>{
   button.addEventListener("click",()=>{
     const src=(button.dataset.goodsImage||"").toLowerCase();
     goodsCurrentImageKey=src.includes("goods01")?"goods01":src.includes("goods02")?"goods02":"goods03";
-    requestAnimationFrame(renderGoodsModalStars);
+    requestAnimationFrame(renderGoodsModalDecorations);
     const hint=document.getElementById("goodsModalHint");
     if(hint) hint.style.display=goodsCurrentImageKey==="goods03"?"none":"block";
   });
