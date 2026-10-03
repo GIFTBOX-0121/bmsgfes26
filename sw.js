@@ -23,7 +23,10 @@ const APP_SHELL = [
   "./Map.JPG",
   "./manifest.webmanifest",
   "./leaflet.css",
-  "./leaflet.js"
+  "./leaflet.js",
+  "./goods01.JPG",
+  "./goods02.JPG",
+  "./goods03.JPG"
 ];
 
 /* =========================================================
