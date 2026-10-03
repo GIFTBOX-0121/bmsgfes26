@@ -2,7 +2,7 @@ const CACHE_NAME = "bmsgfes26-v18-offline";
 
 /*
   =========================================================
-  BMSG FES 2026 SERVICE WORKER / v18 / GOODS REFRESH 2026-10-03
+  BMSG FES 2026 SERVICE WORKER / v18
 
   ・サイト本体をオフライン起動可能にする
   ・Navigationはキャッシュを先に確認
@@ -140,7 +140,10 @@ self.addEventListener("fetch", event => {
   ===================================================== */
 
   if (
-    url.hostname === "bmsgfes26.starsx0601.workers.dev" ||
+    (
+      url.origin === self.location.origin &&
+      url.pathname.startsWith("/api/")
+    ) ||
     url.hostname === "api.open-meteo.com"
   ) {
 
