@@ -2196,7 +2196,7 @@ body.goods-modal-open{overflow:hidden!important;touch-action:none}
       <div class="goods-panel">
         <div class="goods-panel-title">BMSG FES’26 OFFICIAL GOODS</div>
         <div class="goods-images-two">
-          <button class="goods-image-button" type="button" data-goods-image="./goods01.JPG" aria-label="グッズ画像1を拡大"><img src="./goods01.JPG" alt="BMSG FES’26 GOODS 1"><span class="goods-star" style="left:14.5%;top:28.8%">★</span><span class="goods-star" style="left:59%;top:59.7%">★</span><span class="goods-star" style="left:74%;top:59.7%">★</span><span class="goods-star" style="left:14.5%;top:72.9%">★</span><span class="goods-star" style="left:29.5%;top:72.9%">★</span><span class="goods-star" style="left:44.5%;top:72.9%">★</span><span class="goods-star" style="left:59.5%;top:72.9%">★</span><span class="goods-star" style="left:74.5%;top:72.9%">★</span><span class="goods-image-location-note">ダイバーシティ東京 プラザ「BMSG FES'26 POP UP STORE」では★（ピンク）付き商品のみ販売</span></button>
+          <button class="goods-image-button" type="button" data-goods-image="./goods01.JPG" aria-label="グッズ画像1を拡大"><img src="./goods01.JPG" alt="BMSG FES’26 GOODS 1"><span class="goods-star" style="left:14.5%;top:27.9%">★</span><span class="goods-star" style="left:59%;top:59.7%">★</span><span class="goods-star" style="left:74%;top:59.7%">★</span><span class="goods-star" style="left:16%;top:71.2%">★</span><span class="goods-star" style="left:31%;top:71.2%">★</span><span class="goods-star" style="left:46%;top:71.2%">★</span><span class="goods-star" style="left:61%;top:71.2%">★</span><span class="goods-star" style="left:76%;top:71.2%">★</span><span class="goods-image-location-note">ダイバーシティ東京 プラザ「BMSG FES'26 POP UP STORE」では★（ピンク）付き商品のみ販売</span></button>
           <button class="goods-image-button" type="button" data-goods-image="./goods02.JPG" aria-label="グッズ画像2を拡大"><img src="./goods02.JPG" alt="BMSG FES’26 GOODS 2"><span class="goods-image-location-note">ダイバーシティ東京 プラザ「BMSG FES'26 POP UP STORE」での販売はありません</span></button>
         </div>
         <details class="goods-limit-details">
@@ -5616,15 +5616,15 @@ let goodsStartScale=1;
 let goodsDragStart=null;
 
 const GOODS01_DIVER_CITY_STARS=[
-  /* 各対象商品の商品枠「左上」に統一 */
-  [14.5,28.8], /* OFFICIAL LIGHT BAND */
-  [59.0,59.7], /* フォトカード・缶バッジセット */
-  [74.0,59.7], /* クッキー */
-  [14.5,72.9], /* Baseball Shirt */
-  [29.5,72.9], /* Zip Windbreaker Jacket */
-  [44.5,72.9], /* Baseball Cap */
-  [59.5,72.9], /* タートルネックセーター */
-  [74.5,72.9]  /* Diffuser */
+  /* 商品枠の左上に揃える */
+  [14.5,27.9], /* OFFICIAL LIGHT BAND：少し上へ */
+  [59.0,59.7], /* フォトカード・缶バッジセット：基準 */
+  [74.0,59.7], /* クッキー：基準 */
+  [16.0,71.2], /* Baseball Shirt */
+  [31.0,71.2], /* Zip Windbreaker Jacket */
+  [46.0,71.2], /* Baseball Cap */
+  [61.0,71.2], /* タートルネックセーター */
+  [76.0,71.2]  /* Diffuser */
 ];
 
 function clearGoodsModalStars(){
