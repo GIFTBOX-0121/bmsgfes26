@@ -1,8 +1,3 @@
-
-
-
-
-
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -1707,7 +1702,18 @@ button:active{transform:scale(.98);}
 .goods-modal-close{position:fixed;top:max(16px,env(safe-area-inset-top));right:16px;z-index:100001;width:44px;height:44px;border:0;border-radius:999px;background:#fff;color:#050505;font-size:26px;line-height:1;font-weight:800;cursor:pointer}
 .goods-modal-note{position:fixed;left:50%;bottom:max(18px,env(safe-area-inset-bottom));transform:translateX(-50%);z-index:100001;white-space:nowrap;padding:8px 12px;border-radius:999px;background:rgba(20,20,20,.88);color:#fff;font-size:12px;font-weight:800}
 body.goods-modal-open{overflow:hidden!important;touch-action:none}
+
+/* DIVER CITY GOODS AVAILABILITY */
+.goods-divercity-note{margin-top:8px;padding:9px 10px;border:1px solid rgba(255,105,180,.34);border-radius:10px;background:rgba(255,70,150,.07);font-size:10px;line-height:1.55;color:#f4f4f4}
+.goods-divercity-note strong{color:#ff78b8}.goods-divercity-note .no-stock{display:block;margin-top:4px;color:#ddd}
+.goods-image-button{position:relative}
+.goods-star{position:absolute;z-index:4;transform:translate(-50%,-50%);color:#ff4fa3;font-size:clamp(13px,3.4vw,20px);line-height:1;text-shadow:0 1px 2px #000,0 0 5px rgba(255,79,163,.9);pointer-events:none}
+.goods-modal-star{position:fixed;z-index:100000;transform:translate(-50%,-50%);color:#ff4fa3;font-size:24px;line-height:1;text-shadow:0 2px 4px #000,0 0 8px rgba(255,79,163,.95);pointer-events:none}
 @media(max-width:560px){.goods-top-grid,.goods-ticket-grid{grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:7px}.goods-panel,.goods-ticket-card{padding:9px}.goods-panel-title,.goods-ticket-title{font-size:12px}.goods-info-block,.goods-ticket-body,.goods-detail-text,.goods-limit-content{font-size:10.5px;line-height:1.72}.goods-limit-details summary,.goods-limit-static{font-size:10.5px;padding:7px 6px}.goods-alert{padding:7px}.goods-line-btn{font-size:11px;padding:10px 6px}}
+
+.goods-divercity-notes{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;margin-top:7px}
+.goods-divercity-notes .goods-divercity-note{margin:0;display:flex;align-items:center;justify-content:center;min-height:52px;padding:7px 6px;text-align:center;font-size:9px;line-height:1.45}
+.goods-divercity-note-none{border-color:rgba(255,255,255,.16)!important;background:rgba(255,255,255,.035)!important}
 </style>
 
 
@@ -2166,8 +2172,12 @@ body.goods-modal-open{overflow:hidden!important;touch-action:none}
       <div class="goods-panel">
         <div class="goods-panel-title">BMSG FES’26 OFFICIAL GOODS</div>
         <div class="goods-images-two">
-          <button class="goods-image-button" type="button" data-goods-image="./goods01.JPG" aria-label="グッズ画像1を拡大"><img src="./goods01.JPG" alt="BMSG FES’26 GOODS 1"></button>
+          <button class="goods-image-button" type="button" data-goods-image="./goods01.JPG" aria-label="グッズ画像1を拡大"><img src="./goods01.JPG" alt="BMSG FES’26 GOODS 1"><span class="goods-star" style="left:14.5%;top:28.8%">★</span><span class="goods-star" style="left:59%;top:61.2%">★</span><span class="goods-star" style="left:74%;top:61.2%">★</span><span class="goods-star" style="left:14.5%;top:72.5%">★</span><span class="goods-star" style="left:29.5%;top:72.5%">★</span><span class="goods-star" style="left:44.5%;top:72.5%">★</span><span class="goods-star" style="left:59.5%;top:72.5%">★</span><span class="goods-star" style="left:74.5%;top:72.5%">★</span></button>
           <button class="goods-image-button" type="button" data-goods-image="./goods02.JPG" aria-label="グッズ画像2を拡大"><img src="./goods02.JPG" alt="BMSG FES’26 GOODS 2"></button>
+        </div>
+        <div class="goods-divercity-notes">
+          <div class="goods-divercity-note">ダイバーシティ東京 プラザ「BMSG FES'26 POP UP STORE」では★（ピンク）付き商品のみ販売</div>
+          <div class="goods-divercity-note goods-divercity-note-none">ダイバーシティ東京 プラザ「BMSG FES'26 POP UP STORE」での販売はありません</div>
         </div>
         <details class="goods-limit-details">
           <summary>購入制限</summary>
@@ -5583,10 +5593,35 @@ let goodsStartDistance=0;
 let goodsStartScale=1;
 let goodsDragStart=null;
 
+const GOODS01_DIVER_CITY_STARS=[
+  [14.5,28.8],[59,61.2],[74,61.2],[14.5,72.5],
+  [29.5,72.5],[44.5,72.5],[59.5,72.5],[74.5,72.5]
+];
+
+function clearGoodsModalStars(){
+  document.querySelectorAll(".goods-modal-star").forEach(el=>el.remove());
+}
+
+function renderGoodsModalStars(){
+  clearGoodsModalStars();
+  if(goodsCurrentImageKey!=="goods01" || !goodsModal?.classList.contains("show") || !goodsModalImage?.complete)return;
+  const rect=goodsModalImage.getBoundingClientRect();
+  if(!rect.width || !rect.height)return;
+  GOODS01_DIVER_CITY_STARS.forEach(([x,y])=>{
+    const star=document.createElement("span");
+    star.className="goods-modal-star";
+    star.textContent="★";
+    star.style.left=(rect.left+rect.width*x/100)+"px";
+    star.style.top=(rect.top+rect.height*y/100)+"px";
+    goodsModal.appendChild(star);
+  });
+}
+
 function applyGoodsTransform(){
   if(!goodsModalImage) return;
   goodsModalImage.style.transform=
     `translate(${goodsX}px,${goodsY}px) scale(${goodsScale})`;
+  requestAnimationFrame(renderGoodsModalStars);
 }
 
 function resetGoodsZoom(){
@@ -5600,6 +5635,7 @@ function openGoodsImage(src){
   if(!goodsModal || !goodsModalImage) return;
   resetGoodsZoom();
   goodsModalImage.src=src;
+  goodsModalImage.onload=()=>requestAnimationFrame(renderGoodsModalStars);
   goodsModal.classList.add("show");
   goodsModal.setAttribute("aria-hidden","false");
   document.body.classList.add("goods-modal-open");
@@ -5612,6 +5648,7 @@ function closeGoodsImage(){
   goodsModal.setAttribute("aria-hidden","true");
   document.body.classList.remove("goods-modal-open");
   document.body.style.overflow="";
+  clearGoodsModalStars();
   if(goodsModalImage) goodsModalImage.src="";
   resetGoodsZoom();
 }
@@ -5726,7 +5763,7 @@ const GOODS_PRODUCTS={
     {id:"02-02",name:"Beanie",price:3300,limit:3},
     {id:"02-03",name:"Sacoche",price:4400,limit:3},
     {id:"02-04",name:"Pin Set",price:2400,limit:3,options:["XS","M","L","XL"],limitMode:"product"},
-    {id:"02-05",name:"ロゴTシャツ",price:2400,limit:3,options:["S","M","L","XL"],limitMode:"product"},
+    {id:"02-05",name:"TAKARA ロゴTシャツ",price:6500,limit:3,options:["S","M","L","XL"],limitMode:"product"},
     {id:"02-06",name:"まにゃあーくんのタオル",price:2500,limit:3},
     {id:"02-07",name:"タトゥーステッカー",price:1600,limit:3},
     {id:"02-08",name:"キラキラ★ホロッステッカー",price:1500,limit:3},
@@ -5769,6 +5806,18 @@ const GOODS_HIT_ROWS={
 let goodsCart=[];
 try{ goodsCart=JSON.parse(localStorage.getItem(GOODS_CART_KEY)||"[]"); }
 catch(e){ goodsCart=[]; }
+/* 2026-10-03: official price correction for TAKARA logo T-shirt. */
+let goodsCartPriceMigrated=false;
+goodsCart.forEach(row=>{
+  if(row.productId==="02-05"){
+    row.name="TAKARA ロゴTシャツ";
+    row.price=6500;
+    goodsCartPriceMigrated=true;
+  }
+});
+if(goodsCartPriceMigrated){
+  localStorage.setItem(GOODS_CART_KEY,JSON.stringify(goodsCart));
+}
 
 let goodsCurrentProduct=null;
 let goodsCurrentOption="";
@@ -5996,6 +6045,7 @@ document.querySelectorAll("[data-goods-image]").forEach(button=>{
   button.addEventListener("click",()=>{
     const src=(button.dataset.goodsImage||"").toLowerCase();
     goodsCurrentImageKey=src.includes("goods01")?"goods01":src.includes("goods02")?"goods02":"goods03";
+    requestAnimationFrame(renderGoodsModalStars);
     const hint=document.getElementById("goodsModalHint");
     if(hint) hint.style.display=goodsCurrentImageKey==="goods03"?"none":"block";
   });
