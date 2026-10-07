@@ -123,6 +123,35 @@ self.addEventListener("activate", event => {
 });
 
 /* =========================================================
+   NAVIGATION RESPONSE NORMALIZER
+
+   iOS Safariでは、redirect履歴を持つResponseをService Workerから
+   navigationへ返すと白画面/redirectエラーになる場合がある。
+   ネットワーク由来だけでなく、過去にキャッシュされたResponseも
+   返却直前に安全なResponseへ詰め直す。
+========================================================= */
+
+async function safeNavigationResponse(response) {
+  if (!response) return response;
+
+  if (!response.redirected) {
+    return response;
+  }
+
+  const body = await response.arrayBuffer();
+  const headers = new Headers(response.headers);
+
+  headers.delete("content-encoding");
+  headers.delete("content-length");
+
+  return new Response(body, {
+    status: 200,
+    statusText: "OK",
+    headers
+  });
+}
+
+/* =========================================================
    FETCH
 ========================================================= */
 
@@ -198,7 +227,7 @@ self.addEventListener("fetch", event => {
           cached
         ) {
 
-          return cached;
+          return await safeNavigationResponse(cached);
 
         }
 
@@ -288,7 +317,7 @@ self.addEventListener("fetch", event => {
         */
 
         if (cached) {
-          return cached;
+          return await safeNavigationResponse(cached);
         }
 
         /*
@@ -306,14 +335,14 @@ self.addEventListener("fetch", event => {
           await cache.match(absoluteIndex, { ignoreSearch: true });
 
         if (cached) {
-          return cached;
+          return await safeNavigationResponse(cached);
         }
 
         cached =
           await cache.match(absoluteRoot, { ignoreSearch: true });
 
         if (cached) {
-          return cached;
+          return await safeNavigationResponse(cached);
         }
 
         /*
