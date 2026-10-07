@@ -217,22 +217,22 @@ self.addEventListener("fetch", event => {
         }
 
         /*
-          明確にオフラインなら、
-          ネットワークを試さず保存版を返す。
+          フェス会場向け：
+          保存済みアプリ本体がある場合は通信状態を待たず即表示する。
+
+          「アンテナは立っているが通信できない」状態でも、
+          network fetch のタイムアウト待ちで画面を止めない。
+
+          最新版の取得は、サイト内の更新機能および次回の
+          オンライン取得で行う。
         */
 
-        if (
-          typeof self.navigator !== "undefined" &&
-          self.navigator.onLine === false &&
-          cached
-        ) {
-
+        if (cached) {
           return await safeNavigationResponse(cached);
-
         }
 
         /*
-          オンライン時は最新版を取得。
+          初回など、まだ保存版が無い場合だけネットワーク取得。
         */
 
         try {
