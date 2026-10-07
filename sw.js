@@ -177,14 +177,14 @@ self.addEventListener("fetch", event => {
         */
 
         let cached =
-          await cache.match("./index.html");
+          await cache.match("./index.html", { ignoreSearch: true });
 
         if (!cached) {
-          cached = await cache.match("./");
+          cached = await cache.match("./", { ignoreSearch: true });
         }
 
         if (!cached) {
-          cached = await cache.match(request);
+          cached = await cache.match(request, { ignoreSearch: true });
         }
 
         /*
@@ -303,14 +303,14 @@ self.addEventListener("fetch", event => {
           new URL("./", self.location.origin).href;
 
         cached =
-          await cache.match(absoluteIndex);
+          await cache.match(absoluteIndex, { ignoreSearch: true });
 
         if (cached) {
           return cached;
         }
 
         cached =
-          await cache.match(absoluteRoot);
+          await cache.match(absoluteRoot, { ignoreSearch: true });
 
         if (cached) {
           return cached;
