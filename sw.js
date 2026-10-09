@@ -549,6 +549,18 @@ p{
         }
 
         /*
+          弱回線対策：Leaflet本体だけは保存版を即返す。
+          地図タイル、API、他のファイルの挙動は変更しない。
+        */
+        if (
+          cached &&
+          (url.pathname.endsWith("/leaflet.js") ||
+           url.pathname.endsWith("/leaflet.css"))
+        ) {
+          return cached;
+        }
+
+        /*
           明確にオフラインで保存版があるなら
           即返す。
         */
