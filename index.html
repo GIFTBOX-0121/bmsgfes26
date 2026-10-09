@@ -1885,6 +1885,20 @@ body.goods-modal-open{overflow:hidden!important;touch-action:none}
 }
 </style>
 
+
+<style id="fes-ppv-goods-readability-test">
+/* FES: PPV links for each festival day */
+.fes-ppv-links{display:grid;grid-template-columns:1fr;gap:8px;margin-top:12px}
+.fes-ppv-links .action{display:block;text-align:center;text-decoration:none}
+/* GOODS: text only; keep existing sheet and row dimensions unchanged */
+#goodsCartSheet .goods-calc-title{font-size:17px}
+#goodsCartSheet .goods-calc-price{font-size:12px}
+#goodsCartSheet .goods-cart-name{font-size:13px}
+#goodsCartSheet .goods-cart-sub{font-size:11px}
+#goodsCartSheet .goods-cart-price{font-size:13px}
+#goodsCartSheet .goods-cart-empty{font-size:12px}
+#goodsCartSheet .goods-cart-clear{font-size:11px}
+</style>
 </head>
 
 <body>
@@ -2106,7 +2120,7 @@ body.goods-modal-open{overflow:hidden!important;touch-action:none}
 <div class="card" id="mainStageSection">
       <div class="card-title">🎤 MAIN STAGE</div>
       <div class="card-small">10/10 - 10/12 / HEADLINER & SPECIAL MV</div>
-      <button id="seatmapOpen" type="button" class="seatmap-open">🪑 座席表を見る</button>
+      <button id="seatmapOpen" type="button" class="seatmap-open">🪑 座席表を見る（準備中）</button>
 
       <div class="main-headliners">
         <div class="main-headliner">
@@ -2245,12 +2259,12 @@ body.goods-modal-open{overflow:hidden!important;touch-action:none}
     <div class="card ppv-card" id="ppvSectionFes">
       <div class="card-title">📺 PPV</div>
       <div class="card-small">BMSG FES 2026 配信情報</div>
-      <button class="action primary" type="button" id="ppvPrimeButtonFes" disabled>
-        Amazon Prime Video PPV
-      </button>
-      <div class="card-small" style="margin-top:7px;">
-        配信リンクは追加予定です。
+      <div class="fes-ppv-links">
+        <a class="action primary" href="https://www.amazon.co.jp/gp/video/detail/B0HL6DHHYB?ref_=atv_dp_share_cu_r" target="_blank" rel="noopener noreferrer">10/10 PPVを見る ↗</a>
+        <a class="action primary" href="https://www.amazon.co.jp/gp/video/detail/B0HH89SK1V?ref_=atv_dp_share_cu_r" target="_blank" rel="noopener noreferrer">10/11 PPVを見る ↗</a>
+        <a class="action primary" href="https://www.amazon.co.jp/gp/video/detail/B0HLFX7339?ref_=atv_dp_share_cu_r" target="_blank" rel="noopener noreferrer">10/12 PPVを見る ↗</a>
       </div>
+      <div class="card-small" style="margin-top:7px;">Amazon Prime Videoの各日配信ページを開きます。</div>
     </div>
 
     </div>
