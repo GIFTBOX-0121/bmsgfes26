@@ -49,9 +49,14 @@ self.addEventListener("install", event => {
 
         try {
 
-          const response = await fetch(url, {
-            cache: "reload"
-          });
+          const controller = new AbortController();
+          const timer = setTimeout(() => controller.abort(), 5000);
+          let response;
+          try {
+            response = await fetch(url, { cache: "reload", signal: controller.signal });
+          } finally {
+            clearTimeout(timer);
+          }
 
           if (
             response &&
@@ -472,8 +477,14 @@ p{
 
         try {
 
-          const fresh =
-            await fetch(request);
+          const controller = new AbortController();
+          const timer = setTimeout(() => controller.abort(), 5000);
+          let fresh;
+          try {
+            fresh = await fetch(request, { signal: controller.signal });
+          } finally {
+            clearTimeout(timer);
+          }
 
           if (
             fresh &&
@@ -575,7 +586,8 @@ p{
           "/leaflet.js",
           "/goods01.JPG",
           "/goods02.JPG",
-          "/goods03.JPG"
+          "/goods03.JPG",
+          "/seatmap.JPG"
         ]);
 
         if (cached && offlineShellPaths.has(url.pathname)) {
@@ -603,10 +615,17 @@ p{
 
         try {
 
-          const fresh =
-            await fetch(request, {
-              cache: "no-store"
+          const controller = new AbortController();
+          const timer = setTimeout(() => controller.abort(), 5000);
+          let fresh;
+          try {
+            fresh = await fetch(request, {
+              cache: "no-store",
+              signal: controller.signal
             });
+          } finally {
+            clearTimeout(timer);
+          }
 
           if (
             fresh &&
