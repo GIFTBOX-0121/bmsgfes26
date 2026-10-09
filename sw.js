@@ -49,9 +49,14 @@ self.addEventListener("install", event => {
 
         try {
 
-          const response = await fetch(url, {
-            cache: "reload"
-          });
+          const controller = new AbortController();
+          const timer = setTimeout(() => controller.abort(), 5000);
+          let response;
+          try {
+            response = await fetch(url, { cache: "reload", signal: controller.signal });
+          } finally {
+            clearTimeout(timer);
+          }
 
           if (
             response &&
@@ -449,17 +454,37 @@ p{
 
         const cache = await caches.open(CACHE_NAME);
 
-        const cached =
-          await cache.match(request);
-
-        if (cached) {
-          return cached;
+        // Prefer the exact tile, then reuse an identical tile cached under
+        // a/b/c.tile.openstreetmap.org from earlier versions of the site.
+        // A hostname change must not force a network request on weak signal.
+        let cached = await cache.match(request);
+        if (!cached) {
+          const tilePath = url.pathname;
+          const candidates = [
+            "tile.openstreetmap.org",
+            "a.tile.openstreetmap.org",
+            "b.tile.openstreetmap.org",
+            "c.tile.openstreetmap.org"
+          ];
+          for (const host of candidates) {
+            const oldTile = new URL(request.url);
+            oldTile.hostname = host;
+            cached = await cache.match(oldTile.href);
+            if (cached) break;
+          }
         }
+        if (cached) return cached;
 
         try {
 
-          const fresh =
-            await fetch(request);
+          const controller = new AbortController();
+          const timer = setTimeout(() => controller.abort(), 5000);
+          let fresh;
+          try {
+            fresh = await fetch(request, { signal: controller.signal });
+          } finally {
+            clearTimeout(timer);
+          }
 
           if (
             fresh &&
@@ -549,6 +574,27 @@ p{
         }
 
         /*
+          弱回線対策：保存済みのアプリ表示用ファイルは即返す。
+          電波が弱い場合も network fetch を待たない。
+          API / 天気 / OSMタイル / その他のURLは従来通り。
+          更新は既存の「最新版に更新する」機能で行う。
+        */
+        const offlineShellPaths = new Set([
+          "/Map.JPG",
+          "/manifest.webmanifest",
+          "/leaflet.css",
+          "/leaflet.js",
+          "/goods01.JPG",
+          "/goods02.JPG",
+          "/goods03.JPG",
+          "/seatmap.JPG"
+        ]);
+
+        if (cached && offlineShellPaths.has(url.pathname)) {
+          return cached;
+        }
+
+        /*
           明確にオフラインで保存版があるなら
           即返す。
         */
@@ -569,10 +615,17 @@ p{
 
         try {
 
-          const fresh =
-            await fetch(request, {
-              cache: "no-store"
+          const controller = new AbortController();
+          const timer = setTimeout(() => controller.abort(), 5000);
+          let fresh;
+          try {
+            fresh = await fetch(request, {
+              cache: "no-store",
+              signal: controller.signal
             });
+          } finally {
+            clearTimeout(timer);
+          }
 
           if (
             fresh &&

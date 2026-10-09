@@ -1684,6 +1684,7 @@ button:active{transform:scale(.98);}
 .offline-step-num{width:27px;height:27px;display:grid;place-items:center;border-radius:9px;background:rgba(255,255,255,.11);border:1px solid rgba(255,255,255,.11);font-size:10px;font-weight:950}
 .offline-step-text{font-size:10px;line-height:1.55}
 .offline-step-text strong{font-size:11px}
+.offline-guide-warning{margin-top:12px;padding:10px 11px;border-radius:12px;border:1px solid #e34b55;background:rgba(180,24,38,.13);color:#fff;font-size:10px;line-height:1.65;font-weight:800}
 .offline-guide-ok{margin-top:12px;padding:10px 11px;border-radius:12px;background:rgba(255,255,255,.07);font-size:10px;line-height:1.55;font-weight:850}
 </style>
 
@@ -1885,6 +1886,20 @@ body.goods-modal-open{overflow:hidden!important;touch-action:none}
 }
 </style>
 
+
+<style id="fes-ppv-goods-readability-test">
+/* FES: PPV links for each festival day */
+.fes-ppv-links{display:grid;grid-template-columns:1fr;gap:8px;margin-top:12px}
+.fes-ppv-links .action{display:block;text-align:center;text-decoration:none}
+/* GOODS: text only; keep existing sheet and row dimensions unchanged */
+#goodsCartSheet .goods-calc-title{font-size:17px}
+#goodsCartSheet .goods-calc-price{font-size:12px}
+#goodsCartSheet .goods-cart-name{font-size:13px}
+#goodsCartSheet .goods-cart-sub{font-size:11px}
+#goodsCartSheet .goods-cart-price{font-size:13px}
+#goodsCartSheet .goods-cart-empty{font-size:12px}
+#goodsCartSheet .goods-cart-clear{font-size:11px}
+</style>
 </head>
 
 <body>
@@ -1941,13 +1956,13 @@ body.goods-modal-open{overflow:hidden!important;touch-action:none}
 
     <div class="preflight-tools">
       <button class="site-update-card" id="siteUpdateOpen" type="button">
-        <span class="site-update-title">🔄 サイトを最新情報に更新</span>
-        <span class="site-update-time">最終更新 2026/10/07 14:00</span>
+        <span class="site-update-title">🔄 サイトを更新する</span>
+        <span class="site-update-time">最終更新 2026/10/09 16:00</span>
       </button>
 
       <button class="offline-check-card" id="offlineCheckOpen" type="button">
         <span class="offline-check-title">⚠️ オフライン確認 ⚠️</span>
-        <span class="offline-check-sub">会場につく直前にお願いします</span>
+        <span class="offline-check-sub">会場に着く直前にお願いします</span>
       </button>
     </div>
 
@@ -2106,6 +2121,7 @@ body.goods-modal-open{overflow:hidden!important;touch-action:none}
 <div class="card" id="mainStageSection">
       <div class="card-title">🎤 MAIN STAGE</div>
       <div class="card-small">10/10 - 10/12 / HEADLINER & SPECIAL MV</div>
+      <button id="seatmapOpen" type="button" class="seatmap-open">🪑 座席表を見る（準備中）</button>
 
       <div class="main-headliners">
         <div class="main-headliner">
@@ -2244,12 +2260,12 @@ body.goods-modal-open{overflow:hidden!important;touch-action:none}
     <div class="card ppv-card" id="ppvSectionFes">
       <div class="card-title">📺 PPV</div>
       <div class="card-small">BMSG FES 2026 配信情報</div>
-      <button class="action primary" type="button" id="ppvPrimeButtonFes" disabled>
-        Amazon Prime Video PPV
-      </button>
-      <div class="card-small" style="margin-top:7px;">
-        配信リンクは追加予定です。
+      <div class="fes-ppv-links">
+        <a class="action primary" href="https://www.amazon.co.jp/gp/video/detail/B0HL6DHHYB?ref_=atv_dp_share_cu_r" target="_blank" rel="noopener noreferrer">10/10 PPVを見る ↗</a>
+        <a class="action primary" href="https://www.amazon.co.jp/gp/video/detail/B0HH89SK1V?ref_=atv_dp_share_cu_r" target="_blank" rel="noopener noreferrer">10/11 PPVを見る ↗</a>
+        <a class="action primary" href="https://www.amazon.co.jp/gp/video/detail/B0HLFX7339?ref_=atv_dp_share_cu_r" target="_blank" rel="noopener noreferrer">10/12 PPVを見る ↗</a>
       </div>
+      <div class="card-small" style="margin-top:7px;">Amazon Prime Videoの各日配信ページを開きます。</div>
     </div>
 
     </div>
@@ -2920,7 +2936,7 @@ const map = L.map("map",{
 }).setView([35.62345,139.77505],17);
 
 L.tileLayer(
-  "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+  "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
   {
     maxZoom:20,
     attribution:"&copy; OpenStreetMap contributors"
@@ -6259,6 +6275,33 @@ document.addEventListener("click", function(e){
 </script>
 
 
+<style id="seatmap-test-style">
+.seatmap-open{display:block;width:100%;margin:12px 0;padding:12px 16px;border:1px solid rgba(255,255,255,.25);border-radius:12px;background:#24242a;color:#fff;font:inherit;font-size:13px;font-weight:800;cursor:pointer}
+.seatmap-dialog{position:fixed;inset:0;z-index:20000;background:rgba(0,0,0,.9);display:none;align-items:center;justify-content:center;padding:18px}
+.seatmap-dialog.is-open{display:flex}.seatmap-card{position:relative;width:min(100%,850px);max-height:92vh;overflow:auto;background:#15151b;border:1px solid #555;border-radius:14px;padding:42px 12px 16px;text-align:center;color:#fff}
+.seatmap-close{position:absolute;right:10px;top:6px;background:transparent;border:0;color:#fff;font-size:29px;padding:2px 10px}
+.seatmap-card img{display:block;width:100%;height:auto;object-fit:contain}.seatmap-message{padding:35px 10px;font-size:14px}
+</style>
+<div id="seatmapDialog" class="seatmap-dialog" role="dialog" aria-modal="true" aria-label="メインステージ座席表" aria-hidden="true">
+ <div class="seatmap-card"><button type="button" id="seatmapClose" class="seatmap-close" aria-label="閉じる">×</button><div id="seatmapBody" class="seatmap-message">座席表は準備中です</div></div>
+</div>
+<script id="seatmap-test-script">
+(()=>{
+ const btn=document.getElementById('seatmapOpen'),dialog=document.getElementById('seatmapDialog'),close=document.getElementById('seatmapClose'),body=document.getElementById('seatmapBody');
+ if(!btn||!dialog||!close||!body)return;
+ const hide=()=>{dialog.classList.remove('is-open');dialog.setAttribute('aria-hidden','true');body.replaceChildren();};
+ btn.addEventListener('click',()=>{
+   body.textContent='座席表を確認しています…';dialog.classList.add('is-open');dialog.setAttribute('aria-hidden','false');
+   const img=new Image();img.alt='BMSG FES 2026 MAIN STAGE 座席表';img.decoding='async';
+   img.onload=()=>{body.className='';body.replaceChildren(img);};
+   img.onerror=()=>{body.className='seatmap-message';body.textContent='座席表は準備中です。公開後にもう一度お試しください。';};
+   img.src='./seatmap.JPG';
+ });
+ close.addEventListener('click',hide);dialog.addEventListener('click',e=>{if(e.target===dialog)hide();});
+ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&dialog.classList.contains('is-open'))hide();});
+})();
+</script>
+
 <style id="crowd-status-addon-style">
 .crowd-panel{margin:14px 0 2px;padding:14px;border:1px solid rgba(255,255,255,.16);border-radius:16px;background:rgba(255,255,255,.055)}
 .crowd-panel[hidden]{display:none!important}
@@ -6389,7 +6432,10 @@ async function fetchAll(){
   return {spots:c.spots||{},waits:c.waits||{},offline:true,cached:true};
  }
  try{
-  const r=await fetch(API,{method:"GET",cache:"no-store"});if(!r.ok)throw new Error();
+  const ctrl=new AbortController();const timer=setTimeout(()=>ctrl.abort(),5000);
+  let r;
+  try{r=await fetch(API,{method:"GET",cache:"no-store",signal:ctrl.signal});}finally{clearTimeout(timer);}
+  if(!r.ok)throw new Error();
   const d=await r.json();if(!d||d.ok!==true)throw new Error();
   writeCache(d);renderMapStatuses(d.spots||{},d.waits||{});
   return {spots:d.spots||{},waits:d.waits||{}};
@@ -6398,6 +6444,16 @@ async function fetchAll(){
   return {spots:c.spots||{},waits:c.waits||{},offline:true,cached:true};
  }
 }
+window.addEventListener('bmsgfes:refresh-crowd',async()=>{
+ const button=document.getElementById('mapLatestRefresh');if(button){button.disabled=true;button.textContent='更新中…';}
+ try{
+  const d=await fetchAll();
+  const message=d.offline?'更新できませんでした（保存済み情報を表示）':'混雑情報を更新しました';
+  if(typeof showToast==='function')showToast(message);
+  if(button)button.textContent=d.offline?'更新失敗・再試行':'✓ 更新完了';
+ }catch(_){if(button)button.textContent='更新失敗・再試行';}
+ finally{if(button){button.disabled=false;setTimeout(()=>{if(button.isConnected)button.textContent='↻ 最新情報を取得';},3000);}}
+});
 async function loadCrowd(){
  const venueId=currentVenueId,apiSpot=API_SPOT_BY_VENUE[venueId];if(!apiSpot||!panel)return;
  const serial=++requestSerial;
@@ -6464,7 +6520,7 @@ window.addEventListener("online",()=>{try{fetchAll();if(panel&&!panel.hidden&&cu
 .traffic-mini .traffic-warn{opacity:1}
 .traffic-mini .traffic-unknown{opacity:.58}
 .traffic-map-hint{
-  position:absolute;left:12px;bottom:12px;z-index:800;
+  position:relative;z-index:800;
   display:flex;align-items:center;gap:10px;max-width:min(350px,92%);padding:9px 11px;
   border:1px solid rgba(255,255,255,.18);border-radius:14px;
   background:rgba(10,10,14,.82);backdrop-filter:blur(12px);
@@ -6473,6 +6529,11 @@ window.addEventListener("online",()=>{try{fetchAll();if(panel&&!panel.hidden&&cu
   font-size:10px;font-weight:850;line-height:1.45;
   pointer-events:none;
 }
+.map-refresh-wrap{position:absolute;right:8px;bottom:12px;left:8px;z-index:900;display:flex;justify-content:flex-end;align-items:flex-end;gap:7px;pointer-events:none}
+.map-refresh-wrap>*{pointer-events:auto}.map-refresh-wrap .traffic-map-hint{max-width:min(350px,70%);padding:7px 9px;pointer-events:none}
+.map-latest-refresh{flex-shrink:0;max-width:37%;padding:10px 9px;border-radius:12px;border:1px solid rgba(255,255,255,.35);background:#101016;color:#fff;font-size:10px;font-weight:900;line-height:1.3;cursor:pointer;box-shadow:0 4px 16px #0008}
+.map-latest-refresh:disabled{opacity:.65}
+@media(max-width:420px){.map-refresh-wrap{gap:5px;right:5px;left:5px}.map-refresh-wrap .traffic-map-hint{font-size:8px;gap:5px;padding:6px}.map-latest-refresh{font-size:9px;padding:9px 6px}}
 .crowd-hint-targets{display:flex;flex-direction:column;gap:2px;white-space:nowrap;text-align:left}
 .crowd-hint-message{display:flex;align-items:center;align-self:stretch;text-align:left;line-height:1.35}
 .traffic-detail{
@@ -6554,7 +6615,11 @@ function buildUI(){
     const hint=document.createElement("div");
     hint.id="crowdMapHint"; hint.className="traffic-map-hint";
     hint.innerHTML=`<span class="crowd-hint-targets"><span>🚻📍WC</span><span>📸📍PHOTO（メイン）</span></span><span class="crowd-hint-message">→ タップで当日の混雑状況が共有可能！</span>`;
-    map.appendChild(hint);
+    const wrap=document.createElement('div');wrap.className='map-refresh-wrap';wrap.id='mapRefreshWrap';
+    wrap.appendChild(hint);
+    const refresh=document.createElement('button');refresh.type='button';refresh.id='mapLatestRefresh';refresh.className='map-latest-refresh';refresh.textContent='↻ 最新情報を取得';
+    refresh.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();window.dispatchEvent(new Event('bmsgfes:refresh-crowd'));});
+    wrap.appendChild(refresh);map.appendChild(wrap);
   }
 }
 function render(data,{cached=false,offline=false}={}){
@@ -6607,7 +6672,7 @@ window.addEventListener("online",()=>{try{loadTraffic(true);}catch(_){}});
       TODO・持ち物・取引など、端末に保存した内容は消えません。
     </div>
 
-    <div class="site-update-version">サイト最終更新：2026/10/07 14:00</div>
+    <div class="site-update-version">サイト最終更新：2026/10/09 16:00</div>
 
     <button class="site-update-action" id="siteUpdateRun" type="button">最新版に更新する</button>
     <div class="site-update-status" id="siteUpdateStatus" aria-live="polite"></div>
@@ -6626,13 +6691,18 @@ window.addEventListener("online",()=>{try{loadTraffic(true);}catch(_){}});
     </div>
 
     <div class="offline-step">
+      <div class="offline-step-num">0</div>
+      <div class="offline-step-text"><strong>SNSのリンクより直接開いた方はブラウザで開く</strong><br>※プライベートモードやシークレットモードで開かないようご注意ください</div>
+    </div>
+
+    <div class="offline-step">
       <div class="offline-step-num">1</div>
-      <div class="offline-step-text"><strong>このサイトをホーム画面に追加</strong><br><span style="opacity:.72;">※「ウェブアプリとして開く」は<strong>必ずOFFに</strong></span></div>
+      <div class="offline-step-text"><strong>このサイトを最新状態にする</strong><br>※既にホーム画面へ追加済の方はここからお進みください。<br>トップにある「サイトを更新する」ボタンを押して最新状態へ</div>
     </div>
 
     <div class="offline-step">
       <div class="offline-step-num">2</div>
-      <div class="offline-step-text"><strong>通信できる場所で、各ページを開いて確認</strong><br><span style="opacity:.78;">（GOODSページでは画像3枚もタップ必須‼️）</span></div>
+      <div class="offline-step-text"><strong>通信できる環境下で各ページを開いて確認</strong><br>※GOODSページ内の画像にもタップして必須※</div>
     </div>
 
     <div class="offline-step">
@@ -6642,25 +6712,27 @@ window.addEventListener("online",()=>{try{loadTraffic(true);}catch(_){}});
 
     <div class="offline-step">
       <div class="offline-step-num">4</div>
-      <div class="offline-step-text"><strong>今開いているSafariページを閉じる</strong><br>オフライン確認のため、Safariで開いているこのサイトを閉じてください。</div>
+      <div class="offline-step-text"><strong>今開いているブラウザページを閉じる</strong><br>オフライン確認のため、今ブラウザで開いているこのサイトページを閉じてください</div>
     </div>
 
     <div class="offline-step">
       <div class="offline-step-num">5</div>
-      <div class="offline-step-text"><strong>ホーム画面に追加したところからサイトを開く</strong><br>MAP・GOODS・TODO・MYなどが表示・操作できるか確認してください。</div>
+      <div class="offline-step-text"><strong>ホーム画面に追加したところからサイトを開く</strong><br>MAPやGOODSなど、各ページが表示・操作できるか確認お願いします</div>
     </div>
 
     <div class="offline-step">
       <div class="offline-step-num">6</div>
-      <div class="offline-step-text"><strong>機内モードをOFFにして通常通信へ戻す</strong><br>確認が終わったら、普段の通信状態に戻してください。</div>
+      <div class="offline-step-text"><strong>動作確認ができたら完了</strong><br>機内モードをOFFにして通常通信に戻してください。</div>
     </div>
 
-    <div class="offline-guide-ok">✓ MAPなどがオフラインでも見られれば準備OK！<br><span style="opacity:.72;font-weight:700;">※オフライン中は交通情報・混雑状況の最新取得、新しい混雑／待ち時間の共有はできません。</span></div>
+    <div class="offline-guide-warning">💡会場内での不安定な電波状況により、オフライン確認後でもMAPなどの表示に時間を要することも考えられます。<br>その場合は、機内モードONにしていただき、完全オフラインにしていただくとすぐに閲覧可能になります。</div>
+
+    <div class="offline-guide-ok">✓MAPなどがオフラインでも見れたら準備OK！<br><span style="opacity:.72;font-weight:700;">※オフライン中は天気や交通情報・混雑状況の最新取得、当たら良い混雑／待ち時間の共有はできません。</span></div>
   </div>
 </div>
 <script id="site-update-addon">
 (()=>{
-  const SITE_VERSION="2026/10/07 14:00";
+  const SITE_VERSION="2026/10/09 16:00";
   const CACHE_NAME="bmsgfes26-v18-offline";
   const CORE_FILES=[
     "./index.html",
