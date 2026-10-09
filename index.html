@@ -1684,6 +1684,7 @@ button:active{transform:scale(.98);}
 .offline-step-num{width:27px;height:27px;display:grid;place-items:center;border-radius:9px;background:rgba(255,255,255,.11);border:1px solid rgba(255,255,255,.11);font-size:10px;font-weight:950}
 .offline-step-text{font-size:10px;line-height:1.55}
 .offline-step-text strong{font-size:11px}
+.offline-guide-warning{margin-top:12px;padding:10px 11px;border-radius:12px;border:1px solid #e34b55;background:rgba(180,24,38,.13);color:#fff;font-size:10px;line-height:1.65;font-weight:800}
 .offline-guide-ok{margin-top:12px;padding:10px 11px;border-radius:12px;background:rgba(255,255,255,.07);font-size:10px;line-height:1.55;font-weight:850}
 </style>
 
@@ -1955,13 +1956,13 @@ body.goods-modal-open{overflow:hidden!important;touch-action:none}
 
     <div class="preflight-tools">
       <button class="site-update-card" id="siteUpdateOpen" type="button">
-        <span class="site-update-title">🔄 サイトを最新情報に更新</span>
-        <span class="site-update-time">最終更新 2026/10/07 14:00</span>
+        <span class="site-update-title">🔄 サイトを更新する</span>
+        <span class="site-update-time">最終更新 2026/10/09 16:00</span>
       </button>
 
       <button class="offline-check-card" id="offlineCheckOpen" type="button">
         <span class="offline-check-title">⚠️ オフライン確認 ⚠️</span>
-        <span class="offline-check-sub">会場につく直前にお願いします</span>
+        <span class="offline-check-sub">会場に着く直前にお願いします</span>
       </button>
     </div>
 
@@ -6671,7 +6672,7 @@ window.addEventListener("online",()=>{try{loadTraffic(true);}catch(_){}});
       TODO・持ち物・取引など、端末に保存した内容は消えません。
     </div>
 
-    <div class="site-update-version">サイト最終更新：2026/10/07 14:00</div>
+    <div class="site-update-version">サイト最終更新：2026/10/09 16:00</div>
 
     <button class="site-update-action" id="siteUpdateRun" type="button">最新版に更新する</button>
     <div class="site-update-status" id="siteUpdateStatus" aria-live="polite"></div>
@@ -6690,13 +6691,18 @@ window.addEventListener("online",()=>{try{loadTraffic(true);}catch(_){}});
     </div>
 
     <div class="offline-step">
+      <div class="offline-step-num">0</div>
+      <div class="offline-step-text"><strong>SNSのリンクより直接開いた方はブラウザで開く</strong><br>※プライベートモードやシークレットモードで開かないようご注意ください</div>
+    </div>
+
+    <div class="offline-step">
       <div class="offline-step-num">1</div>
-      <div class="offline-step-text"><strong>このサイトをホーム画面に追加</strong><br><span style="opacity:.72;">※「ウェブアプリとして開く」は<strong>必ずOFFに</strong></span></div>
+      <div class="offline-step-text"><strong>このサイトを最新状態にする</strong><br>※既にホーム画面へ追加済の方はここからお進みください。<br>トップにある「サイトを更新する」ボタンを押して最新状態へ</div>
     </div>
 
     <div class="offline-step">
       <div class="offline-step-num">2</div>
-      <div class="offline-step-text"><strong>通信できる場所で、各ページを開いて確認</strong><br><span style="opacity:.78;">（GOODSページでは画像3枚もタップ必須‼️）</span></div>
+      <div class="offline-step-text"><strong>通信できる環境下で各ページを開いて確認</strong><br>※GOODSページ内の画像にもタップして必須※</div>
     </div>
 
     <div class="offline-step">
@@ -6706,25 +6712,27 @@ window.addEventListener("online",()=>{try{loadTraffic(true);}catch(_){}});
 
     <div class="offline-step">
       <div class="offline-step-num">4</div>
-      <div class="offline-step-text"><strong>今開いているSafariページを閉じる</strong><br>オフライン確認のため、Safariで開いているこのサイトを閉じてください。</div>
+      <div class="offline-step-text"><strong>今開いているブラウザページを閉じる</strong><br>オフライン確認のため、今ブラウザで開いているこのサイトページを閉じてください</div>
     </div>
 
     <div class="offline-step">
       <div class="offline-step-num">5</div>
-      <div class="offline-step-text"><strong>ホーム画面に追加したところからサイトを開く</strong><br>MAP・GOODS・TODO・MYなどが表示・操作できるか確認してください。</div>
+      <div class="offline-step-text"><strong>ホーム画面に追加したところからサイトを開く</strong><br>MAPやGOODSなど、各ページが表示・操作できるか確認お願いします</div>
     </div>
 
     <div class="offline-step">
       <div class="offline-step-num">6</div>
-      <div class="offline-step-text"><strong>機内モードをOFFにして通常通信へ戻す</strong><br>確認が終わったら、普段の通信状態に戻してください。</div>
+      <div class="offline-step-text"><strong>動作確認ができたら完了</strong><br>機内モードをOFFにして通常通信に戻してください。</div>
     </div>
 
-    <div class="offline-guide-ok">✓ MAPなどがオフラインでも見られれば準備OK！<br><span style="opacity:.72;font-weight:700;">※オフライン中は交通情報・混雑状況の最新取得、新しい混雑／待ち時間の共有はできません。</span></div>
+    <div class="offline-guide-warning">💡会場内での不安定な電波状況により、オフライン確認後でもMAPなどの表示に時間を要することも考えられます。<br>その場合は、機内モードONにしていただき、完全オフラインにしていただくとすぐに閲覧可能になります。</div>
+
+    <div class="offline-guide-ok">✓MAPなどがオフラインでも見れたら準備OK！<br><span style="opacity:.72;font-weight:700;">※オフライン中は天気や交通情報・混雑状況の最新取得、当たら良い混雑／待ち時間の共有はできません。</span></div>
   </div>
 </div>
 <script id="site-update-addon">
 (()=>{
-  const SITE_VERSION="2026/10/07 14:00";
+  const SITE_VERSION="2026/10/09 16:00";
   const CACHE_NAME="bmsgfes26-v18-offline";
   const CORE_FILES=[
     "./index.html",
