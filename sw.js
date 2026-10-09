@@ -449,12 +449,26 @@ p{
 
         const cache = await caches.open(CACHE_NAME);
 
-        const cached =
-          await cache.match(request);
-
-        if (cached) {
-          return cached;
+        // Prefer the exact tile, then reuse an identical tile cached under
+        // a/b/c.tile.openstreetmap.org from earlier versions of the site.
+        // A hostname change must not force a network request on weak signal.
+        let cached = await cache.match(request);
+        if (!cached) {
+          const tilePath = url.pathname;
+          const candidates = [
+            "tile.openstreetmap.org",
+            "a.tile.openstreetmap.org",
+            "b.tile.openstreetmap.org",
+            "c.tile.openstreetmap.org"
+          ];
+          for (const host of candidates) {
+            const oldTile = new URL(request.url);
+            oldTile.hostname = host;
+            cached = await cache.match(oldTile.href);
+            if (cached) break;
+          }
         }
+        if (cached) return cached;
 
         try {
 
