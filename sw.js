@@ -549,14 +549,22 @@ p{
         }
 
         /*
-          弱回線対策：Leaflet本体だけは保存版を即返す。
-          地図タイル、API、他のファイルの挙動は変更しない。
+          弱回線対策：保存済みのアプリ表示用ファイルは即返す。
+          電波が弱い場合も network fetch を待たない。
+          API / 天気 / OSMタイル / その他のURLは従来通り。
+          更新は既存の「最新版に更新する」機能で行う。
         */
-        if (
-          cached &&
-          (url.pathname.endsWith("/leaflet.js") ||
-           url.pathname.endsWith("/leaflet.css"))
-        ) {
+        const offlineShellPaths = new Set([
+          "/Map.JPG",
+          "/manifest.webmanifest",
+          "/leaflet.css",
+          "/leaflet.js",
+          "/goods01.JPG",
+          "/goods02.JPG",
+          "/goods03.JPG"
+        ]);
+
+        if (cached && offlineShellPaths.has(url.pathname)) {
           return cached;
         }
 
