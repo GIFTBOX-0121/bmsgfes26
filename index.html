@@ -2106,6 +2106,7 @@ body.goods-modal-open{overflow:hidden!important;touch-action:none}
 <div class="card" id="mainStageSection">
       <div class="card-title">🎤 MAIN STAGE</div>
       <div class="card-small">10/10 - 10/12 / HEADLINER & SPECIAL MV</div>
+      <button id="seatmapOpen" type="button" class="seatmap-open">🪑 座席表を見る</button>
 
       <div class="main-headliners">
         <div class="main-headliner">
@@ -6259,6 +6260,33 @@ document.addEventListener("click", function(e){
 </script>
 
 
+<style id="seatmap-test-style">
+.seatmap-open{display:block;width:100%;margin:12px 0;padding:12px 16px;border:1px solid rgba(255,255,255,.25);border-radius:12px;background:#24242a;color:#fff;font:inherit;font-size:13px;font-weight:800;cursor:pointer}
+.seatmap-dialog{position:fixed;inset:0;z-index:20000;background:rgba(0,0,0,.9);display:none;align-items:center;justify-content:center;padding:18px}
+.seatmap-dialog.is-open{display:flex}.seatmap-card{position:relative;width:min(100%,850px);max-height:92vh;overflow:auto;background:#15151b;border:1px solid #555;border-radius:14px;padding:42px 12px 16px;text-align:center;color:#fff}
+.seatmap-close{position:absolute;right:10px;top:6px;background:transparent;border:0;color:#fff;font-size:29px;padding:2px 10px}
+.seatmap-card img{display:block;width:100%;height:auto;object-fit:contain}.seatmap-message{padding:35px 10px;font-size:14px}
+</style>
+<div id="seatmapDialog" class="seatmap-dialog" role="dialog" aria-modal="true" aria-label="メインステージ座席表" aria-hidden="true">
+ <div class="seatmap-card"><button type="button" id="seatmapClose" class="seatmap-close" aria-label="閉じる">×</button><div id="seatmapBody" class="seatmap-message">座席表は準備中です</div></div>
+</div>
+<script id="seatmap-test-script">
+(()=>{
+ const btn=document.getElementById('seatmapOpen'),dialog=document.getElementById('seatmapDialog'),close=document.getElementById('seatmapClose'),body=document.getElementById('seatmapBody');
+ if(!btn||!dialog||!close||!body)return;
+ const hide=()=>{dialog.classList.remove('is-open');dialog.setAttribute('aria-hidden','true');body.replaceChildren();};
+ btn.addEventListener('click',()=>{
+   body.textContent='座席表を確認しています…';dialog.classList.add('is-open');dialog.setAttribute('aria-hidden','false');
+   const img=new Image();img.alt='BMSG FES 2026 MAIN STAGE 座席表';img.decoding='async';
+   img.onload=()=>{body.className='';body.replaceChildren(img);};
+   img.onerror=()=>{body.className='seatmap-message';body.textContent='座席表は準備中です。公開後にもう一度お試しください。';};
+   img.src='./seatmap.JPG';
+ });
+ close.addEventListener('click',hide);dialog.addEventListener('click',e=>{if(e.target===dialog)hide();});
+ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&dialog.classList.contains('is-open'))hide();});
+})();
+</script>
+
 <style id="crowd-status-addon-style">
 .crowd-panel{margin:14px 0 2px;padding:14px;border:1px solid rgba(255,255,255,.16);border-radius:16px;background:rgba(255,255,255,.055)}
 .crowd-panel[hidden]{display:none!important}
@@ -6389,7 +6417,10 @@ async function fetchAll(){
   return {spots:c.spots||{},waits:c.waits||{},offline:true,cached:true};
  }
  try{
-  const r=await fetch(API,{method:"GET",cache:"no-store"});if(!r.ok)throw new Error();
+  const ctrl=new AbortController();const timer=setTimeout(()=>ctrl.abort(),5000);
+  let r;
+  try{r=await fetch(API,{method:"GET",cache:"no-store",signal:ctrl.signal});}finally{clearTimeout(timer);}
+  if(!r.ok)throw new Error();
   const d=await r.json();if(!d||d.ok!==true)throw new Error();
   writeCache(d);renderMapStatuses(d.spots||{},d.waits||{});
   return {spots:d.spots||{},waits:d.waits||{}};
@@ -6398,6 +6429,16 @@ async function fetchAll(){
   return {spots:c.spots||{},waits:c.waits||{},offline:true,cached:true};
  }
 }
+window.addEventListener('bmsgfes:refresh-crowd',async()=>{
+ const button=document.getElementById('mapLatestRefresh');if(button){button.disabled=true;button.textContent='更新中…';}
+ try{
+  const d=await fetchAll();
+  const message=d.offline?'更新できませんでした（保存済み情報を表示）':'混雑情報を更新しました';
+  if(typeof showToast==='function')showToast(message);
+  if(button)button.textContent=d.offline?'更新失敗・再試行':'✓ 更新完了';
+ }catch(_){if(button)button.textContent='更新失敗・再試行';}
+ finally{if(button){button.disabled=false;setTimeout(()=>{if(button.isConnected)button.textContent='↻ 最新情報を取得';},3000);}}
+});
 async function loadCrowd(){
  const venueId=currentVenueId,apiSpot=API_SPOT_BY_VENUE[venueId];if(!apiSpot||!panel)return;
  const serial=++requestSerial;
@@ -6464,7 +6505,7 @@ window.addEventListener("online",()=>{try{fetchAll();if(panel&&!panel.hidden&&cu
 .traffic-mini .traffic-warn{opacity:1}
 .traffic-mini .traffic-unknown{opacity:.58}
 .traffic-map-hint{
-  position:absolute;left:12px;bottom:12px;z-index:800;
+  position:relative;z-index:800;
   display:flex;align-items:center;gap:10px;max-width:min(350px,92%);padding:9px 11px;
   border:1px solid rgba(255,255,255,.18);border-radius:14px;
   background:rgba(10,10,14,.82);backdrop-filter:blur(12px);
@@ -6473,6 +6514,11 @@ window.addEventListener("online",()=>{try{fetchAll();if(panel&&!panel.hidden&&cu
   font-size:10px;font-weight:850;line-height:1.45;
   pointer-events:none;
 }
+.map-refresh-wrap{position:absolute;right:8px;bottom:12px;left:8px;z-index:900;display:flex;justify-content:flex-end;align-items:flex-end;gap:7px;pointer-events:none}
+.map-refresh-wrap>*{pointer-events:auto}.map-refresh-wrap .traffic-map-hint{max-width:min(350px,70%);padding:7px 9px;pointer-events:none}
+.map-latest-refresh{flex-shrink:0;max-width:37%;padding:10px 9px;border-radius:12px;border:1px solid rgba(255,255,255,.35);background:#101016;color:#fff;font-size:10px;font-weight:900;line-height:1.3;cursor:pointer;box-shadow:0 4px 16px #0008}
+.map-latest-refresh:disabled{opacity:.65}
+@media(max-width:420px){.map-refresh-wrap{gap:5px;right:5px;left:5px}.map-refresh-wrap .traffic-map-hint{font-size:8px;gap:5px;padding:6px}.map-latest-refresh{font-size:9px;padding:9px 6px}}
 .crowd-hint-targets{display:flex;flex-direction:column;gap:2px;white-space:nowrap;text-align:left}
 .crowd-hint-message{display:flex;align-items:center;align-self:stretch;text-align:left;line-height:1.35}
 .traffic-detail{
@@ -6554,7 +6600,11 @@ function buildUI(){
     const hint=document.createElement("div");
     hint.id="crowdMapHint"; hint.className="traffic-map-hint";
     hint.innerHTML=`<span class="crowd-hint-targets"><span>🚻📍WC</span><span>📸📍PHOTO（メイン）</span></span><span class="crowd-hint-message">→ タップで当日の混雑状況が共有可能！</span>`;
-    map.appendChild(hint);
+    const wrap=document.createElement('div');wrap.className='map-refresh-wrap';wrap.id='mapRefreshWrap';
+    wrap.appendChild(hint);
+    const refresh=document.createElement('button');refresh.type='button';refresh.id='mapLatestRefresh';refresh.className='map-latest-refresh';refresh.textContent='↻ 最新情報を取得';
+    refresh.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();window.dispatchEvent(new Event('bmsgfes:refresh-crowd'));});
+    wrap.appendChild(refresh);map.appendChild(wrap);
   }
 }
 function render(data,{cached=false,offline=false}={}){
